@@ -13,7 +13,7 @@ from opensearch_graphrag.config import (
 def test_ollama_defaults():
     s = OllamaSettings()
     assert s.base_url == "http://localhost:11434"
-    assert s.llm_model == "qwen2.5:7b"
+    assert s.llm_model == "llama3.1:8b"
     assert s.embed_model == "nomic-embed-text-v2-moe"
     assert s.embed_dimensions == 768
     assert s.temperature == 0.0

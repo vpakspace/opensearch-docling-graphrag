@@ -23,7 +23,7 @@ def _make_ollama_response(entities: list[dict]) -> MagicMock:
 
 def _make_settings(
     base_url: str = "http://localhost:11434",
-    llm_model: str = "qwen2.5:7b",
+    llm_model: str = "llama3.1:8b",
 ) -> MagicMock:
     settings = MagicMock()
     settings.ollama.base_url = base_url
