@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from typing import TYPE_CHECKING, Any
 
@@ -11,10 +12,12 @@ from opensearch_graphrag.models import Chunk, SearchResult
 if TYPE_CHECKING:
     from opensearchpy import OpenSearch
 
+    from opensearch_graphrag.config import Settings
+
 logger = logging.getLogger(__name__)
 
 
-def _make_client(settings=None) -> "OpenSearch":
+def _make_client(settings: "Settings | None" = None) -> "OpenSearch":
     """Create OpenSearch client."""
     from opensearchpy import OpenSearch
 
@@ -29,7 +32,7 @@ def _make_client(settings=None) -> "OpenSearch":
 class OpenSearchStore:
     """OpenSearch k-NN vector index with BM25 hybrid search."""
 
-    def __init__(self, client: "OpenSearch | None" = None, settings=None) -> None:
+    def __init__(self, client: "OpenSearch | None" = None, settings: "Settings | None" = None) -> None:
         self._cfg = settings or get_settings()
         self._client = client or _make_client(self._cfg)
         self._index = self._cfg.opensearch.index
@@ -214,5 +217,4 @@ class OpenSearchStore:
 
 def _serialize(obj: dict) -> str:
     """Serialize dict to JSON string for bulk API."""
-    import json
     return json.dumps(obj)

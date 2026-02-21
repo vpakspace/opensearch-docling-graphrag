@@ -172,20 +172,40 @@ class PipelineService:
         if not self._driver:
             return {"documents": 0, "chunks": 0, "entities": 0, "relationships": 0}
 
-        # Fallback: direct query when no graph_builder is set
-        stats: dict[str, int] = {}
-        try:
-            with self._driver.session() as session:
-                for label, key in [("Document", "documents"), ("Chunk", "chunks"), ("Entity", "entities")]:
-                    result = session.run(f"MATCH (n:{label}) RETURN count(n) AS c")
-                    record = result.single()
-                    stats[key] = record["c"] if record else 0
+        # Fallback: create a temporary GraphBuilder from the driver
+        from opensearch_graphrag.graph_builder import GraphBuilder
 
-                result = session.run("MATCH ()-[r]->() RETURN count(r) AS c")
-                record = result.single()
-                stats["relationships"] = record["c"] if record else 0
+        try:
+            return GraphBuilder(self._driver).get_stats()
         except Exception as e:
             logger.error("Failed to get graph stats: %s", e)
-            stats = {"documents": 0, "chunks": 0, "entities": 0, "relationships": 0}
+            return {"documents": 0, "chunks": 0, "entities": 0, "relationships": 0}
 
-        return stats
+    def get_graph_entities(self, limit: int = 100) -> tuple[list[dict], list[dict]]:
+        """Fetch entities and relationships for graph visualization.
+
+        Returns (entities, relationships) where each is a list of dicts.
+        """
+        if not self._driver:
+            return [], []
+
+        try:
+            with self._driver.session() as session:
+                result = session.run(
+                    "MATCH (e:Entity) RETURN e.name AS name, e.type AS type LIMIT $limit",
+                    limit=limit,
+                )
+                entities = [dict(r) for r in result]
+
+                result = session.run(
+                    "MATCH (s:Entity)-[r]->(t:Entity) "
+                    "RETURN s.name AS source, t.name AS target, type(r) AS type "
+                    "LIMIT $limit",
+                    limit=limit * 2,
+                )
+                rels = [dict(r) for r in result]
+
+            return entities, rels
+        except Exception as e:
+            logger.error("Failed to fetch graph data: %s", e)
+            return [], []

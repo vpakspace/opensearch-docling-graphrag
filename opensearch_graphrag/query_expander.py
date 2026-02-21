@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import TYPE_CHECKING
 
-from opensearch_graphrag.retry import with_retry
+from opensearch_graphrag.ollama_client import post_generate
+
+if TYPE_CHECKING:
+    from opensearch_graphrag.config import Settings
 
 logger = logging.getLogger(__name__)
 
@@ -21,18 +25,7 @@ _SYSTEM_PROMPT = (
 )
 
 
-@with_retry(max_retries=2, backoff_base=1.0)
-def _post_generate(base_url: str, body: dict) -> dict:
-    """POST /api/generate with retry."""
-    from opensearch_graphrag.config import get_ollama_client
-
-    client = get_ollama_client()
-    resp = client.post("/api/generate", json=body)
-    resp.raise_for_status()
-    return resp.json()
-
-
-def expand_query(query: str, settings=None) -> dict:
+def expand_query(query: str, settings: "Settings | None" = None) -> dict:
     """Expand query into themes, entities, and related terms.
 
     Returns dict with keys: themes, entities, expanded (each a list of str).
@@ -55,7 +48,7 @@ def expand_query(query: str, settings=None) -> dict:
     }
 
     try:
-        raw = _post_generate(cfg.ollama.base_url, body)
+        raw = post_generate(body)
     except Exception as exc:
         logger.warning("Query expansion failed: %s", exc)
         return {}

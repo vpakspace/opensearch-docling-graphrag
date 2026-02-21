@@ -16,12 +16,7 @@ router = APIRouter(prefix="/api/v1")
 VALID_MODES = Literal["bm25", "vector", "graph", "hybrid", "enhanced", "cognitive"]
 
 
-class QueryRequest(BaseModel):
-    text: str = Field(..., min_length=1, max_length=10000)
-    mode: VALID_MODES = "hybrid"
-
-
-class SearchRequest(BaseModel):
+class RAGRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=10000)
     mode: VALID_MODES = "hybrid"
 
@@ -47,14 +42,14 @@ def health():
 
 @router.post("/query", response_model=QAResult)
 @limiter.limit("60/minute")
-def query(req: QueryRequest, request: Request):
+def query(req: RAGRequest, request: Request):
     svc = get_service()
     return svc.query(req.text, mode=req.mode)
 
 
 @router.post("/search", response_model=list[SearchResult])
 @limiter.limit("60/minute")
-def search(req: SearchRequest, request: Request):
+def search(req: RAGRequest, request: Request):
     svc = get_service()
     return svc.search(req.text, mode=req.mode)
 

@@ -7,23 +7,12 @@ from typing import TYPE_CHECKING
 
 from opensearch_graphrag.exceptions import EmbeddingError
 from opensearch_graphrag.models import Chunk
-from opensearch_graphrag.retry import with_retry
+from opensearch_graphrag.ollama_client import post_embed
 
 if TYPE_CHECKING:
     from opensearch_graphrag.config import Settings
 
 logger = logging.getLogger(__name__)
-
-
-@with_retry(max_retries=2, backoff_base=1.0)
-def _post_embed(base_url: str, payload: dict) -> dict:
-    """POST /api/embed with retry on transient errors."""
-    from opensearch_graphrag.config import get_ollama_client
-
-    client = get_ollama_client()
-    response = client.post("/api/embed", json=payload)
-    response.raise_for_status()
-    return response.json()
 
 
 def embed_text(text: str, settings: "Settings | None" = None) -> list[float]:
@@ -51,7 +40,7 @@ def embed_text(text: str, settings: "Settings | None" = None) -> list[float]:
 
     logger.debug("Embedding single text with model=%s", cfg.ollama.embed_model)
 
-    data = _post_embed(cfg.ollama.base_url, payload)
+    data = post_embed(payload)
     embeddings: list[list[float]] = data.get("embeddings", [])
     if not embeddings:
         raise ValueError(f"Ollama returned no embeddings for model={cfg.ollama.embed_model!r}")
@@ -106,7 +95,7 @@ def embed_chunks(
         cfg.ollama.embed_model,
     )
 
-    data = _post_embed(cfg.ollama.base_url, payload)
+    data = post_embed(payload)
     embeddings: list[list[float]] = data.get("embeddings", [])
 
     if len(embeddings) != len(chunks):

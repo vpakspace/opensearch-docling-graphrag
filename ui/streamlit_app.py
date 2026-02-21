@@ -175,6 +175,10 @@ with tabs[1]:
                             for entity in entities:
                                 builder.add_entity(entity)
                                 builder.link_entity_to_chunk(entity.name, entity.type, chunk.id)
+                            # Co-occurrence: link entities within the same chunk
+                            for i_e in range(len(entities)):
+                                for j_e in range(i_e + 1, len(entities)):
+                                    builder.link_entities(entities[i_e].name, entities[j_e].name)
                     finally:
                         driver.close()
 
@@ -222,39 +226,22 @@ with tabs[3]:
     stats = _api_get("/graph/stats")
     if stats and (stats.get("entities", 0) > 0 or stats.get("relationships", 0) > 0):
         svc = _get_service()
-        if svc and svc._driver:
-            try:
-                with svc._driver.session() as session:
-                    # Get entities
-                    result = session.run(
-                        "MATCH (e:Entity) RETURN e.name AS name, e.type AS type LIMIT 100"
-                    )
-                    entities = [dict(r) for r in result]
+        if svc:
+            entities, rels = svc.get_graph_entities(limit=100)
+            if entities:
+                all_types = sorted({e.get("type", "Other") for e in entities})
+                selected_types = st.multiselect(t("entity_filter"), all_types, default=all_types)
+                filtered = [e for e in entities if e.get("type", "Other") in selected_types]
 
-                    # Get relationships
-                    result = session.run(
-                        "MATCH (s:Entity)-[r]->(t:Entity) "
-                        "RETURN s.name AS source, t.name AS target, type(r) AS type LIMIT 200"
-                    )
-                    rels = [dict(r) for r in result]
+                from ui.components.graph_viz import render_graph
 
-                if entities:
-                    # Type filter
-                    all_types = sorted({e.get("type", "Other") for e in entities})
-                    selected_types = st.multiselect(t("entity_filter"), all_types, default=all_types)
-                    filtered = [e for e in entities if e.get("type", "Other") in selected_types]
+                html = render_graph(filtered, rels)
+                if html:
+                    import streamlit.components.v1 as components
 
-                    from ui.components.graph_viz import render_graph
-
-                    html = render_graph(filtered, rels)
-                    if html:
-                        import streamlit.components.v1 as components
-
-                        components.html(html, height=650)
-                else:
-                    st.info(t("graph_empty"))
-            except Exception:
-                st.error(t("error"))
+                    components.html(html, height=650)
+            else:
+                st.info(t("graph_empty"))
         else:
             st.info(t("graph_empty"))
     else:

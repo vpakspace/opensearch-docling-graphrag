@@ -40,6 +40,7 @@ class SemanticCache:
 
         1. Exact hash match (fast, no embedding needed).
         2. Cosine similarity scan over all entries (if embedding provided).
+           Complexity: O(n*d) where n = cache size and d = embedding dimension.
 
         Returns the cached result or None on miss.
         """

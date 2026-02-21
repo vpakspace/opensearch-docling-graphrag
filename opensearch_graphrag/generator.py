@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import logging
 import re
+from typing import TYPE_CHECKING
 
 from opensearch_graphrag.config import get_settings
+
+if TYPE_CHECKING:
+    from opensearch_graphrag.config import Settings
 from opensearch_graphrag.hallucination_detector import detect_hallucination
 from opensearch_graphrag.models import QAResult, SearchResult
-from opensearch_graphrag.retry import with_retry
+from opensearch_graphrag.ollama_client import post_chat
 
 logger = logging.getLogger(__name__)
 
@@ -21,17 +25,6 @@ If the context lacks information, say so. Be concise and accurate.
 
 Context:
 {context}"""
-
-
-@with_retry(max_retries=2, backoff_base=1.0)
-def _post_chat(base_url: str, body: dict) -> dict:
-    """POST /api/chat with retry on transient errors."""
-    from opensearch_graphrag.config import get_ollama_client
-
-    client = get_ollama_client()
-    resp = client.post("/api/chat", json=body)
-    resp.raise_for_status()
-    return resp.json()
 
 
 def _calibrate_confidence(
@@ -82,7 +75,7 @@ def generate_answer(
     query: str,
     results: list[SearchResult],
     mode: str = "hybrid",
-    settings=None,
+    settings: Settings | None = None,
 ) -> QAResult:
     """Generate answer using Ollama chat API with retrieved context.
 
@@ -111,8 +104,7 @@ def generate_answer(
     system_msg = SYSTEM_PROMPT.format(context=context)
 
     try:
-        data = _post_chat(
-            cfg.ollama.base_url,
+        data = post_chat(
             {
                 "model": cfg.ollama.llm_model,
                 "messages": [
