@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — 586 tests, 5 commits, 4,665 LOC.
 
 ## Architecture
 
@@ -178,8 +178,8 @@ opensearch-docling-graphrag/
 ├── scripts/
 │   ├── ingest.py                  # CLI ingestion
 │   └── pull_models.sh             # Download Ollama models
-├── tests/                         # 117 tests
-├── data/sample_graphrag.txt       # Sample document
+├── tests/                         # 586 tests
+├── data/                          # Sample documents (Doc1 + Doc2)
 ├── docker-compose.yml             # OpenSearch + Neo4j + Ollama
 ├── requirements.txt
 ├── pyproject.toml
@@ -219,7 +219,7 @@ pytest tests/ -v
 ruff check .
 ```
 
-117 tests, all mocked (no external services required).
+586 tests, all mocked (no external services required).
 
 ## Docker Services
 
