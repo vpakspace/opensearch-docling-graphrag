@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **92% benchmark accuracy** (167/180), 229 tests, 18 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **92% benchmark accuracy** (167/180), 241 tests, 19 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval with iterative probing.
 
 ## Architecture
 
@@ -138,7 +138,7 @@ curl -X POST http://localhost:8508/api/v1/query \
 | `graph` | Entity match in Neo4j → traverse to chunks |
 | `hybrid` | Dynamic RRF fusion of bm25 + vector + graph (adaptive weights) |
 | `enhanced` | Query expansion + 3x candidates + dynamic RRF + cosine reranking |
-| `cognitive` | Cog-RAG inspired 2-stage retrieval (theme + entity) + reranking + hallucination detection |
+| `cognitive` | Cog-RAG inspired 2-stage retrieval (theme + entity) + iterative probing + reranking + hallucination detection |
 
 ### Dynamic RRF Weights
 
@@ -175,10 +175,11 @@ python scripts/run_benchmark.py
 
 ### Cog-RAG Features
 
-Inspired by [Cog-RAG (AAAI 2026)](https://arxiv.org/abs/2505.02601):
+Inspired by [Cog-RAG (AAAI 2026)](https://arxiv.org/abs/2505.02601) and [ComoRAG](https://arxiv.org/abs/2504.01016):
 
 - **Query Expansion** — LLM-based extraction of themes, entities, and related terms
 - **Two-Stage Cognitive Retrieval** — Stage 1 (theme): BM25 + vector → RRF; Stage 2 (entity): BM25 + graph → RRF; merged via RRF + cosine reranking
+- **Iterative Probing** — after initial retrieval, a heuristic evaluates evidence sufficiency (keyword coverage + score quality + volume); if weak, Ollama generates a refined probe query and searches again (up to `max_probes` iterations, results accumulated via RRF)
 - **Cosine Reranking** — post-retrieval reranking using embedding similarity (no numpy)
 - **Hallucination Detection** — lightweight token overlap check between answer and context
 - **Multi-Signal Confidence** — score consistency + token overlap + source diversity
@@ -258,7 +259,7 @@ opensearch-docling-graphrag/
 │   ├── entity_extractor.py        # NER via Ollama LLM
 │   ├── graph_builder.py           # Neo4j graph construction
 │   ├── retriever.py               # 6-mode retriever + dynamic RRF fusion
-│   ├── cognitive_retriever.py     # Cog-RAG 2-stage retriever
+│   ├── cognitive_retriever.py     # Cog-RAG 2-stage retriever + iterative probing
 │   ├── query_expander.py          # LLM-based query expansion
 │   ├── reranker.py                # Cosine similarity reranker
 │   ├── hallucination_detector.py  # Token overlap grounding check
@@ -284,7 +285,7 @@ opensearch-docling-graphrag/
 ├── benchmark/                     # Benchmark data
 │   ├── questions.json             # 30 questions (RU + EN)
 │   └── results.json               # Latest benchmark results
-├── tests/                         # 229 tests (all mocked)
+├── tests/                         # 241 tests (all mocked)
 ├── data/                          # Sample documents (Doc1 RU + Doc2 EN)
 ├── docker-compose.yml             # OpenSearch + Neo4j + Ollama
 ├── requirements.txt
@@ -316,6 +317,8 @@ All settings are controlled via environment variables (`.env` file) or Pydantic 
 | `TOP_K_TOP_K_BM25` | `10` | >0 | BM25 search results |
 | `TOP_K_TOP_K_GRAPH` | `10` | >0 | Graph search results |
 | `TOP_K_TOP_K_FINAL` | `5` | >0 | Final results after fusion |
+| `TOP_K_MAX_PROBES` | `2` | 0–5 | Max iterative probe iterations (cognitive mode) |
+| `TOP_K_EVIDENCE_SCORE_THRESHOLD` | `0.3` | 0.0–1.0 | Evidence sufficiency threshold (cognitive mode) |
 | `API_KEY` | *(empty)* | — | API key for auth (disabled when empty) |
 
 ## Testing
@@ -328,7 +331,7 @@ pytest tests/ -v
 ruff check .
 ```
 
-229 tests, all mocked (no external services required). CI runs `pytest-cov` with 75% minimum coverage.
+241 tests, all mocked (no external services required). CI runs `pytest-cov` with 75% minimum coverage.
 
 ## Docker Services
 
