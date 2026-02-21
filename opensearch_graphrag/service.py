@@ -93,6 +93,8 @@ class PipelineService:
         else:
             results = self._retriever.search(text, embedding=embedding, mode=mode)
         qa = generate_answer(text, results, mode=mode, settings=self._cfg)
+        if mode == "cognitive":
+            qa.probes_used = self._cognitive.last_probes_used
 
         # Store in cache with embedding for similarity lookup
         self._cache.put(cache_key, qa, embedding=embedding)

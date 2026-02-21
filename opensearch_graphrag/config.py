@@ -54,6 +54,8 @@ class RetrievalSettings(BaseSettings):
     top_k_bm25: int = Field(default=10, gt=0)
     top_k_graph: int = Field(default=10, gt=0)
     top_k_final: int = Field(default=5, gt=0)
+    max_probes: int = Field(default=2, ge=0, le=5)
+    evidence_score_threshold: float = Field(default=0.3, ge=0.0, le=1.0)
 
     model_config = {"env_prefix": "TOP_K_"}
 

@@ -52,3 +52,4 @@ class QAResult(BaseModel):
     grounded: bool = True
     grounding_score: float = 1.0
     warning: str = ""
+    probes_used: int = 0
