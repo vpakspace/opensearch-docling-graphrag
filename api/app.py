@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hmac
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -83,7 +84,7 @@ def create_app(service: "PipelineService | None" = None) -> FastAPI:
             "/api/v1/health", "/docs", "/openapi.json", "/redoc",
         ):
             key = request.headers.get("X-API-Key", "")
-            if key != API_KEY:
+            if not hmac.compare_digest(key, API_KEY):
                 return JSONResponse(status_code=401, content={"error": "Invalid or missing API key"})
         return await call_next(request)
 

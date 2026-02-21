@@ -5,8 +5,6 @@ from __future__ import annotations
 import logging
 import re
 
-import httpx
-
 from opensearch_graphrag.config import get_settings
 from opensearch_graphrag.hallucination_detector import detect_hallucination
 from opensearch_graphrag.models import QAResult, SearchResult
@@ -28,10 +26,12 @@ Context:
 @with_retry(max_retries=2, backoff_base=1.0)
 def _post_chat(base_url: str, body: dict) -> dict:
     """POST /api/chat with retry on transient errors."""
-    with httpx.Client(base_url=base_url, timeout=120.0) as client:
-        resp = client.post("/api/chat", json=body)
-        resp.raise_for_status()
-        return resp.json()
+    from opensearch_graphrag.config import get_ollama_client
+
+    client = get_ollama_client()
+    resp = client.post("/api/chat", json=body)
+    resp.raise_for_status()
+    return resp.json()
 
 
 def _calibrate_confidence(

@@ -268,6 +268,8 @@ with tabs[4]:
     batch_dir = st.text_input(t("batch_dir"), placeholder="/path/to/documents/")
 
     if batch_dir and st.button(t("batch_button")):
+        # Resolve symlinks and normalize path to prevent traversal
+        batch_dir = os.path.realpath(batch_dir)
         if not os.path.isdir(batch_dir):
             st.error(f"{t('error')}: Directory not found")
         else:

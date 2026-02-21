@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 import logging
 
-import httpx
-
 from opensearch_graphrag.retry import with_retry
 
 logger = logging.getLogger(__name__)
@@ -26,10 +24,12 @@ _SYSTEM_PROMPT = (
 @with_retry(max_retries=2, backoff_base=1.0)
 def _post_generate(base_url: str, body: dict) -> dict:
     """POST /api/generate with retry."""
-    with httpx.Client(base_url=base_url, timeout=30.0) as client:
-        resp = client.post("/api/generate", json=body)
-        resp.raise_for_status()
-        return resp.json()
+    from opensearch_graphrag.config import get_ollama_client
+
+    client = get_ollama_client()
+    resp = client.post("/api/generate", json=body)
+    resp.raise_for_status()
+    return resp.json()
 
 
 def expand_query(query: str, settings=None) -> dict:

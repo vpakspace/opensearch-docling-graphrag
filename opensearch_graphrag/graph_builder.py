@@ -14,6 +14,7 @@ Schema
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any
 
 from opensearch_graphrag.models import Entity
@@ -175,8 +176,11 @@ class GraphBuilder:
             Relationship type label.  Defaults to ``"RELATED_TO"``.
         """
         # Cypher does not allow parameterised relationship type labels, so
-        # we interpolate the validated label directly.  Callers pass the
-        # rel_type from controlled pipeline code, not from raw user input.
+        # we interpolate the validated label directly.
+        # Allowlist: only alphanumeric + underscore to prevent Cypher injection.
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", rel_type):
+            logger.warning("Invalid rel_type %r — falling back to RELATED_TO", rel_type)
+            rel_type = "RELATED_TO"
         cypher = (
             f"MATCH (a:Entity {{name: $source_name}}) "
             f"MATCH (b:Entity {{name: $target_name}}) "

@@ -20,11 +20,10 @@ def test_generate_answer_empty_results():
     assert qa.mode == "hybrid"
 
 
-@patch("opensearch_graphrag.generator.httpx.Client")
-def test_generate_answer_success(mock_client_cls):
+@patch("opensearch_graphrag.config.get_ollama_client")
+def test_generate_answer_success(mock_get_client):
     mock_client = MagicMock()
-    mock_client_cls.return_value.__enter__ = MagicMock(return_value=mock_client)
-    mock_client_cls.return_value.__exit__ = MagicMock(return_value=False)
+    mock_get_client.return_value = mock_client
 
     mock_resp = MagicMock()
     mock_resp.json.return_value = {
@@ -42,11 +41,10 @@ def test_generate_answer_success(mock_client_cls):
     assert qa.confidence > 0
 
 
-@patch("opensearch_graphrag.generator.httpx.Client")
-def test_generate_answer_error(mock_client_cls):
+@patch("opensearch_graphrag.config.get_ollama_client")
+def test_generate_answer_error(mock_get_client):
     mock_client = MagicMock()
-    mock_client_cls.return_value.__enter__ = MagicMock(return_value=mock_client)
-    mock_client_cls.return_value.__exit__ = MagicMock(return_value=False)
+    mock_get_client.return_value = mock_client
     mock_client.post.side_effect = Exception("connection refused")
 
     results = _make_results(1)
@@ -117,12 +115,11 @@ def test_generate_answer_empty_results_message():
     assert qa.sources == []
 
 
-@patch("opensearch_graphrag.generator.httpx.Client")
-def test_generate_answer_very_long_context(mock_client_cls):
+@patch("opensearch_graphrag.config.get_ollama_client")
+def test_generate_answer_very_long_context(mock_get_client):
     """Generator handles very long context (>10000 chars) without error."""
     mock_client = MagicMock()
-    mock_client_cls.return_value.__enter__ = MagicMock(return_value=mock_client)
-    mock_client_cls.return_value.__exit__ = MagicMock(return_value=False)
+    mock_get_client.return_value = mock_client
 
     mock_resp = MagicMock()
     mock_resp.json.return_value = {"message": {"content": "Long context handled."}}

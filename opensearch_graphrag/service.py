@@ -117,7 +117,8 @@ class PipelineService:
         if mode in ("vector", "hybrid", "enhanced", "cognitive"):
             try:
                 embedding = embed_text(text, settings=self._cfg)
-            except Exception:
+            except Exception as e:
+                logger.warning("Embedding failed in search(), falling back: %s", e)
                 if mode == "vector":
                     mode = "bm25"
 
@@ -131,24 +132,24 @@ class PipelineService:
 
         try:
             status["opensearch"] = self._store.count() >= 0
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("OpenSearch health check failed: %s", e)
 
         if self._driver:
             try:
                 with self._driver.session() as session:
                     session.run("RETURN 1")
                 status["neo4j"] = True
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning("Neo4j health check failed: %s", e)
 
         try:
             import httpx
 
             resp = httpx.get(f"{self._cfg.ollama.base_url}/api/tags", timeout=5.0)
             status["ollama"] = resp.status_code == 200
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Ollama health check failed: %s", e)
 
         if not all([status["opensearch"], status["ollama"]]):
             status["status"] = "degraded"
@@ -156,10 +157,22 @@ class PipelineService:
         return status
 
     def graph_stats(self) -> dict:
-        """Get knowledge graph statistics."""
+        """Get knowledge graph statistics.
+
+        Delegates to GraphBuilder.get_stats() if available, otherwise
+        returns zeros.
+        """
+        if self._graph_builder:
+            try:
+                return self._graph_builder.get_stats()
+            except Exception as e:
+                logger.error("Failed to get graph stats: %s", e)
+                return {"documents": 0, "chunks": 0, "entities": 0, "relationships": 0}
+
         if not self._driver:
             return {"documents": 0, "chunks": 0, "entities": 0, "relationships": 0}
 
+        # Fallback: direct query when no graph_builder is set
         stats: dict[str, int] = {}
         try:
             with self._driver.session() as session:

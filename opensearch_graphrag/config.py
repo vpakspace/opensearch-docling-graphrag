@@ -82,3 +82,14 @@ def make_ollama_client(settings: Settings | None = None) -> "httpx.Client":
 
     cfg = settings or get_settings()
     return httpx.Client(base_url=cfg.ollama.base_url, timeout=120.0)
+
+
+@lru_cache(maxsize=1)
+def get_ollama_client() -> "httpx.Client":
+    """Return a cached, reusable httpx Client for Ollama REST API.
+
+    Connection pooling: a single client is reused across all modules
+    (embedder, generator, entity_extractor, query_expander) instead of
+    creating a new TCP connection per request.
+    """
+    return make_ollama_client()

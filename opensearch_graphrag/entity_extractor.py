@@ -27,10 +27,12 @@ _USER_TEMPLATE = "Extract named entities from the following text:\n\n{text}"
 @with_retry(max_retries=2, backoff_base=1.0)
 def _post_generate(base_url: str, body: dict) -> dict:
     """POST /api/generate with retry on transient errors."""
-    with httpx.Client(base_url=base_url, timeout=120.0) as client:
-        response = client.post("/api/generate", json=body)
-        response.raise_for_status()
-        return response.json()
+    from opensearch_graphrag.config import get_ollama_client
+
+    client = get_ollama_client()
+    response = client.post("/api/generate", json=body)
+    response.raise_for_status()
+    return response.json()
 
 
 def extract_entities(

@@ -1,4 +1,4 @@
-"""Tests for opensearch_graphrag.embedder — httpx is fully mocked."""
+"""Tests for opensearch_graphrag.embedder — Ollama client is fully mocked."""
 
 from __future__ import annotations
 
@@ -49,9 +49,9 @@ def test_embed_text(tmp_path: Any) -> None:
     vector = _fake_vector(0)
     mock_resp = _mock_response([vector])
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         result = embed_text("OpenSearch is a search engine.")
@@ -67,9 +67,9 @@ def test_embed_text_uses_correct_model() -> None:
     vector = _fake_vector(1)
     mock_resp = _mock_response([vector])
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         embed_text("Some text about graph databases.")
@@ -95,9 +95,9 @@ def test_embed_chunks() -> None:
     vectors = [_fake_vector(i) for i in range(3)]
     mock_resp = _mock_response(vectors)
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         result = embed_chunks(chunks)
@@ -118,9 +118,9 @@ def test_embed_chunks_sends_all_texts_in_one_request() -> None:
     vectors = [_fake_vector(i) for i in range(4)]
     mock_resp = _mock_response(vectors)
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         embed_chunks(chunks)
@@ -137,11 +137,11 @@ def test_embed_chunks_sends_all_texts_in_one_request() -> None:
 
 def test_embed_empty_chunks() -> None:
     """embed_chunks with an empty list returns an empty list without HTTP calls."""
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         result = embed_chunks([])
 
     assert result == []
-    mock_client_cls.assert_not_called()
+    mock_get_client.assert_not_called()
 
 
 def test_embed_chunks_original_objects_unchanged() -> None:
@@ -151,9 +151,9 @@ def test_embed_chunks_original_objects_unchanged() -> None:
     vectors = [_fake_vector(0)]
     mock_resp = _mock_response(vectors)
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         result = embed_chunks(chunks)
@@ -172,9 +172,9 @@ def test_embed_chunks_raises_on_count_mismatch() -> None:
     # Ollama returns only 2 vectors for 3 chunks
     mock_resp = _mock_response([_fake_vector(0), _fake_vector(1)])
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         with pytest.raises(ValueError, match="Expected 3 embeddings"):
@@ -188,9 +188,9 @@ def test_embed_chunks_raises_on_count_mismatch() -> None:
 
 def test_embed_text_connect_error() -> None:
     """embed_text raises on connection error."""
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.side_effect = httpx.ConnectError("Connection refused")
 
         with pytest.raises(httpx.ConnectError):
@@ -199,9 +199,9 @@ def test_embed_text_connect_error() -> None:
 
 def test_embed_text_read_timeout() -> None:
     """embed_text raises on read timeout."""
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.side_effect = httpx.ReadTimeout("Read timed out")
 
         with pytest.raises(httpx.ReadTimeout):
@@ -215,9 +215,9 @@ def test_embed_text_http_500() -> None:
         "Server Error", request=MagicMock(), response=MagicMock(status_code=500),
     )
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         with pytest.raises(httpx.HTTPStatusError):
@@ -232,9 +232,9 @@ def test_embed_text_dimension_mismatch() -> None:
     wrong_dim_vector = [0.1] * 512
     mock_resp = _mock_response([wrong_dim_vector])
 
-    with patch("httpx.Client") as mock_client_cls:
+    with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
         mock_client = MagicMock()
-        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_get_client.return_value = mock_client
         mock_client.post.return_value = mock_resp
 
         with pytest.raises(EmbeddingError, match="Expected embedding dimension 768"):

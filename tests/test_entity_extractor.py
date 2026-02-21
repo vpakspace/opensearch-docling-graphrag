@@ -48,8 +48,9 @@ class TestExtractEntities:
         mock_response = _make_ollama_response(raw_entities)
         settings = _make_settings()
 
-        with patch("httpx.Client") as mock_client_cls:
-            mock_client = mock_client_cls.return_value.__enter__.return_value
+        with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
+            mock_client = MagicMock()
+            mock_get_client.return_value = mock_client
             mock_client.post.return_value = mock_response
 
             result = extract_entities(
@@ -76,13 +77,13 @@ class TestExtractEntities:
     def test_extract_entities_empty_text(self):
         """Empty or whitespace-only text must return an empty list immediately."""
         # No HTTP call should be made for blank text.
-        with patch("httpx.Client") as mock_client_cls:
+        with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
             result_empty = extract_entities(text="", chunk_id="c0")
             result_whitespace = extract_entities(text="   \t\n", chunk_id="c0")
 
         assert result_empty == []
         assert result_whitespace == []
-        mock_client_cls.assert_not_called()
+        mock_get_client.assert_not_called()
 
     def test_extract_entities_invalid_json(self):
         """A non-JSON Ollama response must yield an empty list, not an exception."""
@@ -92,8 +93,9 @@ class TestExtractEntities:
         mock_response.json.return_value = {"response": "Sorry, I cannot help."}
         settings = _make_settings()
 
-        with patch("httpx.Client") as mock_client_cls:
-            mock_client = mock_client_cls.return_value.__enter__.return_value
+        with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
+            mock_client = MagicMock()
+            mock_get_client.return_value = mock_client
             mock_client.post.return_value = mock_response
 
             result = extract_entities(
@@ -113,8 +115,9 @@ class TestExtractEntities:
         mock_response = _make_ollama_response(raw_entities)
         settings = _make_settings()
 
-        with patch("httpx.Client") as mock_client_cls:
-            mock_client = mock_client_cls.return_value.__enter__.return_value
+        with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
+            mock_client = MagicMock()
+            mock_get_client.return_value = mock_client
             mock_client.post.return_value = mock_response
 
             result = extract_entities(
@@ -135,8 +138,9 @@ class TestExtractEntities:
         mock_response = _make_ollama_response(raw_entities)
         settings = _make_settings()
 
-        with patch("httpx.Client") as mock_client_cls:
-            mock_client = mock_client_cls.return_value.__enter__.return_value
+        with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
+            mock_client = MagicMock()
+            mock_get_client.return_value = mock_client
             mock_client.post.return_value = mock_response
 
             result = extract_entities(
@@ -154,8 +158,9 @@ class TestExtractEntities:
 
         settings = _make_settings()
 
-        with patch("httpx.Client") as mock_client_cls:
-            mock_client = mock_client_cls.return_value.__enter__.return_value
+        with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
+            mock_client = MagicMock()
+            mock_get_client.return_value = mock_client
             mock_client.post.side_effect = httpx.ConnectError("connection refused")
 
             result = extract_entities(
@@ -176,8 +181,9 @@ class TestExtractEntities:
         mock_response = _make_ollama_response(raw_entities)
         settings = _make_settings()
 
-        with patch("httpx.Client") as mock_client_cls:
-            mock_client = mock_client_cls.return_value.__enter__.return_value
+        with patch("opensearch_graphrag.config.get_ollama_client") as mock_get_client:
+            mock_client = MagicMock()
+            mock_get_client.return_value = mock_client
             mock_client.post.return_value = mock_response
 
             result = extract_entities(

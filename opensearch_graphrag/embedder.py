@@ -5,8 +5,6 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-import httpx
-
 from opensearch_graphrag.exceptions import EmbeddingError
 from opensearch_graphrag.models import Chunk
 from opensearch_graphrag.retry import with_retry
@@ -20,10 +18,12 @@ logger = logging.getLogger(__name__)
 @with_retry(max_retries=2, backoff_base=1.0)
 def _post_embed(base_url: str, payload: dict) -> dict:
     """POST /api/embed with retry on transient errors."""
-    with httpx.Client(base_url=base_url, timeout=120.0) as client:
-        response = client.post("/api/embed", json=payload)
-        response.raise_for_status()
-        return response.json()
+    from opensearch_graphrag.config import get_ollama_client
+
+    client = get_ollama_client()
+    response = client.post("/api/embed", json=payload)
+    response.raise_for_status()
+    return response.json()
 
 
 def embed_text(text: str, settings: "Settings | None" = None) -> list[float]:
