@@ -1,0 +1,23 @@
+.env
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Data files (keep samples)
+data/*.pdf
+data/*.docx
+
+# PyVis output
+*.html
+!ui/components/*.py
+
+# Windows artifacts
+*:Zone.Identifier

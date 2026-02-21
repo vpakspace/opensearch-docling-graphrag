@@ -1,0 +1,36 @@
+OpenSearch and Neo4j for Graph-Augmented Retrieval
+
+OpenSearch is a community-driven, open-source search engine originally derived from Elasticsearch 7.10.
+It supports both BM25 full-text search and k-NN (approximate nearest neighbor) vector search, making it
+ideal for hybrid retrieval pipelines. OpenSearch uses the HNSW algorithm for efficient vector indexing
+with cosine similarity scoring.
+
+Neo4j is the world's leading graph database platform. It stores data as nodes and relationships,
+enabling powerful traversal queries using the Cypher query language. In a Graph RAG pipeline,
+Neo4j stores entities extracted from documents and their relationships, forming a knowledge graph
+that enhances retrieval with structured context.
+
+IBM Granite is a family of open-source language models developed by IBM Research. The granite3.2:8b
+model provides strong reasoning capabilities for text generation, while granite-embedding:278m
+produces 768-dimensional embeddings suitable for semantic search. Both models can run locally
+via Ollama, eliminating the need for cloud API calls.
+
+Docling is an open-source document parsing library developed by IBM. It converts PDF, DOCX, PPTX,
+and HTML documents into structured Markdown format, preserving tables, headers, and document hierarchy.
+Docling supports GPU acceleration for faster processing of large document collections.
+
+The Graph RAG architecture combines vector search with knowledge graph traversal. Documents are first
+parsed by Docling, split into chunks, and embedded using granite-embedding. The chunks are indexed
+in OpenSearch for hybrid BM25+vector search. Simultaneously, named entities (Person, Organization,
+Location, Date) are extracted from each chunk using the granite3.2 LLM and stored as nodes in Neo4j,
+linked to their source chunks via MENTIONED_IN relationships.
+
+During retrieval, a query is processed through multiple channels: BM25 text matching in OpenSearch,
+vector similarity search in OpenSearch, and entity-based graph traversal in Neo4j. Results from all
+channels are fused using Reciprocal Rank Fusion (RRF), which combines ranked lists without requiring
+score normalization. The fused context is then passed to the granite3.2 LLM for answer generation.
+
+This fully local architecture provides several advantages: complete data privacy (no data leaves
+the machine), zero API costs, offline operation capability, and full control over model selection
+and fine-tuning. The trade-off is higher hardware requirements — a GPU with at least 8GB VRAM
+is recommended for reasonable inference speed.
