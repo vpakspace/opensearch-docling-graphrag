@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **92% benchmark accuracy** (167/180), 198 tests, 15 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **92% benchmark accuracy** (167/180), 198 tests, 18 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval.
 
 ## Architecture
 
@@ -208,12 +208,18 @@ When enabled, all endpoints except `/api/v1/health` require `X-API-Key` header.
 
 ### Security Features
 
-- **API key auth** — `X-API-Key` middleware (env `API_KEY`, disabled when empty)
+- **API key auth** — constant-time `hmac.compare_digest` (timing-attack safe), env `API_KEY`
 - **Rate limiting** — 60 requests/minute on `/query` and `/search` via [slowapi](https://github.com/laurentS/slowapi)
+- **CORS** — configurable origins via `CORS_ORIGINS` env (default: `http://localhost:8506`)
+- **Security headers** — `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `X-XSS-Protection`
+- **Cypher injection prevention** — regex allowlist for Neo4j relationship types
 - **No stacktrace leaks** — global exception handlers return JSON errors, no internal details
 - **Config validation** — Pydantic Field constraints on all numeric settings (chunk_size >0, temperature 0.0–2.0, etc.)
 - **Embedding dimension check** — EmbeddingError if Ollama returns unexpected vector dimensions
 - **XSS prevention** — Streamlit uses `st.text()` for LLM-generated answers (no raw HTML rendering)
+- **Path traversal prevention** — `os.path.realpath()` normalization for batch upload paths
+- **Docker hardening** — all ports bound to `127.0.0.1`, not exposed externally
+- **Connection pooling** — single cached `httpx.Client` per process for Ollama calls
 
 ## Semantic Cache
 
@@ -242,7 +248,7 @@ The UI supports **English and Russian** (sidebar language selector).
 
 ```
 opensearch-docling-graphrag/
-├── opensearch_graphrag/           # Core pipeline (18 modules)
+├── opensearch_graphrag/           # Core pipeline (19 modules)
 │   ├── config.py                  # Pydantic Settings + Field validation
 │   ├── models.py                  # Chunk, Entity, SearchResult, QAResult
 │   ├── loader.py                  # Docling document parser
@@ -260,6 +266,7 @@ opensearch-docling-graphrag/
 │   ├── retry.py                   # Retry decorator for Ollama calls
 │   ├── exceptions.py              # Custom exception hierarchy
 │   ├── generator.py               # Ollama chat generation + confidence calibration
+│   ├── utils.py                   # Shared cosine_similarity + RRF fusion
 │   └── service.py                 # PipelineService orchestrator + cache
 ├── api/
 │   ├── app.py                     # FastAPI factory + auth + rate limiting + exception handlers

@@ -1,7 +1,8 @@
 """Tests for cosine reranker module."""
 
 from opensearch_graphrag.models import SearchResult
-from opensearch_graphrag.reranker import cosine_similarity, rerank
+from opensearch_graphrag.reranker import rerank
+from opensearch_graphrag.utils import cosine_similarity
 
 
 def test_cosine_identical():

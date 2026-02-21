@@ -12,7 +12,7 @@ Splitting strategy (in priority order):
 
 Each :class:`~opensearch_graphrag.models.Chunk` receives:
 
-* An ``id`` — first 8 hex characters of the MD5 hash of its text.
+* An ``id`` — first 8 hex characters of the SHA-256 hash of its text.
 * A ``chunk_index`` stored in ``metadata`` (assigned after all chunks for
   the document are collected so indices are globally sequential).
 """
@@ -202,12 +202,12 @@ def _split_by_sentences(text: str, chunk_size: int, chunk_overlap: int) -> list[
 
 
 def _create_chunk(text: str, section_title: str) -> Chunk:
-    """Create a :class:`~opensearch_graphrag.models.Chunk` with an auto-generated MD5-based ID.
+    """Create a :class:`~opensearch_graphrag.models.Chunk` with an auto-generated SHA-256-based ID.
 
-    The chunk ``id`` is the first 8 hex characters of ``MD5(text.encode())``.
+    The chunk ``id`` is the first 8 hex characters of ``SHA-256(text.encode())``.
     ``section_title`` is stored in ``metadata["section_title"]`` when non-empty.
     """
-    chunk_id = hashlib.md5(text.encode()).hexdigest()[:8]
+    chunk_id = hashlib.sha256(text.encode()).hexdigest()[:8]
     metadata: dict = {}
     if section_title:
         metadata["section_title"] = section_title

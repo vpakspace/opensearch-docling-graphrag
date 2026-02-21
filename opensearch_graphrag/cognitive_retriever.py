@@ -15,7 +15,8 @@ from opensearch_graphrag.config import get_settings
 from opensearch_graphrag.models import SearchResult
 from opensearch_graphrag.query_expander import expand_query
 from opensearch_graphrag.reranker import rerank
-from opensearch_graphrag.retriever import Retriever, rrf_fuse
+from opensearch_graphrag.retriever import Retriever
+from opensearch_graphrag.utils import rrf_fuse
 
 if TYPE_CHECKING:
     from neo4j import Driver

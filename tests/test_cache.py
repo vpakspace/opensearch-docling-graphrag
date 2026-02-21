@@ -2,7 +2,8 @@
 
 import time
 
-from opensearch_graphrag.cache import SemanticCache, _cosine_similarity
+from opensearch_graphrag.cache import SemanticCache
+from opensearch_graphrag.utils import cosine_similarity
 
 # ── Exact hash hit/miss ──────────────────────────────────────
 
@@ -91,8 +92,8 @@ def test_clear():
 
 
 def test_cosine_identical_vectors():
-    assert _cosine_similarity([1.0, 0.0], [1.0, 0.0]) == 1.0
+    assert cosine_similarity([1.0, 0.0], [1.0, 0.0]) == 1.0
 
 
 def test_cosine_orthogonal_vectors():
-    assert abs(_cosine_similarity([1.0, 0.0], [0.0, 1.0])) < 1e-9
+    assert abs(cosine_similarity([1.0, 0.0], [0.0, 1.0])) < 1e-9

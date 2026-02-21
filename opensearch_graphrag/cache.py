@@ -3,22 +3,11 @@
 from __future__ import annotations
 
 import hashlib
-import math
 import time
 from collections import OrderedDict
 from typing import Any
 
-
-def _cosine_similarity(a: list[float], b: list[float]) -> float:
-    """Compute cosine similarity between two vectors."""
-    if len(a) != len(b) or not a:
-        return 0.0
-    dot = sum(x * y for x, y in zip(a, b))
-    norm_a = math.sqrt(sum(x * x for x in a))
-    norm_b = math.sqrt(sum(x * x for x in b))
-    if norm_a == 0 or norm_b == 0:
-        return 0.0
-    return dot / (norm_a * norm_b)
+from opensearch_graphrag.utils import cosine_similarity
 
 
 class SemanticCache:
@@ -44,7 +33,7 @@ class SemanticCache:
 
     @staticmethod
     def _hash(query: str) -> str:
-        return hashlib.md5(query.strip().lower().encode()).hexdigest()
+        return hashlib.sha256(query.strip().lower().encode()).hexdigest()
 
     def get(self, query: str, embedding: list[float] | None = None) -> Any | None:
         """Look up a cached result.
@@ -72,7 +61,7 @@ class SemanticCache:
                 if now - ts > self._ttl:
                     del self._store[key]
                     continue
-                if cached_emb and _cosine_similarity(embedding, cached_emb) >= self._threshold:
+                if cached_emb and cosine_similarity(embedding, cached_emb) >= self._threshold:
                     self._store.move_to_end(key)
                     return result
 

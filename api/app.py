@@ -9,10 +9,13 @@ from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError as PydanticValidationError
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 from api.deps import set_service
 from api.limiter import limiter
@@ -76,6 +79,26 @@ def create_app(service: "PipelineService | None" = None) -> FastAPI:
     # Rate limiting
     app.state.limiter = limiter
     app.add_middleware(SlowAPIMiddleware)
+
+    # CORS
+    cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:8506").split(",")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins,
+        allow_methods=["GET", "POST"],
+        allow_headers=["X-API-Key", "Content-Type"],
+    )
+
+    # Security headers
+    class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+        async def dispatch(self, request: Request, call_next) -> Response:
+            response = await call_next(request)
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["X-XSS-Protection"] = "1; mode=block"
+            return response
+
+    app.add_middleware(SecurityHeadersMiddleware)
 
     # API key auth middleware (skip /health and /docs; disabled when API_KEY is empty)
     @app.middleware("http")

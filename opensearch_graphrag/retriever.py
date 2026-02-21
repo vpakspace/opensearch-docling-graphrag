@@ -10,6 +10,7 @@ from opensearch_graphrag.config import get_settings
 from opensearch_graphrag.models import SearchResult
 from opensearch_graphrag.query_expander import build_expanded_query, expand_query
 from opensearch_graphrag.reranker import rerank
+from opensearch_graphrag.utils import rrf_fuse
 
 if TYPE_CHECKING:
     from neo4j import Driver
@@ -30,44 +31,6 @@ def _classify_query(query: str) -> str:
     if len(words) <= 3 and "?" not in query:
         return "keyword"
     return "semantic"
-
-
-def rrf_fuse(
-    *result_lists: list[SearchResult],
-    k: int = 60,
-    top_k: int | None = None,
-    weights: list[float] | None = None,
-) -> list[SearchResult]:
-    """Reciprocal Rank Fusion of multiple ranked result lists.
-
-    RRF score = sum(weight_i / (k + rank + 1)) across all lists.
-    When weights is None, all lists are weighted equally at 1.0.
-    """
-    scores: dict[str, float] = {}
-    best_result: dict[str, SearchResult] = {}
-
-    for i, results in enumerate(result_lists):
-        w = weights[i] if weights and i < len(weights) else 1.0
-        for rank, r in enumerate(results):
-            scores[r.chunk_id] = scores.get(r.chunk_id, 0.0) + w / (k + rank + 1)
-            if r.chunk_id not in best_result or r.score > best_result[r.chunk_id].score:
-                best_result[r.chunk_id] = r
-
-    sorted_ids = sorted(scores, key=lambda cid: scores[cid], reverse=True)
-
-    final_k = top_k or 5
-    fused: list[SearchResult] = []
-    for cid in sorted_ids[:final_k]:
-        r = best_result[cid]
-        fused.append(SearchResult(
-            chunk_id=r.chunk_id,
-            text=r.text,
-            score=scores[cid],
-            source=r.source,
-            metadata=r.metadata,
-        ))
-
-    return fused
 
 
 class Retriever:

@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from api.deps import get_service
 from api.limiter import limiter
+from opensearch_graphrag.models import QAResult, SearchResult
 
 router = APIRouter(prefix="/api/v1")
 
@@ -25,29 +26,40 @@ class SearchRequest(BaseModel):
     mode: VALID_MODES = "hybrid"
 
 
-@router.get("/health")
+class HealthResponse(BaseModel):
+    opensearch: bool = False
+    neo4j: bool = False
+    ollama: bool = False
+
+
+class GraphStatsResponse(BaseModel):
+    documents: int = 0
+    chunks: int = 0
+    entities: int = 0
+    relationships: int = 0
+
+
+@router.get("/health", response_model=HealthResponse)
 def health():
     svc = get_service()
     return svc.health()
 
 
-@router.post("/query")
+@router.post("/query", response_model=QAResult)
 @limiter.limit("60/minute")
 def query(req: QueryRequest, request: Request):
     svc = get_service()
-    qa = svc.query(req.text, mode=req.mode)
-    return qa.model_dump()
+    return svc.query(req.text, mode=req.mode)
 
 
-@router.post("/search")
+@router.post("/search", response_model=list[SearchResult])
 @limiter.limit("60/minute")
 def search(req: SearchRequest, request: Request):
     svc = get_service()
-    results = svc.search(req.text, mode=req.mode)
-    return [r.model_dump() for r in results]
+    return svc.search(req.text, mode=req.mode)
 
 
-@router.get("/graph/stats")
+@router.get("/graph/stats", response_model=GraphStatsResponse)
 def graph_stats():
     svc = get_service()
     return svc.graph_stats()

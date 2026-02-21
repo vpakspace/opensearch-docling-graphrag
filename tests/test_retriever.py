@@ -3,7 +3,8 @@
 from unittest.mock import MagicMock
 
 from opensearch_graphrag.models import SearchResult
-from opensearch_graphrag.retriever import Retriever, rrf_fuse
+from opensearch_graphrag.retriever import Retriever
+from opensearch_graphrag.utils import rrf_fuse
 
 
 def _sr(cid, score=0.9, text="text"):

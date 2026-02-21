@@ -11,7 +11,7 @@ from opensearch_graphrag.models import QAResult, SearchResult
 
 def _make_svc():
     svc = MagicMock()
-    svc.health.return_value = {"status": "ok", "opensearch": True, "neo4j": True, "ollama": True}
+    svc.health.return_value = {"opensearch": True, "neo4j": True, "ollama": True}
     svc.query.return_value = QAResult(answer="Test", confidence=0.9, mode="hybrid")
     svc.search.return_value = [SearchResult(chunk_id="c1", text="hello", score=0.9)]
     svc.graph_stats.return_value = {"documents": 1, "chunks": 5, "entities": 10, "relationships": 8}
@@ -33,7 +33,7 @@ def test_health(client_and_svc):
     resp = client.get("/api/v1/health")
     assert resp.status_code == 200
     data = resp.json()
-    assert data["status"] == "ok"
+    assert data["opensearch"] is True
     svc.health.assert_called_once()
 
 

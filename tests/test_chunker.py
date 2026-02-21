@@ -126,13 +126,13 @@ def test_chunk_table_with_surrounding_text():
 # ── test_chunk_ids_are_md5 ───────────────────────────────────────
 
 
-def test_chunk_ids_are_md5():
-    """Chunk IDs are the first 8 hex characters of MD5(text)."""
+def test_chunk_ids_are_sha256():
+    """Chunk IDs are the first 8 hex characters of SHA-256(text)."""
     text = "Deterministic content."
     chunks = chunk_text(text, chunk_size=512, chunk_overlap=0)
 
     assert len(chunks) == 1
-    expected_id = hashlib.md5(chunks[0].text.encode()).hexdigest()[:8]
+    expected_id = hashlib.sha256(chunks[0].text.encode()).hexdigest()[:8]
     assert chunks[0].id == expected_id
 
 
