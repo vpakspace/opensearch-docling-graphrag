@@ -6,6 +6,7 @@ import logging
 import time
 from typing import TYPE_CHECKING
 
+from opensearch_graphrag.cache import SemanticCache
 from opensearch_graphrag.cognitive_retriever import CognitiveRetriever
 from opensearch_graphrag.config import get_settings
 from opensearch_graphrag.embedder import embed_text
@@ -51,6 +52,7 @@ class PipelineService:
             neo4j_driver=neo4j_driver,
             settings=self._cfg,
         )
+        self._cache = SemanticCache()
 
     def _validate_text(self, text: str) -> None:
         """Validate query text input."""
@@ -66,6 +68,13 @@ class PipelineService:
         self._validate_text(text)
         if mode not in VALID_MODES:
             mode = "hybrid"
+
+        # Cache: exact hash lookup (no embedding needed)
+        cache_key = f"{text}::{mode}"
+        cached = self._cache.get(cache_key)
+        if cached is not None:
+            logger.info("cache hit for query len=%d mode=%s", len(text), mode)
+            return cached
 
         t0 = time.time()
         logger.info("query start mode=%s len=%d", mode, len(text))
@@ -84,6 +93,9 @@ class PipelineService:
         else:
             results = self._retriever.search(text, embedding=embedding, mode=mode)
         qa = generate_answer(text, results, mode=mode, settings=self._cfg)
+
+        # Store in cache with embedding for similarity lookup
+        self._cache.put(cache_key, qa, embedding=embedding)
 
         latency = time.time() - t0
         logger.info(

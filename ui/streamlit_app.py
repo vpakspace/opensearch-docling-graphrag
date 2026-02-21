@@ -34,8 +34,8 @@ def _api_get(path: str) -> dict | list | None:
         resp = httpx.get(f"{API_BASE}{path}", timeout=30.0)
         resp.raise_for_status()
         return resp.json()
-    except Exception as e:
-        st.error(f"{t('error')}: {e}")
+    except Exception:
+        st.error(t("error"))
         return None
 
 
@@ -46,8 +46,8 @@ def _api_post(path: str, data: dict) -> dict | list | None:
         resp = httpx.post(f"{API_BASE}{path}", json=data, timeout=120.0)
         resp.raise_for_status()
         return resp.json()
-    except Exception as e:
-        st.error(f"{t('error')}: {e}")
+    except Exception:
+        st.error(t("error"))
         return None
 
 
@@ -179,8 +179,8 @@ with tabs[1]:
                         driver.close()
 
                 st.success(f"{t('ingest_success')} ({stored} chunks)")
-            except Exception as e:
-                st.error(f"{t('ingest_error')}: {e}")
+            except Exception:
+                st.error(t("ingest_error"))
             finally:
                 os.unlink(tmp_path)
 
@@ -198,7 +198,7 @@ with tabs[2]:
 
         if result:
             st.subheader(t("answer"))
-            st.markdown(result.get("answer", ""))
+            st.text(result.get("answer", ""))
 
             confidence = result.get("confidence", 0.0)
             st.progress(min(confidence, 1.0), text=f"{t('confidence')}: {confidence:.0%}")
@@ -253,8 +253,8 @@ with tabs[3]:
                         components.html(html, height=650)
                 else:
                     st.info(t("graph_empty"))
-            except Exception as e:
-                st.error(f"{t('error')}: {e}")
+            except Exception:
+                st.error(t("error"))
         else:
             st.info(t("graph_empty"))
     else:
@@ -337,8 +337,8 @@ with tabs[5]:
                     store = OpenSearchStore(settings=cfg)
                     store.delete_all()
                     st.success(t("cleared"))
-                except Exception as e:
-                    st.error(f"{t('error')}: {e}")
+                except Exception:
+                    st.error(t("error"))
 
         with col_b:
             if st.button(t("clear_graph")):
@@ -356,8 +356,8 @@ with tabs[5]:
                         st.success(t("cleared"))
                     finally:
                         driver.close()
-                except Exception as e:
-                    st.error(f"{t('error')}: {e}")
+                except Exception:
+                    st.error(t("error"))
 
-    except Exception as e:
-        st.error(f"{t('error')}: {e}")
+    except Exception:
+        st.error(t("error"))

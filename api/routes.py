@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from typing import Literal
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field
 
 from api.deps import get_service
+from api.limiter import limiter
 
 router = APIRouter(prefix="/api/v1")
 
@@ -31,14 +32,16 @@ def health():
 
 
 @router.post("/query")
-def query(req: QueryRequest):
+@limiter.limit("60/minute")
+def query(req: QueryRequest, request: Request):
     svc = get_service()
     qa = svc.query(req.text, mode=req.mode)
     return qa.model_dump()
 
 
 @router.post("/search")
-def search(req: SearchRequest):
+@limiter.limit("60/minute")
+def search(req: SearchRequest, request: Request):
     svc = get_service()
     results = svc.search(req.text, mode=req.mode)
     return [r.model_dump() for r in results]

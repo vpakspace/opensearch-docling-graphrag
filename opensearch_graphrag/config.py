@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     import httpx
 
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -15,8 +16,8 @@ class OllamaSettings(BaseSettings):
     base_url: str = "http://localhost:11434"
     llm_model: str = "llama3.1:8b"
     embed_model: str = "nomic-embed-text-v2-moe"
-    embed_dimensions: int = 768
-    temperature: float = 0.0
+    embed_dimensions: int = Field(default=768, gt=0)
+    temperature: float = Field(default=0.0, ge=0.0, le=2.0)
 
     model_config = {"env_prefix": "OLLAMA_"}
 
@@ -42,17 +43,17 @@ class Neo4jSettings(BaseSettings):
 
 
 class ChunkingSettings(BaseSettings):
-    chunk_size: int = 512
-    chunk_overlap: int = 64
+    chunk_size: int = Field(default=512, gt=0)
+    chunk_overlap: int = Field(default=64, ge=0)
 
     model_config = {"env_prefix": "CHUNK_"}
 
 
 class RetrievalSettings(BaseSettings):
-    top_k_vector: int = 10
-    top_k_bm25: int = 10
-    top_k_graph: int = 10
-    top_k_final: int = 5
+    top_k_vector: int = Field(default=10, gt=0)
+    top_k_bm25: int = Field(default=10, gt=0)
+    top_k_graph: int = Field(default=10, gt=0)
+    top_k_final: int = Field(default=5, gt=0)
 
     model_config = {"env_prefix": "TOP_K_"}
 

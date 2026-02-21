@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import MagicMock, patch
 
+import httpx
 import pytest
 
 from opensearch_graphrag.embedder import embed_chunks, embed_text
@@ -178,3 +179,63 @@ def test_embed_chunks_raises_on_count_mismatch() -> None:
 
         with pytest.raises(ValueError, match="Expected 3 embeddings"):
             embed_chunks(chunks)
+
+
+# ---------------------------------------------------------------------------
+# Error handling & dimension validation tests
+# ---------------------------------------------------------------------------
+
+
+def test_embed_text_connect_error() -> None:
+    """embed_text raises on connection error."""
+    with patch("httpx.Client") as mock_client_cls:
+        mock_client = MagicMock()
+        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_client.post.side_effect = httpx.ConnectError("Connection refused")
+
+        with pytest.raises(httpx.ConnectError):
+            embed_text("test")
+
+
+def test_embed_text_read_timeout() -> None:
+    """embed_text raises on read timeout."""
+    with patch("httpx.Client") as mock_client_cls:
+        mock_client = MagicMock()
+        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_client.post.side_effect = httpx.ReadTimeout("Read timed out")
+
+        with pytest.raises(httpx.ReadTimeout):
+            embed_text("test")
+
+
+def test_embed_text_http_500() -> None:
+    """embed_text raises on HTTP 500 from Ollama."""
+    mock_resp = MagicMock()
+    mock_resp.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "Server Error", request=MagicMock(), response=MagicMock(status_code=500),
+    )
+
+    with patch("httpx.Client") as mock_client_cls:
+        mock_client = MagicMock()
+        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_client.post.return_value = mock_resp
+
+        with pytest.raises(httpx.HTTPStatusError):
+            embed_text("test")
+
+
+def test_embed_text_dimension_mismatch() -> None:
+    """embed_text raises EmbeddingError when dimension doesn't match config."""
+    from opensearch_graphrag.exceptions import EmbeddingError
+
+    # Return a 512-dim vector instead of expected 768
+    wrong_dim_vector = [0.1] * 512
+    mock_resp = _mock_response([wrong_dim_vector])
+
+    with patch("httpx.Client") as mock_client_cls:
+        mock_client = MagicMock()
+        mock_client_cls.return_value.__enter__.return_value = mock_client
+        mock_client.post.return_value = mock_resp
+
+        with pytest.raises(EmbeddingError, match="Expected embedding dimension 768"):
+            embed_text("test")

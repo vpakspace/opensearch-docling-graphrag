@@ -105,3 +105,32 @@ def test_calibrate_confidence_bm25_scores_normalized():
     ]
     conf = _calibrate_confidence("data?", "data text and more data", results)
     assert 0.1 <= conf <= 1.0
+
+
+# ── Edge cases ────────────────────────────────────────────────
+
+
+def test_generate_answer_empty_results_message():
+    """Empty results return a specific 'no context' message."""
+    qa = generate_answer("What is the answer?", [])
+    assert qa.answer == "No relevant context found to answer the question."
+    assert qa.sources == []
+
+
+@patch("opensearch_graphrag.generator.httpx.Client")
+def test_generate_answer_very_long_context(mock_client_cls):
+    """Generator handles very long context (>10000 chars) without error."""
+    mock_client = MagicMock()
+    mock_client_cls.return_value.__enter__ = MagicMock(return_value=mock_client)
+    mock_client_cls.return_value.__exit__ = MagicMock(return_value=False)
+
+    mock_resp = MagicMock()
+    mock_resp.json.return_value = {"message": {"content": "Long context handled."}}
+    mock_resp.raise_for_status = MagicMock()
+    mock_client.post.return_value = mock_resp
+
+    long_text = "x" * 12000
+    results = [SearchResult(chunk_id="c1", text=long_text, score=0.9, source="doc.txt")]
+    qa = generate_answer("What?", results)
+    assert qa.answer == "Long context handled."
+    assert len(qa.sources) == 1

@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 import httpx
 
+from opensearch_graphrag.exceptions import EmbeddingError
 from opensearch_graphrag.models import Chunk
 from opensearch_graphrag.retry import with_retry
 
@@ -56,6 +57,11 @@ def embed_text(text: str, settings: "Settings | None" = None) -> list[float]:
         raise ValueError(f"Ollama returned no embeddings for model={cfg.ollama.embed_model!r}")
 
     vector = embeddings[0]
+    expected_dim = cfg.ollama.embed_dimensions
+    if len(vector) != expected_dim:
+        raise EmbeddingError(
+            f"Expected embedding dimension {expected_dim}, got {len(vector)}"
+        )
     logger.debug("Received embedding vector of dimension %d", len(vector))
     return vector
 
@@ -108,8 +114,14 @@ def embed_chunks(
             f"Expected {len(chunks)} embeddings from Ollama, got {len(embeddings)}"
         )
 
+    expected_dim = cfg.ollama.embed_dimensions
     result: list[Chunk] = []
     for chunk, vector in zip(chunks, embeddings):
+        if len(vector) != expected_dim:
+            raise EmbeddingError(
+                f"Expected embedding dimension {expected_dim}, got {len(vector)} "
+                f"for chunk {chunk.id}"
+            )
         result.append(chunk.model_copy(update={"embedding": vector}))
 
     logger.debug("All %d chunks embedded (dim=%d)", len(result), len(embeddings[0]))

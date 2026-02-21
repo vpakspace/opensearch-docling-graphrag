@@ -241,3 +241,41 @@ def test_split_by_sentences_short():
     parts = _split_by_sentences(text, chunk_size=200, chunk_overlap=0)
     assert len(parts) == 1
     assert parts[0] == text
+
+
+# ── Additional edge cases ─────────────────────────────────────────
+
+
+def test_chunk_code_block_preserved():
+    """Code blocks with triple backticks are kept intact."""
+    text = "## Code\n\n```python\ndef hello():\n    print('hi')\n```\n\nSome text."
+    chunks = chunk_text(text, chunk_size=512, chunk_overlap=0)
+    all_text = "\n".join(c.text for c in chunks)
+    assert "```python" in all_text
+    assert "def hello():" in all_text
+
+
+def test_chunk_deep_headers():
+    """#### headers are NOT split points (only ## and ### are)."""
+    text = "#### Deep Header\n\nContent under deep header."
+    chunks = chunk_text(text, chunk_size=512, chunk_overlap=0)
+    assert len(chunks) == 1
+    assert "#### Deep Header" in chunks[0].text
+
+
+def test_chunk_empty_lines_between_paragraphs():
+    """Multiple empty lines between paragraphs don't create empty chunks."""
+    text = "First paragraph.\n\n\n\n\nSecond paragraph."
+    chunks = chunk_text(text, chunk_size=512, chunk_overlap=0)
+    for chunk in chunks:
+        assert chunk.text.strip() != ""
+
+
+def test_chunk_mixed_headers():
+    """Mixed ## and ### headers both create section boundaries."""
+    text = "## Main\n\nMain content.\n\n### Sub\n\nSub content."
+    chunks = chunk_text(text, chunk_size=512, chunk_overlap=0)
+    assert len(chunks) >= 2
+    titles = [c.metadata.get("section_title", "") for c in chunks]
+    assert "Main" in titles
+    assert "Sub" in titles

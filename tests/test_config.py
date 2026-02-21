@@ -65,3 +65,44 @@ def test_make_ollama_client():
     assert client is not None
     assert str(client.base_url).rstrip("/") == "http://localhost:11434"
     client.close()
+
+
+# ── Field constraint tests ──────────────────────────────────────
+
+
+def test_chunking_env_override(monkeypatch):
+    """CHUNK_CHUNK_SIZE env var overrides default (env_prefix='CHUNK_')."""
+    monkeypatch.setenv("CHUNK_CHUNK_SIZE", "256")
+    s = ChunkingSettings()
+    assert s.chunk_size == 256
+
+
+def test_chunking_rejects_negative_chunk_size():
+    """chunk_size must be > 0."""
+    import pytest
+
+    with pytest.raises(Exception):
+        ChunkingSettings(chunk_size=-1)
+
+
+def test_ollama_rejects_temperature_too_high():
+    """temperature must be <= 2.0."""
+    import pytest
+
+    with pytest.raises(Exception):
+        OllamaSettings(temperature=3.0)
+
+
+def test_retrieval_rejects_zero_top_k():
+    """top_k fields must be > 0."""
+    import pytest
+
+    with pytest.raises(Exception):
+        RetrievalSettings(top_k_vector=0)
+
+
+def test_embed_dimensions_override(monkeypatch):
+    """OLLAMA_EMBED_DIMENSIONS env var overrides default."""
+    monkeypatch.setenv("OLLAMA_EMBED_DIMENSIONS", "1024")
+    s = OllamaSettings()
+    assert s.embed_dimensions == 1024

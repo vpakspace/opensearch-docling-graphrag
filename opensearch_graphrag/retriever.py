@@ -21,21 +21,35 @@ logger = logging.getLogger(__name__)
 SearchMode = Literal["bm25", "vector", "graph", "hybrid", "enhanced"]
 
 
+def _classify_query(query: str) -> str:
+    """Classify query as 'keyword' or 'semantic'.
+
+    Short queries (<=3 words) without question marks are likely keyword searches.
+    """
+    words = query.strip().split()
+    if len(words) <= 3 and "?" not in query:
+        return "keyword"
+    return "semantic"
+
+
 def rrf_fuse(
     *result_lists: list[SearchResult],
     k: int = 60,
     top_k: int | None = None,
+    weights: list[float] | None = None,
 ) -> list[SearchResult]:
     """Reciprocal Rank Fusion of multiple ranked result lists.
 
-    RRF score = sum(1 / (k + rank)) across all lists.
+    RRF score = sum(weight_i / (k + rank + 1)) across all lists.
+    When weights is None, all lists are weighted equally at 1.0.
     """
     scores: dict[str, float] = {}
     best_result: dict[str, SearchResult] = {}
 
-    for results in result_lists:
+    for i, results in enumerate(result_lists):
+        w = weights[i] if weights and i < len(weights) else 1.0
         for rank, r in enumerate(results):
-            scores[r.chunk_id] = scores.get(r.chunk_id, 0.0) + 1.0 / (k + rank + 1)
+            scores[r.chunk_id] = scores.get(r.chunk_id, 0.0) + w / (k + rank + 1)
             if r.chunk_id not in best_result or r.score > best_result[r.chunk_id].score:
                 best_result[r.chunk_id] = r
 
@@ -91,7 +105,7 @@ class Retriever:
         if mode == "enhanced":
             return self.enhanced_search(query, embedding)
 
-        # hybrid: fuse all three
+        # hybrid: fuse all three with dynamic weights
         bm25_results = self._store.search_bm25(query, top_k=self._cfg.retrieval.top_k_bm25)
         vector_results = (
             self._store.search_vector(embedding, top_k=self._cfg.retrieval.top_k_vector)
@@ -100,9 +114,14 @@ class Retriever:
         )
         graph_results = self._graph_search(query)
 
+        qtype = _classify_query(query)
+        # keyword queries favor BM25; semantic queries favor vector
+        weights = [1.5, 0.8, 0.7] if qtype == "keyword" else [0.8, 1.5, 0.7]
+
         return rrf_fuse(
             bm25_results, vector_results, graph_results,
             top_k=self._cfg.retrieval.top_k_final,
+            weights=weights,
         )
 
     def enhanced_search(
@@ -136,10 +155,13 @@ class Retriever:
         graph_query = " ".join(entities) if entities else query
         graph_results = self._graph_search(graph_query)
 
-        # RRF fusion on all 3x candidate lists
+        # RRF fusion on all 3x candidate lists with dynamic weights
+        qtype = _classify_query(query)
+        weights = [1.5, 0.8, 0.7] if qtype == "keyword" else [0.8, 1.5, 0.7]
         fused = rrf_fuse(
             bm25_results, vector_results, graph_results,
             top_k=self._cfg.retrieval.top_k_final * 2,
+            weights=weights,
         )
 
         # Cosine rerank if we have embeddings
