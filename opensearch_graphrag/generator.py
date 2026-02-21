@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import logging
+import re
 
 import httpx
 
 from opensearch_graphrag.config import get_settings
+from opensearch_graphrag.hallucination_detector import detect_hallucination
 from opensearch_graphrag.models import QAResult, SearchResult
+from opensearch_graphrag.retry import with_retry
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +23,59 @@ If the context lacks information, say so. Be concise and accurate.
 
 Context:
 {context}"""
+
+
+@with_retry(max_retries=2, backoff_base=1.0)
+def _post_chat(base_url: str, body: dict) -> dict:
+    """POST /api/chat with retry on transient errors."""
+    with httpx.Client(base_url=base_url, timeout=120.0) as client:
+        resp = client.post("/api/chat", json=body)
+        resp.raise_for_status()
+        return resp.json()
+
+
+def _calibrate_confidence(
+    query: str,
+    answer: str,
+    results: list[SearchResult],
+) -> float:
+    """Multi-signal confidence calibration.
+
+    Three signals weighted:
+    - Score consistency (0.4): how consistent retrieval scores are.
+    - Token overlap (0.4): content word overlap between answer and context.
+    - Source diversity (0.2): how many unique sources contributed.
+    """
+    if not results:
+        return 0.0
+
+    # 1. Normalized score consistency (0..1)
+    scores = [r.score for r in results]
+    max_score = max(scores) if scores else 1.0
+    if max_score > 0:
+        norm_scores = [s / max_score for s in scores]
+    else:
+        norm_scores = [0.0] * len(scores)
+    avg_norm = sum(norm_scores) / len(norm_scores)
+
+    # 2. Token overlap: content words (4+ chars) shared between answer and context
+    def _content_words(text: str) -> set[str]:
+        return {w for w in re.findall(r"\b\w{4,}\b", text.lower())}
+
+    answer_words = _content_words(answer)
+    context_text = " ".join(r.text for r in results)
+    context_words = _content_words(context_text)
+    if answer_words:
+        overlap = len(answer_words & context_words) / len(answer_words)
+    else:
+        overlap = 0.0
+
+    # 3. Source diversity (unique sources / total results)
+    unique_sources = {r.source for r in results if r.source}
+    diversity = min(len(unique_sources) / max(len(results), 1), 1.0)
+
+    raw = 0.4 * avg_norm + 0.4 * overlap + 0.2 * diversity
+    return max(0.1, min(1.0, raw))
 
 
 def generate_answer(
@@ -55,21 +111,18 @@ def generate_answer(
     system_msg = SYSTEM_PROMPT.format(context=context)
 
     try:
-        with httpx.Client(base_url=cfg.ollama.base_url, timeout=120.0) as client:
-            resp = client.post(
-                "/api/chat",
-                json={
-                    "model": cfg.ollama.llm_model,
-                    "messages": [
-                        {"role": "system", "content": system_msg},
-                        {"role": "user", "content": query},
-                    ],
-                    "stream": False,
-                    "options": {"temperature": cfg.ollama.temperature},
-                },
-            )
-            resp.raise_for_status()
-            data = resp.json()
+        data = _post_chat(
+            cfg.ollama.base_url,
+            {
+                "model": cfg.ollama.llm_model,
+                "messages": [
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": query},
+                ],
+                "stream": False,
+                "options": {"temperature": cfg.ollama.temperature},
+            },
+        )
 
         answer = data.get("message", {}).get("content", "").strip()
         if not answer:
@@ -79,12 +132,18 @@ def generate_answer(
         logger.error("Ollama chat failed: %s", e)
         answer = f"Error generating answer: {e}"
 
-    avg_score = sum(r.score for r in results) / len(results) if results else 0.0
-    confidence = max(0.1, min(1.0, avg_score))
+    confidence = _calibrate_confidence(query, answer, results)
+
+    # Hallucination detection
+    context_texts = [r.text for r in results]
+    hal = detect_hallucination(answer, context_texts)
 
     return QAResult(
         answer=answer,
         confidence=confidence,
         sources=results,
         mode=mode,
+        grounded=hal["grounded"],
+        grounding_score=hal["overlap"],
+        warning=hal["warning"],
     )

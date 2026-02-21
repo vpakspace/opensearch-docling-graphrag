@@ -164,6 +164,33 @@ class OpenSearchStore:
         resp = self._client.count(index=self._index)
         return resp.get("count", 0)
 
+    def get_embeddings(self, chunk_ids: list[str]) -> dict[str, list[float]]:
+        """Fetch stored embeddings for given chunk IDs.
+
+        Returns a dict mapping chunk_id -> embedding vector.
+        Missing or error chunks are silently skipped.
+        """
+        if not chunk_ids:
+            return {}
+
+        try:
+            body = {
+                "size": len(chunk_ids),
+                "query": {"ids": {"values": chunk_ids}},
+                "_source": ["embedding"],
+            }
+            resp = self._client.search(index=self._index, body=body)
+        except Exception as e:
+            logger.error("Failed to fetch embeddings: %s", e)
+            return {}
+
+        result: dict[str, list[float]] = {}
+        for hit in resp.get("hits", {}).get("hits", []):
+            emb = hit.get("_source", {}).get("embedding")
+            if emb:
+                result[hit["_id"]] = emb
+        return result
+
     def _execute_search(self, body: dict) -> list[SearchResult]:
         """Execute search and convert to SearchResult list."""
         try:

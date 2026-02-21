@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from opensearch_graphrag.generator import generate_answer
+from opensearch_graphrag.generator import _calibrate_confidence, generate_answer
 from opensearch_graphrag.models import SearchResult
 
 
@@ -68,3 +68,40 @@ def test_generate_answer_confidence_clamped():
 def test_generate_answer_mode_passthrough():
     qa = generate_answer("q?", [], mode="vector")
     assert qa.mode == "vector"
+
+
+# ── Confidence calibration tests ────────────────────────────────
+
+
+def test_calibrate_confidence_empty():
+    assert _calibrate_confidence("q?", "answer", []) == 0.0
+
+
+def test_calibrate_confidence_high_overlap():
+    """Answer reuses context words → high overlap signal."""
+    results = [
+        SearchResult(chunk_id="c1", text="OpenSearch is a search engine", score=0.9, source="a.txt"),
+        SearchResult(chunk_id="c2", text="Neo4j is a graph database", score=0.8, source="b.txt"),
+    ]
+    conf = _calibrate_confidence("What is OpenSearch?", "OpenSearch is a search engine", results)
+    assert 0.1 <= conf <= 1.0
+    assert conf > 0.4  # strong overlap expected
+
+
+def test_calibrate_confidence_no_overlap():
+    """Answer has nothing in common with context → low overlap."""
+    results = [
+        SearchResult(chunk_id="c1", text="Python is great", score=0.5, source="a.txt"),
+    ]
+    conf = _calibrate_confidence("q?", "totally unrelated words here nothing matches", results)
+    assert 0.1 <= conf <= 1.0
+
+
+def test_calibrate_confidence_bm25_scores_normalized():
+    """BM25 scores >1.0 should still produce valid confidence."""
+    results = [
+        SearchResult(chunk_id="c1", text="data text", score=12.5, source="a.txt"),
+        SearchResult(chunk_id="c2", text="more data", score=8.3, source="a.txt"),
+    ]
+    conf = _calibrate_confidence("data?", "data text and more data", results)
+    assert 0.1 <= conf <= 1.0

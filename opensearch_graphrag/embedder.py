@@ -8,11 +8,21 @@ from typing import TYPE_CHECKING
 import httpx
 
 from opensearch_graphrag.models import Chunk
+from opensearch_graphrag.retry import with_retry
 
 if TYPE_CHECKING:
     from opensearch_graphrag.config import Settings
 
 logger = logging.getLogger(__name__)
+
+
+@with_retry(max_retries=2, backoff_base=1.0)
+def _post_embed(base_url: str, payload: dict) -> dict:
+    """POST /api/embed with retry on transient errors."""
+    with httpx.Client(base_url=base_url, timeout=120.0) as client:
+        response = client.post("/api/embed", json=payload)
+        response.raise_for_status()
+        return response.json()
 
 
 def embed_text(text: str, settings: "Settings | None" = None) -> list[float]:
@@ -40,11 +50,7 @@ def embed_text(text: str, settings: "Settings | None" = None) -> list[float]:
 
     logger.debug("Embedding single text with model=%s", cfg.ollama.embed_model)
 
-    with httpx.Client(base_url=cfg.ollama.base_url, timeout=120.0) as client:
-        response = client.post("/api/embed", json=payload)
-        response.raise_for_status()
-
-    data = response.json()
+    data = _post_embed(cfg.ollama.base_url, payload)
     embeddings: list[list[float]] = data.get("embeddings", [])
     if not embeddings:
         raise ValueError(f"Ollama returned no embeddings for model={cfg.ollama.embed_model!r}")
@@ -94,11 +100,7 @@ def embed_chunks(
         cfg.ollama.embed_model,
     )
 
-    with httpx.Client(base_url=cfg.ollama.base_url, timeout=120.0) as client:
-        response = client.post("/api/embed", json=payload)
-        response.raise_for_status()
-
-    data = response.json()
+    data = _post_embed(cfg.ollama.base_url, payload)
     embeddings: list[list[float]] = data.get("embeddings", [])
 
     if len(embeddings) != len(chunks):

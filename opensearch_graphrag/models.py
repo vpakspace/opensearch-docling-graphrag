@@ -49,3 +49,6 @@ class QAResult(BaseModel):
     confidence: float = 0.0
     sources: list[SearchResult] = Field(default_factory=list)
     mode: str = "hybrid"
+    grounded: bool = True
+    grounding_score: float = 1.0
+    warning: str = ""

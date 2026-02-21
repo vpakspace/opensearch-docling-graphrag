@@ -11,7 +11,7 @@ from api.deps import get_service
 
 router = APIRouter(prefix="/api/v1")
 
-VALID_MODES = Literal["bm25", "vector", "graph", "hybrid"]
+VALID_MODES = Literal["bm25", "vector", "graph", "hybrid", "enhanced", "cognitive"]
 
 
 class QueryRequest(BaseModel):

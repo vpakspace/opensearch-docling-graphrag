@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Literal
 
 from opensearch_graphrag.config import get_settings
 from opensearch_graphrag.models import SearchResult
+from opensearch_graphrag.query_expander import build_expanded_query, expand_query
+from opensearch_graphrag.reranker import rerank
 
 if TYPE_CHECKING:
     from neo4j import Driver
@@ -16,7 +18,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-SearchMode = Literal["bm25", "vector", "graph", "hybrid"]
+SearchMode = Literal["bm25", "vector", "graph", "hybrid", "enhanced"]
 
 
 def rrf_fuse(
@@ -86,6 +88,9 @@ class Retriever:
         if mode == "graph":
             return self._graph_search(query)
 
+        if mode == "enhanced":
+            return self.enhanced_search(query, embedding)
+
         # hybrid: fuse all three
         bm25_results = self._store.search_bm25(query, top_k=self._cfg.retrieval.top_k_bm25)
         vector_results = (
@@ -99,6 +104,56 @@ class Retriever:
             bm25_results, vector_results, graph_results,
             top_k=self._cfg.retrieval.top_k_final,
         )
+
+    def enhanced_search(
+        self,
+        query: str,
+        embedding: list[float] | None = None,
+    ) -> list[SearchResult]:
+        """Enhanced search: query expansion + 3x candidates + RRF + cosine rerank.
+
+        1. Expand query (themes, entities, related terms)
+        2. Retrieve 3x candidates: BM25(expanded) + vector + graph(expanded)
+        3. RRF fusion on all candidates
+        4. Cosine rerank top results
+        """
+        expansion = expand_query(query, settings=self._cfg)
+        expanded_query = build_expanded_query(query, expansion)
+        triple_k = self._cfg.retrieval.top_k_bm25 * 3
+
+        # BM25 with expanded query
+        bm25_results = self._store.search_bm25(expanded_query, top_k=triple_k)
+
+        # Vector search
+        vector_results = (
+            self._store.search_vector(embedding, top_k=triple_k)
+            if embedding
+            else []
+        )
+
+        # Graph search with expanded entities
+        entities = expansion.get("entities", [])
+        graph_query = " ".join(entities) if entities else query
+        graph_results = self._graph_search(graph_query)
+
+        # RRF fusion on all 3x candidate lists
+        fused = rrf_fuse(
+            bm25_results, vector_results, graph_results,
+            top_k=self._cfg.retrieval.top_k_final * 2,
+        )
+
+        # Cosine rerank if we have embeddings
+        if embedding and fused:
+            chunk_ids = [r.chunk_id for r in fused]
+            chunk_embeddings = self._store.get_embeddings(chunk_ids)
+            fused = rerank(
+                fused,
+                query_embedding=embedding,
+                chunk_embeddings=chunk_embeddings,
+                top_k=self._cfg.retrieval.top_k_final,
+            )
+
+        return fused[:self._cfg.retrieval.top_k_final]
 
     @staticmethod
     def _extract_keywords(query: str, min_len: int = 3) -> list[str]:

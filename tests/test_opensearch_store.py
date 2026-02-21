@@ -147,3 +147,26 @@ def test_search_error_returns_empty():
 
     results = store.search_bm25("test")
     assert results == []
+
+
+def test_get_embeddings():
+    client = MagicMock()
+    client.search.return_value = {
+        "hits": {
+            "hits": [
+                {"_id": "c1", "_source": {"embedding": [0.1, 0.2, 0.3]}},
+                {"_id": "c2", "_source": {"embedding": [0.4, 0.5, 0.6]}},
+            ]
+        }
+    }
+    store = _make_store(client)
+
+    embs = store.get_embeddings(["c1", "c2"])
+    assert "c1" in embs
+    assert "c2" in embs
+    assert embs["c1"] == [0.1, 0.2, 0.3]
+
+
+def test_get_embeddings_empty():
+    store = _make_store()
+    assert store.get_embeddings([]) == {}

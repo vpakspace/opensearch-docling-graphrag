@@ -8,6 +8,7 @@ import logging
 import httpx
 
 from opensearch_graphrag.models import Entity
+from opensearch_graphrag.retry import with_retry
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,15 @@ _SYSTEM_PROMPT = (
 )
 
 _USER_TEMPLATE = "Extract named entities from the following text:\n\n{text}"
+
+
+@with_retry(max_retries=2, backoff_base=1.0)
+def _post_generate(base_url: str, body: dict) -> dict:
+    """POST /api/generate with retry on transient errors."""
+    with httpx.Client(base_url=base_url, timeout=120.0) as client:
+        response = client.post("/api/generate", json=body)
+        response.raise_for_status()
+        return response.json()
 
 
 def extract_entities(
@@ -66,10 +76,7 @@ def extract_entities(
     }
 
     try:
-        with httpx.Client(base_url=cfg.ollama.base_url, timeout=120.0) as client:
-            response = client.post("/api/generate", json=request_body)
-            response.raise_for_status()
-            raw_response = response.json()
+        raw_response = _post_generate(cfg.ollama.base_url, request_body)
     except httpx.HTTPError as exc:
         logger.warning("Ollama request failed: %s", exc)
         return []

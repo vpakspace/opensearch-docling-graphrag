@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **88% benchmark accuracy** (106/120), 120 tests, 9 commits, 5,464 LOC.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **88% benchmark accuracy** (106/120), 169 tests, 6 search modes including Cog-RAG inspired cognitive retrieval.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ Document ──► Docling ──► Chunker ──► Embedder (Ollama) ──�
                                         │
          ┌──────────────────────────────┘
          ▼
-    Retriever (4 modes: bm25 / vector / graph / hybrid RRF)
+    Retriever (6 modes: bm25 / vector / graph / hybrid / enhanced / cognitive)
          │
          ▼
     Generator (Ollama LLM) ──► Answer + Sources + Confidence
@@ -128,10 +128,12 @@ curl -X POST http://localhost:8508/api/v1/query \
 | `vector` | Semantic search via OpenSearch k-NN (cosine, HNSW) |
 | `graph` | Entity match in Neo4j → traverse to chunks |
 | `hybrid` | RRF fusion of bm25 + vector + graph results |
+| `enhanced` | Query expansion + 3x candidates + RRF + cosine reranking |
+| `cognitive` | Cog-RAG inspired 2-stage retrieval (theme + entity) + reranking + hallucination detection |
 
 ## Benchmark
 
-30 questions (Russian + English) x 4 modes = 120 evaluations. Keyword overlap judge (no external API).
+30 questions (Russian + English) x 6 modes = 180 evaluations. Keyword overlap judge (no external API).
 
 | Mode | Score | Doc1 (RU) | Doc2 (EN) | Avg Latency |
 |------|-------|-----------|-----------|-------------|
@@ -139,13 +141,25 @@ curl -X POST http://localhost:8508/api/v1/query \
 | `bm25` | 28/30 (93%) | 14/15 | 14/15 | 4.1s |
 | `vector` | 27/30 (90%) | 12/15 | 15/15 | 4.1s |
 | `graph` | 23/30 (76%) | 12/15 | 11/15 | 3.4s |
-| **Overall** | **106/120 (88%)** | **51/60** | **55/60** | |
+| `enhanced` | TBD | — | — | — |
+| `cognitive` | TBD | — | — | — |
+| **Overall (4 base)** | **106/120 (88%)** | **51/60** | **55/60** | |
 
 LLM: `llama3.1:8b` | Embeddings: `nomic-embed-text-v2-moe` | GPU: RTX 4080
 
 ```bash
 python scripts/run_benchmark.py
 ```
+
+### Cog-RAG Features
+
+Inspired by [Cog-RAG (AAAI 2026)](https://arxiv.org/abs/2505.02601):
+
+- **Query Expansion** — LLM-based extraction of themes, entities, and related terms
+- **Two-Stage Cognitive Retrieval** — Stage 1 (theme): BM25 + vector → RRF; Stage 2 (entity): BM25 + graph → RRF; merged via RRF + cosine reranking
+- **Cosine Reranking** — post-retrieval reranking using embedding similarity (no numpy)
+- **Hallucination Detection** — lightweight token overlap check between answer and context
+- **Multi-Signal Confidence** — score consistency + token overlap + source diversity
 
 ## API Endpoints
 
@@ -162,7 +176,7 @@ python scripts/run_benchmark.py
 |-----|----------|
 | Home | Service status, document/chunk/entity counts |
 | Upload | Drag-and-drop ingestion, optional NER, GPU toggle |
-| Search & Q&A | 4 search modes, confidence bar, expandable sources |
+| Search & Q&A | 6 search modes, confidence bar, hallucination warning, expandable sources |
 | Graph Explorer | Interactive PyVis visualization, entity type filter |
 | Batch Process | Directory ingestion with progress bar |
 | Settings | Configuration display, clear index / clear graph |
@@ -182,8 +196,14 @@ opensearch-docling-graphrag/
 │   ├── opensearch_store.py        # k-NN index + BM25 + hybrid search
 │   ├── entity_extractor.py        # NER via Ollama LLM
 │   ├── graph_builder.py           # Neo4j graph construction
-│   ├── retriever.py               # 4-mode retriever + RRF fusion
-│   ├── generator.py               # Ollama chat generation
+│   ├── retriever.py               # 6-mode retriever + RRF fusion
+│   ├── cognitive_retriever.py     # Cog-RAG 2-stage retriever
+│   ├── query_expander.py          # LLM-based query expansion
+│   ├── reranker.py                # Cosine similarity reranker
+│   ├── hallucination_detector.py  # Token overlap grounding check
+│   ├── retry.py                   # Retry decorator for Ollama calls
+│   ├── exceptions.py              # Custom exception hierarchy
+│   ├── generator.py               # Ollama chat generation + confidence calibration
 │   └── service.py                 # PipelineService orchestrator
 ├── api/
 │   ├── app.py                     # FastAPI factory + lifespan
@@ -200,7 +220,7 @@ opensearch-docling-graphrag/
 ├── benchmark/                     # Benchmark data
 │   ├── questions.json             # 30 questions (RU + EN)
 │   └── results.json               # Latest benchmark results
-├── tests/                         # 120 tests
+├── tests/                         # 169 tests
 ├── data/                          # Sample documents (Doc1 RU + Doc2 EN)
 ├── docker-compose.yml             # OpenSearch + Neo4j + Ollama
 ├── requirements.txt
@@ -241,7 +261,7 @@ pytest tests/ -v
 ruff check .
 ```
 
-120 tests, all mocked (no external services required).
+169 tests, all mocked (no external services required). CI runs `pytest-cov` with 75% minimum coverage.
 
 ## Docker Services
 

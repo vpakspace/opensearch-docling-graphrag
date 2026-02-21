@@ -58,3 +58,18 @@ def test_qa_result_defaults():
     assert qa.confidence == 0.0
     assert qa.sources == []
     assert qa.mode == "hybrid"
+    assert qa.grounded is True
+    assert qa.grounding_score == 1.0
+    assert qa.warning == ""
+
+
+def test_qa_result_grounding_fields():
+    qa = QAResult(
+        answer="X",
+        grounded=False,
+        grounding_score=0.15,
+        warning="Low grounding",
+    )
+    assert qa.grounded is False
+    assert qa.grounding_score == 0.15
+    assert qa.warning == "Low grounding"

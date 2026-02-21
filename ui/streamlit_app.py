@@ -190,7 +190,7 @@ with tabs[2]:
     st.header(t("tab_search"))
 
     query = st.text_input(t("search_query"), placeholder="What is OpenSearch?")
-    mode = st.selectbox(t("search_mode"), ["hybrid", "bm25", "vector", "graph"], index=0)
+    mode = st.selectbox(t("search_mode"), ["hybrid", "bm25", "vector", "graph", "enhanced", "cognitive"], index=0)
 
     if query and st.button(t("search_button")):
         with st.spinner(t("loading")):
@@ -202,6 +202,10 @@ with tabs[2]:
 
             confidence = result.get("confidence", 0.0)
             st.progress(min(confidence, 1.0), text=f"{t('confidence')}: {confidence:.0%}")
+
+            warning = result.get("warning", "")
+            if warning:
+                st.warning(warning)
 
             sources = result.get("sources", [])
             if sources:

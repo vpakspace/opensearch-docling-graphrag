@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import logging
+import time
 from typing import TYPE_CHECKING
 
+from opensearch_graphrag.cognitive_retriever import CognitiveRetriever
 from opensearch_graphrag.config import get_settings
 from opensearch_graphrag.embedder import embed_text
+from opensearch_graphrag.exceptions import ValidationError
 from opensearch_graphrag.generator import generate_answer
 from opensearch_graphrag.models import QAResult, SearchResult
 from opensearch_graphrag.retriever import Retriever
@@ -19,7 +22,9 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-VALID_MODES = ("bm25", "vector", "graph", "hybrid")
+MAX_QUERY_LENGTH = 10000
+
+VALID_MODES = ("bm25", "vector", "graph", "hybrid", "enhanced", "cognitive")
 
 
 class PipelineService:
@@ -41,14 +46,32 @@ class PipelineService:
             neo4j_driver=neo4j_driver,
             settings=self._cfg,
         )
+        self._cognitive = CognitiveRetriever(
+            store=store,
+            neo4j_driver=neo4j_driver,
+            settings=self._cfg,
+        )
+
+    def _validate_text(self, text: str) -> None:
+        """Validate query text input."""
+        if not text or not text.strip():
+            raise ValidationError("Query text must not be empty.")
+        if len(text) > MAX_QUERY_LENGTH:
+            raise ValidationError(
+                f"Query text exceeds maximum length ({MAX_QUERY_LENGTH} chars)."
+            )
 
     def query(self, text: str, mode: str = "hybrid") -> QAResult:
         """Full RAG pipeline: embed query → retrieve → generate answer."""
+        self._validate_text(text)
         if mode not in VALID_MODES:
             mode = "hybrid"
 
+        t0 = time.time()
+        logger.info("query start mode=%s len=%d", mode, len(text))
+
         embedding = None
-        if mode in ("vector", "hybrid"):
+        if mode in ("vector", "hybrid", "enhanced", "cognitive"):
             try:
                 embedding = embed_text(text, settings=self._cfg)
             except Exception as e:
@@ -56,22 +79,38 @@ class PipelineService:
                 if mode == "vector":
                     mode = "bm25"
 
-        results = self._retriever.search(text, embedding=embedding, mode=mode)
-        return generate_answer(text, results, mode=mode, settings=self._cfg)
+        if mode == "cognitive":
+            results = self._cognitive.search(text, embedding=embedding)
+        else:
+            results = self._retriever.search(text, embedding=embedding, mode=mode)
+        qa = generate_answer(text, results, mode=mode, settings=self._cfg)
+
+        latency = time.time() - t0
+        logger.info(
+            "query end mode=%s results=%d confidence=%.2f latency=%.2fs",
+            mode,
+            len(results),
+            qa.confidence,
+            latency,
+        )
+        return qa
 
     def search(self, text: str, mode: str = "hybrid") -> list[SearchResult]:
         """Search only (no generation)."""
+        self._validate_text(text)
         if mode not in VALID_MODES:
             mode = "hybrid"
 
         embedding = None
-        if mode in ("vector", "hybrid"):
+        if mode in ("vector", "hybrid", "enhanced", "cognitive"):
             try:
                 embedding = embed_text(text, settings=self._cfg)
             except Exception:
                 if mode == "vector":
                     mode = "bm25"
 
+        if mode == "cognitive":
+            return self._cognitive.search(text, embedding=embedding)
         return self._retriever.search(text, embedding=embedding, mode=mode)
 
     def health(self) -> dict:

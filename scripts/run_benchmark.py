@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Run benchmark — 30 questions x 4 modes = 120 evaluations.
+"""Run benchmark — 30 questions x 6 modes = 180 evaluations.
 
-Evaluates all search modes (bm25, vector, graph, hybrid) against
-the 30-question benchmark set (Doc1 RU + Doc2 EN).
+Evaluates all search modes (bm25, vector, graph, hybrid, enhanced, cognitive)
+against the 30-question benchmark set (Doc1 RU + Doc2 EN).
 
 Evaluation: keyword overlap judge (no external API needed).
 """
@@ -13,6 +13,7 @@ import os
 import re
 import sys
 import time
+from datetime import datetime
 
 logging.basicConfig(
     level=logging.INFO,
@@ -151,7 +152,7 @@ def evaluate_answer(question: dict, answer: str) -> bool:
 # Run benchmark
 # ---------------------------------------------------------------------------
 
-MODES = ["bm25", "vector", "graph", "hybrid"]
+MODES = ["bm25", "vector", "graph", "hybrid", "enhanced", "cognitive"]
 results: dict[str, list[dict]] = {}
 
 for mode in MODES:
@@ -251,10 +252,44 @@ for q in questions:
     if passes == 0:
         print(f"    Q{q['id']} ({q.get('type', '?')}): {q.get('question_ru', q['question'])[:70]}...")
 
+# Latency percentiles
+all_latencies = sorted(r["latency"] for mr in results.values() for r in mr)
+if all_latencies:
+    def _percentile(data, p):
+        idx = int(len(data) * p / 100)
+        return data[min(idx, len(data) - 1)]
+
+    p50 = _percentile(all_latencies, 50)
+    p95 = _percentile(all_latencies, 95)
+    p99 = _percentile(all_latencies, 99)
+    print(f"\n  Latency: p50={p50:.1f}s  p95={p95:.1f}s  p99={p99:.1f}s")
+
 # Save results
 out_path = os.path.join(BENCH_DIR, "results.json")
 with open(out_path, "w") as f:
     json.dump(results, f, ensure_ascii=False, indent=2)
 print(f"\nSaved to {out_path}")
+
+# Save history
+history_dir = os.path.join(BENCH_DIR, "history")
+os.makedirs(history_dir, exist_ok=True)
+ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+history_path = os.path.join(history_dir, f"run_{ts}.json")
+history_data = {
+    "timestamp": ts,
+    "llm_model": cfg.ollama.llm_model,
+    "embed_model": cfg.ollama.embed_model,
+    "modes": MODES,
+    "total_passed": total_passed,
+    "total_all": total_all,
+    "accuracy": round(total_passed / total_all, 4) if total_all else 0,
+    "latency_p50": p50 if all_latencies else 0,
+    "latency_p95": p95 if all_latencies else 0,
+    "latency_p99": p99 if all_latencies else 0,
+    "results": results,
+}
+with open(history_path, "w") as f:
+    json.dump(history_data, f, ensure_ascii=False, indent=2)
+print(f"History saved to {history_path}")
 
 driver.close()

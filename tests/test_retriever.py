@@ -133,3 +133,32 @@ def test_retriever_hybrid_mode():
     store.search_bm25.assert_called_once()
     store.search_vector.assert_called_once()
     assert len(results) > 0
+
+
+def test_retriever_enhanced_mode():
+    from unittest.mock import patch
+
+    store = _make_store()
+    store.get_embeddings.return_value = {}
+    retriever = Retriever(store=store)
+    emb = [0.1] * 768
+
+    with patch("opensearch_graphrag.retriever.expand_query", return_value={}):
+        retriever.search("test", embedding=emb, mode="enhanced")
+
+    # Enhanced calls BM25 and vector
+    assert store.search_bm25.called
+    assert store.search_vector.called
+
+
+def test_retriever_enhanced_no_embedding():
+    from unittest.mock import patch
+
+    store = _make_store()
+    store.get_embeddings.return_value = {}
+    retriever = Retriever(store=store)
+
+    with patch("opensearch_graphrag.retriever.expand_query", return_value={"themes": ["test"]}):
+        retriever.search("test", mode="enhanced")
+
+    assert store.search_bm25.called

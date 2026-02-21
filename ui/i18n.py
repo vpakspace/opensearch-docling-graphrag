@@ -67,6 +67,21 @@ TRANSLATIONS: dict[str, dict[str, str]] = {
     "clear_graph": {"en": "Clear graph", "ru": "Очистить граф"},
     "clear_confirm": {"en": "Are you sure?", "ru": "Вы уверены?"},
     "cleared": {"en": "Cleared!", "ru": "Очищено!"},
+    # Search modes
+    "mode_enhanced": {"en": "Enhanced (Cog-RAG)", "ru": "Расширенный (Cog-RAG)"},
+    "mode_cognitive": {"en": "Cognitive (2-stage)", "ru": "Когнитивный (2-стадийный)"},
+    # Hallucination warning
+    "hallucination_warning": {
+        "en": "Low grounding: answer may not be fully supported by context",
+        "ru": "Низкая обоснованность: ответ может быть недостаточно подтверждён контекстом",
+    },
+    "grounding_score": {"en": "Grounding", "ru": "Обоснованность"},
+    # Entity types
+    "entity_person": {"en": "Person", "ru": "Персона"},
+    "entity_organization": {"en": "Organization", "ru": "Организация"},
+    "entity_location": {"en": "Location", "ru": "Местоположение"},
+    "entity_date": {"en": "Date", "ru": "Дата"},
+    "entity_other": {"en": "Other", "ru": "Другое"},
     # Common
     "error": {"en": "Error", "ru": "Ошибка"},
     "loading": {"en": "Loading...", "ru": "Загрузка..."},
