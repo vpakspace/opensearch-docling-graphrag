@@ -1,0 +1,1653 @@
+{
+  "timestamp": "20260221_182858",
+  "llm_model": "llama3.1:8b",
+  "embed_model": "nomic-embed-text-v2-moe",
+  "modes": [
+    "bm25",
+    "vector",
+    "graph",
+    "hybrid",
+    "enhanced",
+    "cognitive"
+  ],
+  "total_passed": 141,
+  "total_all": 180,
+  "accuracy": 0.7833,
+  "latency_p50": 3.01,
+  "latency_p95": 9.32,
+  "latency_p99": 20.31,
+  "results": {
+    "bm25": [
+      {
+        "id": 1,
+        "question": "Какие фреймворки для графовых баз знаний упоминаются?",
+        "type": "simple",
+        "answer": "В тексте упоминаются следующие фреймворки:\n\n1. Cognee\n2. FalkorDB GraphRAG SDK\n3. Neo4j (плагин neosemantics)\n4. Graphiti\n5. Pydantic (в контексте определения кастомных типов сущностей)",
+        "confidence": 0.5094369806038231,
+        "latency": 2.46,
+        "passed": true
+      },
+      {
+        "id": 2,
+        "question": "Что такое онтология в контексте графов знаний?",
+        "type": "simple",
+        "answer": "В контексте графов знаний онтология представляет собой схему данных, которая определяет структуру и содержание графа. Она описывает классы сущностей (например, Person, Company), типы связей между ними (например, WORKS_FOR) и их свойства (например, position, since). Онтология также может включать в себя ограничения на типы узлов/связей.\n\nОнтология хранится либо внутри графа (в виде узлов типа Class), либо отдельно, но логически она считается частью слоя хранения знаний.",
+        "confidence": 0.6255365276590066,
+        "latency": 3.28,
+        "passed": true
+      },
+      {
+        "id": 3,
+        "question": "Какая связь между OWL-онтологиями и валидацией графа?",
+        "type": "relation",
+        "answer": "OWL — это язык, используемый для описания семантических свойств данных. Валидация графа — это процесс проверки корректности графа по определенным правилам или ограничениям.\n\nВ OWL-онтологиях можно задавать правила и ограничения на структуру данных, которые затем можно использовать для валидации графа. Например, можно указать, что в графе должно быть хотя бы один ребро между двумя конкретными вершинами или что существует цикл определенной длины.\n\nВ результате связь между OWL-онтологиями и валидацией графа заключается в том, что OWL-онтологии могут использоваться для описания правил и ограничений на структуру данных, которые затем можно использовать для валидации графа.",
+        "confidence": 0.5316159319761622,
+        "latency": 2.72,
+        "passed": true
+      },
+      {
+        "id": 4,
+        "question": "Как извлекаются сущности и связи из текста?",
+        "type": "relation",
+        "answer": "Извлечение сущностей и связей из текста — это процесс, который включает в себя автоматическое выявление и классификацию ключевых понятий (сущностей) и отношений между ними в тексте. Это важнейший шаг в области естественного языка и информационного поиска.\n\n**Извлечение сущностей:**\n\nСущности — это конкретные предметы, люди, организации или концепции, упоминаемые в тексте. Извлечение сущностей включает в себя определение этих ключевых понятий и их классификацию по типу (например, человек, организация, место).\n\n**Извлечение связей:**\n\nСвязи — это отношения между сущностями, которые можно определить на основе контекста. Например, если текст гласит: «Джон купил машину от компании Toyota», то извлеченные сущности будут «Джон», «машина» и «Toyota», а связь будет «купил».\n\n**Методы извлечения сущностей и связей:**\n\nВ настоящее время существует несколько методов и алгоритмов для извлечения сущностей и связей, включая:\n\n1. **Натуральный язык обработки (NLP)**: Этот подход использует машинное обучение и глубокие нейронные сети для анализа текста и определения сущностей и связей.\n2. **Парсинг**: Этот метод включает в себя анализ синтаксиса текста, чтобы определить структуру предложений и определять сущности и связи.\n3. **Машинное обучение**: Этот подход использует алгоритмы машинного обучения для тренировки моделей, которые могут извлекать сущности и связи на основе примеров.\n\n**Применение:**\n\nИзвлечение сущностей и связей имеет широкое применение в различных областях, включая:\n\n1. **Поиск информации**: Извлечение сущностей и связей позволяет создавать более точные результаты поиска.\n2. **Натуральный язык обработки**: Этот подход используется для анализа текста и определения сущностей и связей в различных приложениях, таких как чат-боты и голосовые помощники.\n3. **Аналитика данных**: Извлечение сущностей и связей позволяет анализировать большие объемы данных и определять закономерности и тенденции.\n\nВ заключение, извлечение сущностей и связей — это сложный процесс, который включает в себя анализ текста для определения ключевых понятий и отношений между ними. Этот подход имеет широкое применение в различных областях и используется для улучшения точности поиска информации, анализа данных и натурального языка обработки.",
+        "confidence": 0.5041110777087252,
+        "latency": 9.32,
+        "passed": true
+      },
+      {
+        "id": 5,
+        "question": "Как стратегия извлечения сущностей влияет на качество графа?",
+        "type": "multi_hop",
+        "answer": "Стратегии извлечения сущностей могут существенно повлиять на качество графа, который вы получаете в результате. В частности, выбор подходящей стратегии может повысить точность и полноту графа, а также его способность отражать реальные отношения между сущностями.\n\nНапример:\n\n*   **Точность**: Если вы используете стратегию извлечения сущностей, которая основана на ручном обозначении или машинном обучении, это может повысить точность графа. Ручное обозначение позволяет более точно определить сущности и отношения между ними, в то время как машинное обучение может автоматически обнаруживать закономерности и отношения.\n*   **Полнота**: Если вы используете стратегию извлечения сущностей, которая основана на поиске или семантическом анализе, это может повысить полноту графа. Поиск позволяет обнаруживать новые сущности и отношения, которые могут быть не известны вручную, а семантический анализ может выявлять более тонкие связи между сущностями.\n*   **Соответствие реальным отношениям**: Если вы используете стратегию извлечения сущностей, которая основана на семантическом анализе или машинном обучении, это может повысить соответствие графа реальным отношениям между сущностями. Эти методы могут автоматически обнаруживать и отражать сложные связи между сущностями.\n\nВместе с тем, стратегии извлечения сущностей также могут иметь свои недостатки:\n\n*   **Непредсказуемость**: Машинное обучение может давать непредсказуемые результаты, особенно если данные не достаточно представительны или если алгоритм обучения не оптимизирован для конкретной задачи.\n*   **Недостаточная информация**: Если вы используете стратегию извлечения сущностей, которая основана на ручном обозначении или поиске, это может привести к недостаточной информации о графике. Ручное обозначение может быть трудоемким и затратным, а поиск может не обнаруживать все существующие сущности и отношения.\n*   **Неправильные результаты**: Если вы используете стратегию извлечения сущностей, которая основана на семантическом анализе или машинном обучении, это может привести к неправильным результатам. Эти методы могут давать ложно-положительные или ложно-отрицательные результаты, если данные не достаточно представительны или если алгоритм обучения не оптимизирован для конкретной задачи.\n\nВ целом, стратегии извлечения сущностей могут существенно повлиять на качество графа, который вы получаете в результате. Выбор подходящей стратегии может повысить точность и полноту графа, а также его способность отражать реальные отношения между сущностями.",
+        "confidence": 0.39306298203510714,
+        "latency": 10.06,
+        "passed": true
+      },
+      {
+        "id": 6,
+        "question": "Какая цепочка от документа до триплета графа знаний?",
+        "type": "multi_hop",
+        "answer": "Цепочка от документа до триплета графа знаний следующая:\n\n1. Документ проходит через Docling, который извлекает структурированную информацию и преобразует ее в формат, подходящий для графа знаний.\n2. Извлеченная информация затем передается модулю \"Извлечение знаний\" (NER/RE + LLM), который выполняет задачи по распознаванию сущностей, отношений и генерации триплетов.\n3. Модуль \"Извлечение знаний\" генерирует триплеты на основе извлеченной информации и передает их в граф знаний.\n\nТаким образом, цепочка от документа до триплета графа знаний включает в себя преобразование документа в структурированную информацию, извлечение знаний и генерацию триплетов.",
+        "confidence": 0.5038922654139723,
+        "latency": 4.31,
+        "passed": true
+      },
+      {
+        "id": 7,
+        "question": "Сравни локальные и LLM-подходы к извлечению сущностей",
+        "type": "multi_hop",
+        "answer": "В документе описаны два подхода к извлечению сущностей:\n\n1. **Локальный подход**: Использует локальные модели, такие как VLM (Visual Language Model), для извлечения сущностей из текста.\n2. **LLM-подход** (Large Language Model): Использует большие языковые модели, такие как GPT-4 или Llama 2, для извлечения сущностей.\n\nОбе подходы имеют свои плюсы и минусы:\n\n**Локальный подход**\n\n* Плюсы:\n + Более быстрый и эффективный\n + Не требует подключения к интернету\n + Может быть более точным в определенных случаях\n* Минусы:\n + Требует обучения на большом объеме данных\n + Могут потреблять много ресурсов (памяти, процессора)\n\n**LLM-подход**\n\n* Плюсы:\n + Может извлекать сущности из текста более точно и эффективно\n + Не требует обучения на большом объеме данных\n + Может быть интегрировано в систему через API или локально\n* Минусы:\n + Требует подключения к интернету для использования LLM\n + Могут потреблять много ресурсов (памяти, процессора)\n\nВ документе также упоминается, что можно использовать гибридный подход, комбинируя локальные и LLM-подходы. Например, мелкие документы обрабатывать полностью локальными моделями, а крупные - LLM.\n\nТаким образом, выбор подхода зависит от конкретных потребностей и ограничений системы.",
+        "confidence": 0.5189784028514751,
+        "latency": 6.93,
+        "passed": true
+      },
+      {
+        "id": 8,
+        "question": "Перечисли все компоненты архитектуры графа знаний",
+        "type": "global",
+        "answer": "В архитектуре графа знаний, представленной в предоставленном документе, перечислены следующие компоненты:\n\n1. **Онтологическая основа**: Граф строится на основе предварительно созданной онтологии (в формате OWL).\n2. **Временные атрибуты**: Поддержка временных характеристик фактов, например, время начала и окончания действия отношений.\n3. **Интеграция мультимодальных документов**: Извлечение знаний из разнообразных локальных документов (PDF, DOCX и т.п.) с содержанием текста, таблиц, диаграмм, формул, графиков и изображений.\n4. **Batch-ингест и внешние источники**: Пакетная загрузка локальных документов и возможность подключения внешних источников знаний (веб-страницы, базы данных).\n5. **Диалоговый и аналитический режимы работы**: Использование графа знаний как в диалоговом режиме через чат-бот (ответы на вопросы на естественном языке с опорой на граф), так и в аналитическом режиме (прямые запросы к графу, логические выводы).\n6. **Многодоменность**: Поддержка нескольких предметных областей (например, финансы, медицина и др.) с возможностью выбора домена и загрузки соответствующей онтологии и профильных моделей извлечения информации.\n7. **Интеграция с LLM**: Совместная работа с большими языковыми моделями (OpenAI GPT-4, модели HuggingFace или локальные LLM) с использованием подходов Retrieval-Augmented Generation на графе.\n8. **Динамическое обновление графа**: Обновление графа в реальном времени при поступлении новых данных или знаний без полной перестройки и сохранение исторических версий данных.\n9. **Идентификация сущностей**: Механизм слияния узлов: если два упоминания соответствуют одной реальной сущности, их нужно отобразить одним узлом графа.\n10. **Объединение результатов в граф**: Создание/обновление узлов и ребер в базе знаний после того, как из каждого документа получены факты (сущности и отношения между ними).\n\nЭти компоненты объединяются для создания комплексного фреймворка, который позволяет строить и использовать богатые базы знаний в разных предметных областях.",
+        "confidence": 0.4937704414680458,
+        "latency": 9.72,
+        "passed": true
+      },
+      {
+        "id": 9,
+        "question": "Дай обзор хранения временных данных в графах знаний",
+        "type": "global",
+        "answer": "Вопрос о хранении временных данных в графах знаний является важнейшим аспектом архитектуры онтологической графовой базы знаний с временными атрибутами и мультимодальными данными. В этом контексте, время является ключевым фактором, который необходимо учитывать при проектировании системы.\n\nВременные данные могут быть представлены в различных формах, таких как:\n\n1.  **Временные метки**: Это простейший способ хранения времени, когда факты были истинными в реальном мире.\n2.  **Временные интервалы**: Это более сложный подход, который позволяет хранить начало и конец действия отношений.\n3.  **Битемпоральная модель**: Этот подход, реализованный в Graphiti, хранит два временных интервала: Valid Time (время факта был истинным) и Transaction Time (время когда факт был добавлен в базу данных).\n\nВременные данные могут быть представлены как свойства узлов или ребер графа. В Neo4j можно фильтровать по диапазону свойств, что позволяет эффективно работать со временем.\n\nДля сложных сценариев может понадобиться хранить несколько графов \"состояние на дату X\". В этом случае можно использовать подход отслеживания изменений и хранилища временных рядов. Однако в нашем случае, где данные в основном дискретные факты, достаточно битемпоральной модели внутри графа.\n\nВ целом, выбор подхода к хранению временных данных зависит от конкретных требований системы и архитектуры.",
+        "confidence": 0.5412637772459511,
+        "latency": 6.88,
+        "passed": true
+      },
+      {
+        "id": 10,
+        "question": "Резюмируй все методы интеграции мультимодальных данных",
+        "type": "global",
+        "answer": "В документе описаны следующие методы интеграции мультимодальных данных:\n\n1. Использование Docling - конвейера от IBM для преобразования документов в структурированные данные и последующую выгрузку в граф.\n2. Преобразование документов с помощью OCR (оптического распознавания символов) для извлечения текста, таблиц, диаграмм, формул и графиков.\n3. Использование готовых решений для интеграции мультимодальных данных, таких как Docling, Graphiti и GraphRAG SDK.\n4. Подключение внешних источников знаний (веб-страницы, базы данных) для автоматического пополнения графа.\n\nТакже упоминается возможность использования multimodal LLM (моделей языковых моделей для мультимодальных данных), таких как Visual Language Models (GraniteDocling), которые могут получать изображение страницы и выдавать описание.",
+        "confidence": 0.4969129844661784,
+        "latency": 4.52,
+        "passed": true
+      },
+      {
+        "id": 11,
+        "question": "Когда временные атрибуты были впервые введены в графовых базах данных?",
+        "type": "temporal",
+        "answer": "Временные атрибуты были впервые введены в графовых базах данных в 1990-х годах. Однако, конкретно для биметрических моделей времени (которые хранят два временных интервала: Valid Time и Transaction Time) этот подход был реализован в Graphiti в более поздние годы.",
+        "confidence": 0.5040693419969714,
+        "latency": 2.31,
+        "passed": true
+      },
+      {
+        "id": 12,
+        "question": "Какие изменения произошли в подходах GraphRAG со временем?",
+        "type": "temporal",
+        "answer": "В подходе GraphRAG, который представляет собой Retrieval-Augmented Generation на графе, произошли следующие изменения со временем:\n\n1. **Улучшение точности**: В GraphRAG теперь используется проверенная информация из графа, что снижает количество галлюцинаций (ошибок) до 90% по сравнению с векторной системой.\n2. **Многошаговые рассуждения**: Граф позволяет выполнять сложные логические выводы, не пропуская цепочки связей между узлами. Это особенно важно для вопросов, требующих пересечения нескольких отношений.\n3. **Контроль и объяснимость**: GraphRAG теперь возвращает не только ответ, но и объяснение откуда он получен. Это позволяет пользователю видеть путь между узлами и понимать, как был получен ответ.\n\nВ целом, подход GraphRAG стал более надежным и точным со временем, что делает его привлекательной технологией для интеграции с большими языковыми моделями (LLM).",
+        "confidence": 0.47378405492454245,
+        "latency": 4.72,
+        "passed": true
+      },
+      {
+        "id": 13,
+        "question": "Какие улучшения были достигнуты в построении графов знаний?",
+        "type": "temporal",
+        "answer": "В построении графов знаний были достигнуты следующие улучшения:\n\n1. **Модульность**: Разработана модульная архитектура, позволяющая легко добавлять или удалять компоненты системы.\n2. **Поддержка временных атрибутов**: Введена поддержка временных атрибутов в графе знаний, что позволяет отслеживать изменения и эволюцию информации.\n3. **Мультимодальные данные**: Разработана возможность интегрировать разнородные данные из различных источников.\n4. **Использование LLM**: Внедрено использование языковых моделей (LLM) для экстракции знаний и генерации ответов на естественном языке.\n5. **Темпоральный граф**: Создан темпоральный граф, позволяющий отслеживать изменения и эволюцию информации в различных доменах.\n\nЭти улучшения позволили создать более гибкую, масштабируемую и эффективную систему построения графов знаний.",
+        "confidence": 0.4609124224509261,
+        "latency": 4.95,
+        "passed": true
+      },
+      {
+        "id": 14,
+        "question": "Как фреймворк Docling связан с построением графа?",
+        "type": "relation",
+        "answer": "Фреймворк Docling имеет модуль Docling-Graph, который может преобразовать полученный DoclingDocument в узлы и ребра графа. Это позволяет экспортировать данные из документов в формат, совместимый с графовой базой данных.",
+        "confidence": 0.7386346905627004,
+        "latency": 1.95,
+        "passed": true
+      },
+      {
+        "id": 15,
+        "question": "Какую роль играет Neo4j в пайплайне графа знаний?",
+        "type": "simple",
+        "answer": "Neo4j — это графовая база данных, которая может хранить и обрабатывать данные в виде связей между сущностями. В пайплайне графа знаний Neo4j может играть роль следующих компонентов:\n\n1. **Хранилище данных**: Neo4j может использоваться для хранения данных графа знаний, включая сущности (ноды), отношения и свойства.\n2. **Реализация графа знаний**: Neo4j можно использовать как реализацию графа знаний, где каждая нода представляет собой сущность, а ребра представляют собой связи между сущностями.\n3. **Поиск и навигация**: Neo4j предоставляет мощные возможности поиска и навигации в графе, что позволяет легко находить пути между сущностями и выполнять сложные запросы.\n4. **Интеграция с другими компонентами пайплайна**: Neo4j можно интегрировать с другими компонентами пайплайна графа знаний, такими как системы рекомендаций, системы принятия решений или системы управления знаниями.\n\nВ целом, Neo4j может быть полезен в пайплайне графа знаний для хранения и обработки данных графа, а также для обеспечения поиска и навигации в графе.",
+        "confidence": 0.5253509301827025,
+        "latency": 4.47,
+        "passed": true
+      },
+      {
+        "id": 16,
+        "question": "What is the Semantic Companion Layer and what problem does it solve?",
+        "type": "simple",
+        "answer": "The Semantic Companion Layer (SCL) is a governed middleware that sits between AI agents and underlying knowledge engines. It formalizes the semantic pipeline into a typed interface with provenance tracking and declarative domain configuration.\n\nThe SCL solves the problem of \"unbounded meaning\" in agentic system design, where autonomous systems call tools and risk missing data or inventing predicates, leading to inconsistent interpretation and opaque transformations. The SCL turns meaning into a governed artifact with provenance, enabling deterministic operation for both developers and agents.",
+        "confidence": 0.7347048763175329,
+        "latency": 1.91,
+        "passed": false
+      },
+      {
+        "id": 17,
+        "question": "How does MeaningHub integrate SPARQL, Cypher and vector search?",
+        "type": "relation",
+        "answer": "The Semantic Companion Layer design implements a facade pattern over SPARQL, Cypher, and vector search through the multi-backend strategy. This means that the core pipeline is engine-agnostic, and backends are pluggable adapters.\n\nIn other words, MeaningHub integrates these three technologies by using interchangeable adapters for each engine, allowing clients to interact with them through a single semantic interface without needing to learn multiple APIs or query languages.",
+        "confidence": 0.6633821849972259,
+        "latency": 1.62,
+        "passed": true
+      },
+      {
+        "id": 18,
+        "question": "How does the northbound-southbound architecture of MeaningHub enable agent interaction with semantic outputs?",
+        "type": "multi_hop",
+        "answer": "The northbound-southbound architecture of MeaningHub enables agent interaction with semantic outputs by providing a stable and typed interface for agents to consume, while hiding the complexity of backend execution engines.\n\nHere's how it works:\n\n1. **Northbound Contract**: The northbound contract is a GraphQL API that exposes a typed schema with a primary `resolveIntent` query. This query accepts natural language or structured intent and returns a `ConstraintSet`, which is a complex nested structure.\n2. **Agent Interaction**: Agents interact with MeaningHub through the northbound contract, sending their intent to the `resolveIntent` query. The query is executed by the underlying pipeline, which translates the intent into engine-native queries.\n3. **Southbound Adapters**: The southbound adapters are responsible for translating the internal semantic representation into engine-native queries that can be executed on specific execution engines (e.g., SPARQL, Cypher, vector search).\n4. **Execution Engines**: The execution engines perform the actual computation and return the results to MeaningHub.\n5. **Semantic Outputs**: MeaningHub receives the results from the execution engines and returns them to the agent as semantic outputs.\n\nThe northbound-southbound architecture enables agent interaction with semantic outputs by:\n\n* Providing a stable and typed interface for agents to consume\n* Hiding the complexity of backend execution engines\n* Enabling seamless switching between different execution engines without changing the northbound contract\n\nThis architecture allows MeaningHub to provide a unified semantic interface that can be consumed by various agents, while maintaining flexibility and scalability in its underlying implementation.",
+        "confidence": 0.5637416447305856,
+        "latency": 5.04,
+        "passed": true
+      },
+      {
+        "id": 19,
+        "question": "Describe all components and layers of the MeaningHub architecture",
+        "type": "global",
+        "answer": "According to the provided sources, the MeaningHub architecture is described as a Semantic Companion Layer (SCL) with three main layers:\n\n1. **Northbound contract**: This layer turns messy intent into governed, portable semantic outputs.\n2. **Backend complexity**: This layer hides backend complexity and keeps the semantic pipeline explainable and debuggable.\n\nAdditionally, the MeaningHub architecture follows a northbound-southbound pattern inspired by SDN (Software-Defined Networking) controller design.\n\nThe architecture is composed of several components:\n\n1. **Packs**: These are versioned, shareable, and auditable modules that express domain-specific behavior through configuration rather than code.\n2. **Schema stability principle**: This principle ensures that the core schema is fixed, and all domain-specific behavior is expressed through packs.\n3. **Typed interfaces**: MeaningHub formalizes the semantic pipeline into a governed architecture with typed interfaces.\n4. **Provenance tracking**: This component tracks the origin and history of data in the system.\n5. **Declarative domain configuration**: This layer allows for declarative configuration of domain-specific behavior.\n\nThe overall architecture is designed to provide a stable contract, portable semantics, governance by design, and fast deployment.",
+        "confidence": 0.6623742765384015,
+        "latency": 3.96,
+        "passed": true
+      },
+      {
+        "id": 20,
+        "question": "How has the approach to semantic integration in AI systems evolved from simple RAG to Semantic Companion Layer?",
+        "type": "temporal",
+        "answer": "The approach to semantic integration in AI systems has evolved through several stages:\n\n1. **Early Retrieval-Augmented Generation (RAG) systems** (2023): These systems simply retrieved document chunks via vector similarity and appended them to LLM prompts.\n2. **Graph RAG** (2024): This added structured knowledge graphs with entity extraction and relationship modeling, enabling multi-hop reasoning.\n3. **Agentic RAG** (late 2024): Introduced tool-using agents that could choose between retrieval strategies and self-correct.\n4. **Semantic Companion Layer** (proposed in early 2026): Formalizes the semantic pipeline into a governed architecture with typed interfaces, provenance tracking, and declarative domain configuration.\n\nThe Semantic Companion Layer addresses the limitations of previous approaches by providing a governed middleware called MeaningHub that sits between AI agents and knowledge engines, ensuring consistent entity resolution, bounded semantics, and untraceable reasoning chains.",
+        "confidence": 0.6192963454961972,
+        "latency": 3.13,
+        "passed": true
+      },
+      {
+        "id": 21,
+        "question": "Why was GraphQL chosen as the northbound contract for MeaningHub instead of REST or gRPC?",
+        "type": "simple",
+        "answer": "GraphQL was chosen as the northbound contract for MeaningHub instead of REST or gRPC for several reasons:\n\n1. GraphQL provides a single endpoint with a typed schema that clients can introspect, enabling tooling and autocompletion.\n2. The `resolveIntent` query naturally maps to a semantic operation that returns a complex nested structure (ConstraintSet with provenance), which GraphQL handles elegantly with its flexible response shape.\n3. GraphQL subscriptions enable real-time streaming of pipeline progress, whereas REST would require multiple endpoints and lacks native schema introspection.\n4. gRPC provides strong typing but requires code generation and is less accessible for web-based AI agent runtimes.",
+        "confidence": 0.598756169251944,
+        "latency": 2.34,
+        "passed": true
+      },
+      {
+        "id": 22,
+        "question": "What is a ConstraintSet in MeaningHub and what provenance information does it include?",
+        "type": "simple",
+        "answer": "A ConstraintSet is the output contract of MeaningHub, which ensures that no semantic result is returned without provenance information. It includes:\n\n1. packsUsed\n2. rulesFired\n3. traceId\n\nThis means that every operation in MeaningHub returns a ConstraintSet with full provenance on every operation, providing explainability and governance built-in.",
+        "confidence": 0.7083827280609424,
+        "latency": 1.39,
+        "passed": true
+      },
+      {
+        "id": 23,
+        "question": "How do portable packs enable domain customization without schema changes in MeaningHub?",
+        "type": "relation",
+        "answer": "Portable packs enable domain customization without changing the MeaningHub schema or code by bundling domain-specific configuration into YAML files. This allows for variability to be pushed to configuration rather than code, making it possible to share the same pipeline and produce identical ConstraintSets across different domains. The core schema remains fixed, and all domain-specific behavior is expressed through packs, which are versioned, shareable, and auditable.",
+        "confidence": 0.5430410855159308,
+        "latency": 1.53,
+        "passed": true
+      },
+      {
+        "id": 24,
+        "question": "What is the relationship between Strawberry Python library and documentation integrity in MeaningHub?",
+        "type": "relation",
+        "answer": "The Strawberry Python library is used to generate the SDL (Schema Definition Language) file automatically from the code, ensuring that the API documentation always matches the implementation. This is achieved through Continuous Integration (CI), which runs `strawberry export-schema` on every commit to generate the current SDL and compares it against the committed SDL file. If they differ, the build fails, guaranteeing that schema changes are intentional, reviewed, and documented.",
+        "confidence": 0.6355650106914934,
+        "latency": 1.63,
+        "passed": true
+      },
+      {
+        "id": 25,
+        "question": "How does the semantic core pipeline process a query through all stages from intent to explanation?",
+        "type": "multi_hop",
+        "answer": "The semantic core pipeline processes a query through six stages from intent to explanation:\n\n1. **Intent** — parse the incoming query to extract the user's semantic intent (entity types, relationships, constraints, temporal scope).\n2. **Link** — resolve entity references against the knowledge graph, linking mentions to canonical nodes via fuzzy matching and alias resolution.\n3. **Normalization** — normalize the extracted entities and relationships into a standard format.\n4. **Inference** — apply inference rules to derive new facts or relationships based on the normalized data.\n5. **Compilation** — compile the inferred data into a final output, which can be in the form of entities, relationships, or natural language text.\n6. **Explainability** — generate an explanation for the final output, including the reasoning behind the inference and compilation steps.\n\nThis pipeline allows the semantic core to transform a raw query into a governed output that is both accurate and explainable.",
+        "confidence": 0.5474479944528505,
+        "latency": 3.19,
+        "passed": true
+      },
+      {
+        "id": 26,
+        "question": "How does the dual northbound interface design serve both traditional developers and AI agent runtimes?",
+        "type": "multi_hop",
+        "answer": "The dual northbound interface design serves both traditional developers and AI agent runtimes by exposing two interfaces:\n\n1. **GraphQL API**: A typed schema with a primary `resolveIntent` query that accepts natural language or structured intent and returns a `ConstraintSet`. This interface is designed for traditional developers who want IDE autocompletion, schema validation, and Swagger-like documentation.\n2. **MCP (Model Context Protocol)**: An agent-native interface that exposes the same semantic pipeline as MCP tools (`resolve_intent`, `search_graph`, `explain_trace`). AI agents can call these tools directly without constructing GraphQL queries.\n\nBoth interfaces share the same underlying pipeline, ensuring consistent behavior regardless of which northbound interface a client uses. This design allows both traditional developers and AI agent runtimes to operate on the semantic core deterministically.",
+        "confidence": 0.6020710115976478,
+        "latency": 2.75,
+        "passed": true
+      },
+      {
+        "id": 27,
+        "question": "List all seven architectural decisions described in the Semantic Companion Layer design",
+        "type": "global",
+        "answer": "Here are the 7 key architectural decisions:\n\n1. **Northbound contract** — use GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy** — implement a facade pattern over SPARQL, Cypher, and vector search.\n3. (Not explicitly listed in the provided context, but implied) Governed architecture with typed interfaces, provenance tracking, and declarative domain configuration.\n4. (Not explicitly listed in the provided context, but implied) Explainable architecture to address risks of consistent entity resolution and untraceable reasoning chains.\n5. (Not explicitly listed in the provided context, but implied) Portable architecture that hides backend complexity.\n6. (Not explicitly listed in the provided context, but implied) Governed middleware — called MeaningHub — that sits between AI agents and the underlying knowledge engines.\n7. (Not explicitly listed in the provided context, but implied) Declarative domain configuration to ensure structural validity.\n\nHowever, based on the original text, it seems like there are only 4 key architectural decisions explicitly mentioned:\n\n1. **Northbound contract** — use GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy** — implement a facade pattern over SPARQL, Cypher, and vector search.\n3. Governed architecture with typed interfaces, provenance tracking, and declarative domain configuration.\n4. Explainable architecture to address risks of consistent entity resolution and untraceable reasoning chains.\n\nThe other points I listed are implied or mentioned in the context but not explicitly stated as one of the 7 key architectural decisions.",
+        "confidence": 0.5757266769908753,
+        "latency": 5.12,
+        "passed": true
+      },
+      {
+        "id": 28,
+        "question": "What are the primary risks of unbounded meaning in agentic AI systems and how does SCL address them?",
+        "type": "global",
+        "answer": "The primary risks of unbounded meaning in agentic AI systems include:\n\n1. Hallucinated relationships: AI agents may invent non-existent connections between entities.\n2. Inconsistent entity resolution: Different agents may interpret the same data differently, leading to inconsistent results.\n3. Untraceable reasoning chains: The process behind an AI's decision-making is unclear, making it difficult to understand and trust its output.\n\nThe Semantic Companion Layer (SCL) addresses these risks by introducing a governed middleware called MeaningHub, which sits between AI agents and the underlying knowledge engines. SCL ensures that meaning in AI systems is reproducible, explainable, and governed through three core principles:\n\n1. Stable Contract: A typed, versioned interface that does not change when backends are swapped or upgraded.\n2. Provenance: MeaningHub keeps an audit trail of all semantic operations, allowing for full reasoning chain transparency.\n3. Governance: SCL ensures that meaning is reproducible and explainable, reducing the risks associated with unbounded meaning in agentic AI systems.",
+        "confidence": 0.6188472697013719,
+        "latency": 3.45,
+        "passed": true
+      },
+      {
+        "id": 29,
+        "question": "What is the Cognitive Contract concept and what three principles does it define?",
+        "type": "simple",
+        "answer": "The Cognitive Contract concept is at the heart of SCL (Semantic Companion Layer). It defines three core principles for responsible semantic integration:\n\n1. Stable Contract — every semantic operation must go through a typed, versioned interface that does not change when backends are swapped or upgraded.\n2. Governance by Default — no semantic result is returned without provenance information.\n3. Reproducibility and Explainability — meaning in AI systems is reproducible, explainable, and governed.\n\nThese principles ensure that the meaning in AI systems is reproducible, explainable, and governed.",
+        "confidence": 0.6435397320947074,
+        "latency": 2.03,
+        "passed": true
+      },
+      {
+        "id": 30,
+        "question": "What role do southbound adapters play and which specific engines does MeaningHub use?",
+        "type": "relation",
+        "answer": "Southbound adapters connect MeaningHub to specific execution engines, translating the internal semantic representation into engine-native queries. \n\nMeaningHub uses several engines:\n\n- RDF triple stores (e.g., Apache Jena, Blazegraph) for ontology-based reasoning and OWL inference via the SPARQL Adapter.\n- Property graph databases (e.g., Neo4j) for relationship traversal, pattern matching, and graph algorithms via the Cypher Adapter.\n- Vector search engines (e.g., Elasticsearch, Milvus, or Neo4j Vector Index) for similarity search and semantic retrieval via a vector search adapter.",
+        "confidence": 0.6738858335351652,
+        "latency": 2.18,
+        "passed": true
+      }
+    ],
+    "vector": [
+      {
+        "id": 1,
+        "question": "Какие фреймворки для графовых баз знаний упоминаются?",
+        "type": "simple",
+        "answer": "В тексте упоминаются следующие фреймворки для графовых баз знаний:\n\n1. Graphiti (Zep) - временной граф для AI-памяти\n2. GraphRAG (Graph + RAG) - интеграция с большими языковыми моделями (LLM)\n3. Neo4j Neosemantics (n10s) - плагин для импорта RDF/OWL в Neo4j\n4. TigerGraph - распределенная native graph платформа с моделью свойств.\n5. GraphDB, Jena/Fuseki, Neptune и др. - RDF Triple Store.\n\nТакже упоминается Docling-Graph - преобразование документов в граф, локальное и LLM-извлечение.",
+        "confidence": 0.7073628484353156,
+        "latency": 3.95,
+        "passed": true
+      },
+      {
+        "id": 2,
+        "question": "Что такое онтология в контексте графов знаний?",
+        "type": "simple",
+        "answer": "В контексте графов знаний онтология представляет собой предварительно созданную схему данных, которая определяет структуру и содержание графа. Она включает в себя классы сущностей (например, Person, Organization), типы связей (например, works_for, employs) и их свойства, а также ограничения на типы узлов/связей.\n\nОнтология обеспечивает основу для организации и структуризации знаний в графе, гарантируя, что данные соответствуют заданной схеме. Она может храниться внутри графа или отдельно, но логически считается частью слоя хранения знаний.\n\nВ контексте представленного текста онтология создается экспертом вручную с помощью инструментов, таких как Protégé, и экспортируется в формате OWL/TTL. Затем она используется для определения структуры графа и обеспечения соответствия данных заданной схеме.",
+        "confidence": 0.6514042297080596,
+        "latency": 4.41,
+        "passed": true
+      },
+      {
+        "id": 3,
+        "question": "Какая связь между OWL-онтологиями и валидацией графа?",
+        "type": "relation",
+        "answer": "OWL-онтологии используются для определения схемы данных, которая затем используется для валидации графа. В частности, они определяют классы сущностей, типы связей, их свойства и ограничения (например, отношения типа Person works_for Company). Это позволяет системе проверять, соответствует ли граф заданной схеме, а также использовать знания для вывода новых фактов.",
+        "confidence": 0.6883617082445551,
+        "latency": 2.82,
+        "passed": false
+      },
+      {
+        "id": 4,
+        "question": "Как извлекаются сущности и связи из текста?",
+        "type": "relation",
+        "answer": "На этапе Information Extraction система использует различные методы для извлечения сущностей и связей из текста. В частности, она может использовать следующие подходы:\n\n1. Названия сущностей (Named Entity Recognition, NER): система выявляет в тексте названия конкретных сущностей, таких как люди, организации, даты и т.д.\n2. Извлечение связей (Relation Extraction, RE): система определяет отношения между извлеченными сущностями, такие как \"работает в\", \"основан на\" и т.д.\n3. Генеративные модели (Generative Models): система использует генеративные модели, такие как LLM (Large Language Model), для извлечения фактов и связей из текста.\n\nВ частности, в описании Docling-Graph упоминается, что она использует гибридный подход, сочетая локальные моделі VLM (Vision-Language Model) для обработки кратких структурированных фрагментов и LLM для обработки длинных сложных текстов.",
+        "confidence": 0.6639656672599414,
+        "latency": 4.94,
+        "passed": true
+      },
+      {
+        "id": 5,
+        "question": "Как стратегия извлечения сущностей влияет на качество графа?",
+        "type": "multi_hop",
+        "answer": "Стратегии извлечения сущностей могут существенно повлиять на качество графа, который вы получаете в результате. В частности, выбор подходящей стратегии может повысить точность и полноту графа, а также его способность отражать реальные отношения между сущностями.\n\nНапример:\n\n*   **Точность**: Если вы используете стратегию извлечения сущностей, которая основана на ручном обозначении или машинном обучении, это может повысить точность графа. Ручное обозначение позволяет более точно определить сущности и отношения между ними, в то время как машинное обучение может автоматически обнаруживать закономерности и отношения.\n*   **Полнота**: Если вы используете стратегию извлечения сущностей, которая основана на поиске или семантическом анализе, это может повысить полноту графа. Поиск позволяет обнаруживать новые сущности и отношения, которые могут быть не известны вручную, а семантический анализ может выявлять более тонкие связи между сущностями.\n*   **Соответствие реальным отношениям**: Если вы используете стратегию извлечения сущностей, которая основана на семантическом анализе или машинном обучении, это может повысить соответствие графа реальным отношениям между сущностями. Эти методы могут автоматически обнаруживать и отражать сложные связи между сущностями.\n\nВместе с тем, стратегии извлечения сущностей также могут иметь свои недостатки:\n\n*   **Непредсказуемость**: Машинное обучение может давать непредсказуемые результаты, особенно если данные не достаточно представительны или если алгоритм обучения не оптимизирован для конкретной задачи.\n*   **Недостаточная информация**: Если вы используете стратегию извлечения сущностей, которая основана на ручном обозначении или поиске, это может привести к недостаточной информации о графике. Ручное обозначение может быть трудоемким и затратным, а поиск может не обнаруживать все существующие сущности и отношения.\n*   **Неправильные результаты**: Если вы используете стратегию извлечения сущностей, которая основана на семантическом анализе или машинном обучении, это может привести к неправильным результатам. Эти методы могут давать ложно-положительные или ложно-отрицательные результаты, если данные не достаточно представительны или если алгоритм обучения не оптимизирован для конкретной задачи.\n\nВ целом, стратегии извлечения сущностей могут существенно повлиять на качество графа, который вы получаете в результате. Выбор подходящей стратегии может повысить точность и полноту графа, а также его способность отражать реальные отношения между сущностями.",
+        "confidence": 0.5576568442823115,
+        "latency": 10.15,
+        "passed": true
+      },
+      {
+        "id": 6,
+        "question": "Какая цепочка от документа до триплета графа знаний?",
+        "type": "multi_hop",
+        "answer": "Цепочка от документа до триплета графа знаний следующая:\n\n1. Загрузка данных из документа в систему.\n2. Обработка документа с помощью Docling-Graph, который преобразует документ в структурированные данные и выгружает их в граф.\n3. Извлечение фактов (триплетов) из документа с помощью модуля Information Extraction.\n4. Маппинг на онтологию: сопоставление сырых триплетов с элементами онтологии.\n5. Пополнение графа знаний: добавление извлеченных фактов в граф, используя операцию \"MERGE\" или \"CREATE\" в транзакции.\n\nТаким образом, цепочка от документа до триплета графа знаний включает в себя преобразование документа в структурированные данные, извлечение фактов и маппинг на онтологию.",
+        "confidence": 0.6720636962489714,
+        "latency": 4.0,
+        "passed": true
+      },
+      {
+        "id": 7,
+        "question": "Сравни локальные и LLM-подходы к извлечению сущностей",
+        "type": "multi_hop",
+        "answer": "В документе описаны два подхода к извлечению сущностей:\n\n1. **Локальный подход**: Использует готовые модели NER (Named Entity Recognition) такие как spaCy или HuggingFace Transformers для поиска и классификации именованных сущностей в тексте.\n2. **LLM-подход**: Использует языковые модели LLM (Large Language Models) таких как GPT-4 для извлечения сущностей через zero-shot классификацию предложений.\n\nЛокальный подход имеет следующие преимущества:\n\n* Легче контролировать и оптимизировать\n* Более быстрый и эффективный\n\nОднако, LLM-подход имеет следующие преимущества:\n\n* Может извлекать сущности с более высокой точностью и детальностью\n* Не требует предварительной подготовки данных для обучения\n\nВ прототипе Docling-Graph предлагается гибридный подход: мелкие документы обрабатывать полностью локальными моделями (VLM), а крупные - LLM.",
+        "confidence": 0.6655668835843003,
+        "latency": 5.15,
+        "passed": false
+      },
+      {
+        "id": 8,
+        "question": "Перечисли все компоненты архитектуры графа знаний",
+        "type": "global",
+        "answer": "В архитектуре графа знаний, представленной в предоставленном документе, перечислены следующие компоненты:\n\n1. **Граф знаний** (Knowledge Graph) - основная структура для хранения и организации знаний.\n2. **Онтология** (Ontology) - предварительно созданная онтология на основе которой строится граф знаний в формате OWL.\n3. **Временные атрибуты** (Temporal Attributes) - поддержка временных характеристик фактов, например, время начала и окончания действия отношений.\n4. **Мультимодальные документы** (Multimodal Documents) - система извлекает знания из разнообразных локальных документов, включая текст, таблицы, диаграммы, формулы, графики и изображения.\n5. **Пакетная загрузка данных** (Batch-ингест) - возможность загрузки локальных документов в пакете.\n6. **Внешние источники знаний** (External Knowledge Sources) - подключение внешних источников знаний для автоматического пополнения графа.\n7. **Диалоговый режим работы** (Dialogue Mode) - использование базы знаний через чат-бот для ответов на вопросы на естественном языке с опорой на граф.\n8. **Аналитический режим работы** (Analytical Mode) - прямые запросы к графу и логические выводы.\n9. **Многодоменность** (Multidomainity) - поддержка нескольких предметных областей, например, финансы, медицина и др.\n10. **Интеграция с LLM** (Integration with Large Language Models) - совместная работа с большими языковыми моделями, например, OpenAI GPT-4 или модели HuggingFace.\n11. **Динамическое обновление графа** (Dynamic Graph Update) - обновление графа в реальном времени при поступлении новых данных или знаний.\n\nЭти компоненты вместе образуют архитектуру графа знаний, которая должна удовлетворять ряду требований и обеспечивать эффективное хранение, организацию и использование знаний.",
+        "confidence": 0.6452826216119474,
+        "latency": 8.73,
+        "passed": true
+      },
+      {
+        "id": 9,
+        "question": "Дай обзор хранения временных данных в графах знаний",
+        "type": "global",
+        "answer": "Вопрос интересный!\n\nХранение временных данных в графах знаний — это ключевая особенность системы, о которой упоминается в предоставленном контексте.\n\nСогласно описанию, выбрана биметрическая (bitemporal) модель времени, реализованная в Graphiti. Это значит, что для каждого отношения (ребра) хранятся два временных интервала:\n\n1. **Valid Time** (Время действительности): когда факт был истинным в реальном мире (например, сотрудник работал в компании с 2010 по 2015).\n2. **Transaction Time** (Время транзакции): когда факт был добавлен или обновлён в графе знаний.\n\nЭта модель позволяет хранить исторические данные и поддерживать временные характеристики фактов.\n\nНапример, если сотрудник работал в компании с 2010 по 2015, но его запись была добавлена в граф знаний только в 2020 году, то Valid Time будет указывать период с 2010 по 2015, а Transaction Time — 2020 год.\n\nТакая модель времени позволяет поддерживать прозрачность и историю данных, что важно для систем хранения знаний.",
+        "confidence": 0.6300810493148075,
+        "latency": 5.57,
+        "passed": true
+      },
+      {
+        "id": 10,
+        "question": "Резюмируй все методы интеграции мультимодальных данных",
+        "type": "global",
+        "answer": "В документе описаны следующие методы интеграции мультимодальных данных:\n\n1. **OCR и базовая классификация**: анализ изображений с помощью OCR (оптическое распознавание символов) и простая классификация.\n2. **Использование моделей семантического сравнения изображений**:\n * BLIP-2: модель для семантического сравнения изображений.\n * CLIP: модель для семантического сравнения изображений.\n3. **Использование модели генерации по описанию**: Stable Diffusion - модель для генерации изображений на основе текстового описания.\n\nВ документе также упоминается, что эти методы пока не реализованы в прототипе и являются возможностями будущего развития системы.",
+        "confidence": 0.6495554708343556,
+        "latency": 3.95,
+        "passed": true
+      },
+      {
+        "id": 11,
+        "question": "Когда временные атрибуты были впервые введены в графовых базах данных?",
+        "type": "temporal",
+        "answer": "Вопрос не указан в предоставленном контексте.",
+        "confidence": 0.49256419101449955,
+        "latency": 1.35,
+        "passed": false
+      },
+      {
+        "id": 12,
+        "question": "Какие изменения произошли в подходах GraphRAG со временем?",
+        "type": "temporal",
+        "answer": "Со временем подходы GraphRAG претерпели некоторые изменения. Вначале Graph RAG использовал векторный поиск по текстовому корпусу, но затем был добавлен графовый компонент, который позволяет LLM опираться на структурированные данные.\n\nВ 2024 году была представлена версия Graph RAG с поддержкой графа знаний и entity extraction. Это позволило выполнять multi-hop рассуждения и улучшало контроль и объяснимость ответов.\n\nПозже, в 2025 году, был представлен вариант GraphCypherQA, который позволяет генерировать Cypher-запросы к Neo4j и формулировать финальный ответ. Это требует prompt-шаблонов для LLM, чтобы знать схему графа.\n\nНаконец, было представлено решение Graphiti, которое использует гибридный поиск: по вопросу находит связанные узлы/факты (через комбинированный поиск по семантическим embedding и по ключевым словам) и предоставляет их LLM для ответа.",
+        "confidence": 0.7119495029122271,
+        "latency": 5.19,
+        "passed": true
+      },
+      {
+        "id": 13,
+        "question": "Какие улучшения были достигнуты в построении графов знаний?",
+        "type": "temporal",
+        "answer": "В построении графов знаний были достигнуты следующие улучшения:\n\n1. **Улучшение интеграции с онтологиями OWL**: Теперь существует возможность напрямую загрузить OWL-онтологию и хранить индивидуальные данные как триплеты, что позволяет выполнять SPARQL-запросы с учетом онтологии.\n2. **Улучшение логического вывода**: RDF-графы теперь поддерживают логический вывод (RDFS/OWL reasoning), что позволяет автоматически вывести новые факты на основе уже существующих данных.\n3. **Улучшение интеграции с внешними источниками знаний**: Теперь существует возможность подключать внешние источники знаний, такие как веб-страницы и базы данных, для автоматического пополнения графа.\n4. **Улучшение поддержки многодоменности**: Фреймворк теперь поддерживает несколько предметных областей (например, финансы, медицина и др.), что позволяет пользователю выбирать домен и загружать соответствующую онтологию и профильные модели извлечения информации.\n5. **Улучшение интеграции с LLM**: Теперь существует возможность использовать подходы Retrieval-Augmented Generation на графе, такие как GraphRAG, что позволяет улучшить точность ответов и сократить затраты.\n6. **Улучшение поддержки динамического обновления графа**: Теперь граф может обновляться в реальном времени при поступлении новых данных или знаний, без полной перестройки, сохраняя при этом исторические версии данных.\n\nЭти улучшения позволяют построить более эффективные и гибкие системы знаний, которые могут интегрироваться с различными источниками данных и поддерживать многодоменность.",
+        "confidence": 0.6686814143189523,
+        "latency": 7.83,
+        "passed": true
+      },
+      {
+        "id": 14,
+        "question": "Как фреймворк Docling связан с построением графа?",
+        "type": "relation",
+        "answer": "Фреймворк Docling связан с построением графа через модуль Docling-Graph. Этот модуль может преобразовать полученный DoclingDocument в узлы и ребра графа, а также экспортировать их в CSV или Cypher-скрипт для загрузки в графовую базу данных.",
+        "confidence": 0.7089513101817893,
+        "latency": 1.95,
+        "passed": true
+      },
+      {
+        "id": 15,
+        "question": "Какую роль играет Neo4j в пайплайне графа знаний?",
+        "type": "simple",
+        "answer": "Neo4j — это графовая база данных, которая может хранить и обрабатывать данные в виде связей между сущностями. В пайплайне графа знаний Neo4j может играть роль следующих компонентов:\n\n1. **Хранилище данных**: Neo4j может использоваться для хранения данных графа знаний, включая сущности (ноды), отношения и свойства.\n2. **Реализация графа знаний**: Neo4j можно использовать как реализацию графа знаний, где каждая нода представляет собой сущность, а ребра представляют собой связи между сущностями.\n3. **Поиск и навигация**: Neo4j предоставляет мощные возможности поиска и навигации в графе, что позволяет легко находить пути между сущностями и выполнять сложные запросы.\n4. **Интеграция с другими компонентами пайплайна**: Neo4j можно интегрировать с другими компонентами пайплайна графа знаний, такими как системы рекомендаций, системы принятия решений или системы управления знаниями.\n\nВ целом, Neo4j может быть полезен в пайплайне графа знаний для хранения и обработки данных графа, а также для обеспечения поиска и навигации в графе.",
+        "confidence": 0.5948757738829215,
+        "latency": 4.59,
+        "passed": true
+      },
+      {
+        "id": 16,
+        "question": "What is the Semantic Companion Layer and what problem does it solve?",
+        "type": "simple",
+        "answer": "The Semantic Companion Layer (SCL) is a governed architecture that formalizes the semantic pipeline into a typed interface, providing a stable northbound contract for agents to rely on. It addresses the problem of unbounded meaning in agentic AI systems by introducing a governed middleware called MeaningHub, which sits between AI agents and underlying knowledge engines.\n\nThe SCL solves several problems:\n\n1. **Unbounded meaning**: Invented predicates, inconsistent interpretation, and opaque transformations.\n2. **Inconsistent entity resolution**: Entities are not consistently resolved across different systems.\n3. **Untraceable reasoning chains**: Reasoning chains are not transparent or explainable.\n\nBy introducing a governed middleware, the SCL provides a typed northbound contract that agents can call repeatedly, bounded semantics via allowlists and packs, and provenance tracking to ensure deterministic operation on meaning as a first-class artifact.",
+        "confidence": 0.7345411865820624,
+        "latency": 3.01,
+        "passed": true
+      },
+      {
+        "id": 17,
+        "question": "How does MeaningHub integrate SPARQL, Cypher and vector search?",
+        "type": "relation",
+        "answer": "MeaningHub integrates SPARQL, Cypher, and vector search through southbound adapters that connect to specific execution engines. Each adapter translates the internal semantic representation into engine-native queries:\n\n- SPARQL Adapter: connects to RDF triple stores for ontology-based reasoning and OWL inference.\n- Cypher Adapter: connects to property graph databases for relationship traversal, pattern matching, and graph algorithms.\n- Vector Search Adapter: contributes to similarity search and semantic retrieval.\n\nThis integration is achieved through a facade pattern over the three query languages, unifying heterogeneous knowledge backends behind a single semantic interface.",
+        "confidence": 0.7863538920895055,
+        "latency": 2.25,
+        "passed": true
+      },
+      {
+        "id": 18,
+        "question": "How does the northbound-southbound architecture of MeaningHub enable agent interaction with semantic outputs?",
+        "type": "multi_hop",
+        "answer": "The northbound-southbound architecture of MeaningHub enables agent interaction with semantic outputs by separating concerns between the northbound interface, which is a stable contract that agents and applications consume, and the southbound adapters, which are the execution engines of MeaningHub.\n\nThe northbound interface exposes a dual design that serves both traditional developers and AI agent runtimes through a GraphQL API. This API provides a typed schema with a primary `resolveIntent` query that accepts natural language or structured intent and returns a `ConstraintSet`, which is a structured output that carries both the semantic result and its provenance.\n\nThe southbound adapters, on the other hand, are interchangeable execution engines that connect MeaningHub to specific knowledge backends. Agents never talk directly to these engines; instead, they interact with the northbound interface, which translates their requests into engine-native queries through the southbound adapters.\n\nThis separation of concerns enables agents to interact with semantic outputs in a governed and portable manner, without needing to know the specifics of the underlying knowledge backend or its query language.",
+        "confidence": 0.752068110858293,
+        "latency": 3.53,
+        "passed": true
+      },
+      {
+        "id": 19,
+        "question": "Describe all components and layers of the MeaningHub architecture",
+        "type": "global",
+        "answer": "The MeaningHub architecture consists of several components and layers, which can be described as follows:\n\n**Layers:**\n\n1. **Northbound Layer**: This layer represents the interface through which users interact with MeaningHub. It receives raw queries from users and transforms them into governed outputs.\n2. **Semantic Core**: This is the processing pipeline inside MeaningHub that transforms a raw query into a governed output. It processes a query through six stages from intent to explanation:\n\t* Intent\n\t* Link\n\t* Resolve\n\t* Reason\n\t* Explain\n\t* Validate\n3. **Southbound Layer**: This layer consists of adapters that connect MeaningHub to specific execution engines, such as RDF triple stores or property graph databases.\n\n**Components:**\n\n1. **Adapters**: These are components that translate the internal semantic representation into engine-native queries. There are two types of adapters:\n\t* SPARQL Adapter: connects to RDF triple stores (e.g., Apache Jena, Blazegraph) for ontology-based reasoning and OWL inference.\n\t* Cypher Adapter: connects to property graph databases (e.g., Neo4j) for relationship traversal, pattern matching, and graph algorithms.\n2. **ConstraintSet**: This is a structured output that carries both the semantic result and its provenance. It includes:\n\t* Portable constraint representation\n\t* Provenance information (packs used, rules fired, etc.)\n3. **Knowledge Graph**: This is an underlying knowledge engine that provides entity resolution, relationship traversal, and other reasoning capabilities.\n4. **Execution Engines**: These are the external systems that MeaningHub interacts with to perform reasoning and inference tasks.\n\n**Other Components:**\n\n1. **Governance Module**: This module ensures that the output of MeaningHub is governed and explainable.\n2. **Provenance Tracking**: This component tracks the provenance information associated with each query, including packs used, rules fired, etc.\n3. **Allowlist**: This is a list of allowed predicates that can be accessed by agents interacting with MeaningHub.\n\nOverall, the MeaningHub architecture provides a governed middleware layer that sits between AI agents and underlying knowledge engines, ensuring explainability, governance, and portability of semantic outputs.",
+        "confidence": 0.6942194226179261,
+        "latency": 7.11,
+        "passed": true
+      },
+      {
+        "id": 20,
+        "question": "How has the approach to semantic integration in AI systems evolved from simple RAG to Semantic Companion Layer?",
+        "type": "temporal",
+        "answer": "The approach to semantic integration in AI systems has undergone significant evolution from simple Retrieval-Augmented Generation (RAG) to the current Semantic Companion Layer.\n\nInitially, in 2023, early RAG systems retrieved document chunks via vector similarity and appended them to Large Language Model (LLM) prompts. This was a straightforward but limited approach that relied on vector similarity for retrieval.\n\nIn 2024, Graph RAG added structured knowledge graphs with entity extraction and relationship modeling, enabling multi-hop reasoning. This marked an improvement over the initial RAG system by incorporating graph-based structures and entity relationships.\n\nLater in 2024, Agentic RAG introduced tool-using agents that could choose between retrieval strategies and self-correct. This approach further enhanced the capabilities of RAG systems by allowing them to adapt and correct their behavior based on the task at hand.\n\nHowever, all these approaches treated semantic operations as ad-hoc tool calls without contracts or governance. The Semantic Companion Layer, proposed in early 2026, addresses this limitation by formalizing the semantic pipeline into a governed architecture with typed interfaces, provenance tracking, and declarative domain configuration.\n\nThe key architectural decisions that define the Semantic Companion Layer include:\n\n1. **Northbound contract**: using GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy**: implementing a facade pattern over SPARQL, Cypher, and vector search to provide a pluggable and engine-agnostic architecture.\n\nThe Semantic Companion Layer aims to provide a governed, portable, and explainable architecture for semantic integration in agentic AI systems by introducing a governed middleware called MeaningHub that sits between AI agents and the underlying knowledge engines. This approach addresses risks such as inconsistent entity resolution, untraceable reasoning chains, and unbounded meaning by turning meaning into a governed artifact with provenance.\n\nIn summary, the evolution from simple RAG to Semantic Companion Layer has been driven by the need for more sophisticated and governed approaches to semantic integration in AI systems. The current architecture provides a stable, typed northbound contract, multi-backend strategy, and governed middleware to ensure that semantic operations are performed deterministically and with transparency.",
+        "confidence": 0.7165036199596553,
+        "latency": 6.88,
+        "passed": true
+      },
+      {
+        "id": 21,
+        "question": "Why was GraphQL chosen as the northbound contract for MeaningHub instead of REST or gRPC?",
+        "type": "simple",
+        "answer": "GraphQL provides a single endpoint with a typed schema that clients can introspect, enabling tooling and autocompletion. Additionally, its flexible response shape elegantly handles complex nested structures, such as the `ConstraintSet` with provenance returned by the `resolveIntent` query. Furthermore, GraphQL subscriptions enable real-time streaming of pipeline progress, which is not easily achievable with REST or gRPC.",
+        "confidence": 0.7275311023982944,
+        "latency": 1.64,
+        "passed": true
+      },
+      {
+        "id": 22,
+        "question": "What is a ConstraintSet in MeaningHub and what provenance information does it include?",
+        "type": "simple",
+        "answer": "A ConstraintSet is the output contract of MeaningHub, which includes both the semantic result and its provenance. The ConstraintSet includes:\n\n- `output` — the semantic result (entities, relationships, inferred facts, or natural language answer)\n- `packsUsed` — list of domain packs that were active during processing\n- `rulesFired` — list of inference rules that contributed to the result\n- `traceId` — unique identifier linking to the full pipeline trace for debugging and audit\n- `confidence` — aggregated confidence score from the pipeline stages\n- `engineSources` — which southbound engines contributed to the result (SPARQL, Cypher, vector)",
+        "confidence": 0.7766412679632334,
+        "latency": 2.5,
+        "passed": true
+      },
+      {
+        "id": 23,
+        "question": "How do portable packs enable domain customization without schema changes in MeaningHub?",
+        "type": "relation",
+        "answer": "Portable packs enable domain customization without changing the MeaningHub schema or code by bundling domain-specific configuration into YAML files that can be shared, versioned, and audited. This allows new domains to be added to MeaningHub without modifying its core schema or codebase. Instead, a pack is simply dropped and the system restarted, enabling fast iteration and deployment of new domain-specific behavior.",
+        "confidence": 0.7151976611805826,
+        "latency": 1.68,
+        "passed": true
+      },
+      {
+        "id": 24,
+        "question": "What is the relationship between Strawberry Python library and documentation integrity in MeaningHub?",
+        "type": "relation",
+        "answer": "The Strawberry Python library plays a crucial role in maintaining documentation integrity in MeaningHub. With Strawberry, the GraphQL schema is defined as Python dataclasses with type annotations, and it automatically generates the SDL (Schema Definition Language) file. This ensures that the API documentation always matches the implementation.\n\nMeaningHub uses this generated SDL to diff/replace docs and fail CI on divergence, keeping Python as the single source of truth. In other words, Strawberry helps maintain documentation integrity by ensuring that any changes to the schema are reflected in the documentation, preventing eventual divergence between the two.",
+        "confidence": 0.7132638222178597,
+        "latency": 2.18,
+        "passed": true
+      },
+      {
+        "id": 25,
+        "question": "How does the semantic core pipeline process a query through all stages from intent to explanation?",
+        "type": "multi_hop",
+        "answer": "The semantic core pipeline processes a query through six stages from intent to explanation:\n\n1. **Intent** — parse the incoming query to extract the user's semantic intent (entity types, relationships, constraints, temporal scope).\n2. **Link** — resolve entity references against the knowledge graph, linking mentions to canonical nodes via fuzzy matching and alias resolution.\n3. **Normalize** — check constraints, and enrich the query with inferred knowledge.\n4. **Infer** — perform inference on the enriched query to derive additional information.\n5. **Compile** — translate the enriched semantic representation into engine-specific queries (SPARQL, Cypher, vector search) and execute them through the southbound adapters.\n6. **Explain** — assemble the results with full provenance, including which packs were used, which rules fired, confidence scores, and the trace identifier.\n\nThis pipeline transforms a raw query into a governed output by extracting intent, linking entities, normalizing constraints, inferring knowledge, compiling queries, and explaining results.",
+        "confidence": 0.737327032969844,
+        "latency": 3.61,
+        "passed": true
+      },
+      {
+        "id": 26,
+        "question": "How does the dual northbound interface design serve both traditional developers and AI agent runtimes?",
+        "type": "multi_hop",
+        "answer": "The dual northbound interface design serves both traditional developers and AI agent runtimes by exposing two interfaces:\n\n1. **GraphQL API**: A typed schema with a primary `resolveIntent` query that accepts natural language or structured intent and returns a `ConstraintSet`. This interface is designed for traditional developers who want IDE autocompletion, schema validation, and Swagger-like documentation.\n2. **MCP (Model Context Protocol)**: An agent-native interface that exposes the same semantic pipeline as MCP tools (`resolve_intent`, `search_graph`, `explain_trace`). AI agents can call these tools directly without constructing GraphQL queries.\n\nBoth interfaces share the same underlying pipeline, ensuring consistent behavior regardless of which northbound interface a client uses. This design allows both traditional developers and AI agent runtimes to operate on the semantic core deterministically.",
+        "confidence": 0.788508475926422,
+        "latency": 2.9,
+        "passed": true
+      },
+      {
+        "id": 27,
+        "question": "List all seven architectural decisions described in the Semantic Companion Layer design",
+        "type": "global",
+        "answer": "Based on the provided context, the seven key architectural decisions of the Semantic Companion Layer are:\n\n1. **Northbound contract** — use GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy** — implement a facade pattern over SPARQL, Cypher, and vector search.\n3. (Not explicitly mentioned in the provided context) \n4. (Not explicitly mentioned in the provided context)\n5. (Not explicitly mentioned in the provided context)\n6. (Not explicitly mentioned in the provided context)\n7. (Not explicitly mentioned in the provided context)\n\nHowever, according to the text \"These seven decisions collectively define a governed, portable, and explainable architecture for semantic integration in agentic AI systems.\" it seems that there are indeed 7 architectural decisions but they are not listed.\n\nUnfortunately, I was unable to find the complete list of 7 architectural decisions.",
+        "confidence": 0.679808497694719,
+        "latency": 3.09,
+        "passed": true
+      },
+      {
+        "id": 28,
+        "question": "What are the primary risks of unbounded meaning in agentic AI systems and how does SCL address them?",
+        "type": "global",
+        "answer": "The primary risks of unbounded meaning in agentic AI systems include:\n\n1. Hallucinated relationships\n2. Inconsistent entity resolution\n3. Untraceable reasoning chains\n\nThe Semantic Companion Layer (SCL) addresses these risks by introducing a governed middleware called MeaningHub, which sits between AI agents and the underlying knowledge engines. SCL provides a typed northbound contract that agents can call repeatedly, bounded semantics via allowlists and packs, and schema documentation that is always in sync with the implementation.\n\nBy doing so, SCL ensures that meaning is turned into a governed artifact with provenance, allowing both developers and agents to operate on it deterministically. This helps to mitigate the risks associated with unbounded meaning and provides a scalable solution for agentic AI systems.",
+        "confidence": 0.7367945311381299,
+        "latency": 2.73,
+        "passed": true
+      },
+      {
+        "id": 29,
+        "question": "What is the Cognitive Contract concept and what three principles does it define?",
+        "type": "simple",
+        "answer": "The Cognitive Contract concept defines three non-negotiable principles for responsible semantic integration:\n\n1. **Stable Contract, Unstable Internals**: Callers depend on a typed interface; engines remain replaceable.\n2. **Portable Semantics, Not Engine Artifacts**: Return governed semantic outputs (e.g., constraints + provenance), not raw SPARQL/Cypher strings.\n3. **Governance by Construction**: If agents can ask for arbitrary predicates, they will; validity must be structural.\n\nThese principles ensure that meaning in AI systems is reproducible, explainable, and governed.",
+        "confidence": 0.7829584998854799,
+        "latency": 2.2,
+        "passed": true
+      },
+      {
+        "id": 30,
+        "question": "What role do southbound adapters play and which specific engines does MeaningHub use?",
+        "type": "relation",
+        "answer": "Southbound adapters in MeaningHub connect the northbound interface to specific execution engines, translating the internal semantic representation into engine-native queries. They enable MeaningHub to interact with various knowledge backends without changing the northbound contract.\n\nMeaningHub uses the following southbound adapters:\n\n1. SPARQL Adapter: connects to RDF triple stores (e.g., Apache Jena, Blazegraph) for ontology-based reasoning and OWL inference.\n2. Cypher Adapter: connects to property graph databases (e.g., Neo4j) for relationship traversal, pattern matching, and graph algorithms.\n3. Vector Search Adapter: connects to vector search engines (e.g., Faiss, Annoy, or Pinecone) for similarity search and semantic retrieval.\n\nThese adapters are interchangeable, allowing MeaningHub to switch between different execution engines without modifying the northbound contract.",
+        "confidence": 0.696522227835312,
+        "latency": 2.95,
+        "passed": true
+      }
+    ],
+    "graph": [
+      {
+        "id": 1,
+        "question": "Какие фреймворки для графовых баз знаний упоминаются?",
+        "type": "simple",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.01,
+        "passed": false
+      },
+      {
+        "id": 2,
+        "question": "Что такое онтология в контексте графов знаний?",
+        "type": "simple",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 3,
+        "question": "Какая связь между OWL-онтологиями и валидацией графа?",
+        "type": "relation",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.01,
+        "passed": false
+      },
+      {
+        "id": 4,
+        "question": "Как извлекаются сущности и связи из текста?",
+        "type": "relation",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 5,
+        "question": "Как стратегия извлечения сущностей влияет на качество графа?",
+        "type": "multi_hop",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 6,
+        "question": "Какая цепочка от документа до триплета графа знаний?",
+        "type": "multi_hop",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 7,
+        "question": "Сравни локальные и LLM-подходы к извлечению сущностей",
+        "type": "multi_hop",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.01,
+        "passed": false
+      },
+      {
+        "id": 8,
+        "question": "Перечисли все компоненты архитектуры графа знаний",
+        "type": "global",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 9,
+        "question": "Дай обзор хранения временных данных в графах знаний",
+        "type": "global",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 10,
+        "question": "Резюмируй все методы интеграции мультимодальных данных",
+        "type": "global",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 11,
+        "question": "Когда временные атрибуты были впервые введены в графовых базах данных?",
+        "type": "temporal",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 12,
+        "question": "Какие изменения произошли в подходах GraphRAG со временем?",
+        "type": "temporal",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 13,
+        "question": "Какие улучшения были достигнуты в построении графов знаний?",
+        "type": "temporal",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 14,
+        "question": "Как фреймворк Docling связан с построением графа?",
+        "type": "relation",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 15,
+        "question": "Какую роль играет Neo4j в пайплайне графа знаний?",
+        "type": "simple",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 16,
+        "question": "What is the Semantic Companion Layer and what problem does it solve?",
+        "type": "simple",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 17,
+        "question": "How does MeaningHub integrate SPARQL, Cypher and vector search?",
+        "type": "relation",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 18,
+        "question": "How does the northbound-southbound architecture of MeaningHub enable agent interaction with semantic outputs?",
+        "type": "multi_hop",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 19,
+        "question": "Describe all components and layers of the MeaningHub architecture",
+        "type": "global",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 20,
+        "question": "How has the approach to semantic integration in AI systems evolved from simple RAG to Semantic Companion Layer?",
+        "type": "temporal",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 21,
+        "question": "Why was GraphQL chosen as the northbound contract for MeaningHub instead of REST or gRPC?",
+        "type": "simple",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 22,
+        "question": "What is a ConstraintSet in MeaningHub and what provenance information does it include?",
+        "type": "simple",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 23,
+        "question": "How do portable packs enable domain customization without schema changes in MeaningHub?",
+        "type": "relation",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 24,
+        "question": "What is the relationship between Strawberry Python library and documentation integrity in MeaningHub?",
+        "type": "relation",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 25,
+        "question": "How does the semantic core pipeline process a query through all stages from intent to explanation?",
+        "type": "multi_hop",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 26,
+        "question": "How does the dual northbound interface design serve both traditional developers and AI agent runtimes?",
+        "type": "multi_hop",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 27,
+        "question": "List all seven architectural decisions described in the Semantic Companion Layer design",
+        "type": "global",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 28,
+        "question": "What are the primary risks of unbounded meaning in agentic AI systems and how does SCL address them?",
+        "type": "global",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 29,
+        "question": "What is the Cognitive Contract concept and what three principles does it define?",
+        "type": "simple",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      },
+      {
+        "id": 30,
+        "question": "What role do southbound adapters play and which specific engines does MeaningHub use?",
+        "type": "relation",
+        "answer": "No relevant context found to answer the question.",
+        "confidence": 0.0,
+        "latency": 0.0,
+        "passed": false
+      }
+    ],
+    "hybrid": [
+      {
+        "id": 1,
+        "question": "Какие фреймворки для графовых баз знаний упоминаются?",
+        "type": "simple",
+        "answer": "В тексте упоминаются следующие фреймворки для графовых баз знаний:\n\n1. Graphiti от Zep AI\n2. Neo4j GraphDataScience\n3. Py2Neo\n4. TigerGraph (в качестве платформы)\n5. GraphRAG (например, в реализации Microsoft GraphRAG)",
+        "confidence": 0.5856577031821557,
+        "latency": 1.8,
+        "passed": true
+      },
+      {
+        "id": 2,
+        "question": "Что такое онтология в контексте графов знаний?",
+        "type": "simple",
+        "answer": "Онтология в контексте графов знаний — это схема данных, которая определяет классы сущностей, типы связей и их свойства, а также ограничения (например, отношения типа \"Person works_for Company\"). Она представляет собой набор правил и определений, которые используются для организации и структуризации знаний в графе.",
+        "confidence": 0.5920198264473817,
+        "latency": 1.83,
+        "passed": true
+      },
+      {
+        "id": 3,
+        "question": "Какая связь между OWL-онтологиями и валидацией графа?",
+        "type": "relation",
+        "answer": "Согласно тексту, между OWL-онтологиями и валидацией графа существует следующая связь:\n\nOWL-онтология используется для определения схемы знаний, которая затем используется для валидации фактов, добавляемых в граф. Если факт не соответствует схеме онтологии (например, если отношение между Person и Location не разрешено), то это ошибка и такой факт можно отфильтровать или сигнализировать.\n\nТакже OWL-онтология используется для определения типов узлов и ребер в графе, что позволяет системе проверять, соответствуют ли добавляемые факты этой схеме.",
+        "confidence": 0.6667841189985729,
+        "latency": 3.14,
+        "passed": false
+      },
+      {
+        "id": 4,
+        "question": "Как извлекаются сущности и связи из текста?",
+        "type": "relation",
+        "answer": "Извлечение сущностей и связей из текста происходит в несколько этапов:\n\n1. **Нер (Named Entity Recognition)**: на этом этапе поиск и классификация именованных сущностей в тексте, таких как люди, организации, даты, химические соединения и т.д.\n2. **Релешн экстракшн (Relation Extraction)**: после определения сущностей, на этом этапе определяются связи между ними. Например, если в тексте упоминается \"Acme Corp приобрела Beta Inc в 2021 году за $5 млн\", то RE должна установить отношение Acquisition(acquirer=Acme Corp, target=Beta Inc, date=2021, amount=$5M).\n3. **Формирование триплетов**: на этом этапе сущности и связи объединяются в триплеты (субъект; отношение; объект), которые затем добавляются в граф знаний.\n\nИзвлечение сущностей и связей может выполняться как с помощью классических моделей NER и RE, так и с помощью генеративных моделей LLM (Large Language Models). В частности, можно использовать GPT-подмодуль для извлечения фактов после того, как сущности были выявлены с помощью spaCy NER.",
+        "confidence": 0.6406131572357936,
+        "latency": 5.41,
+        "passed": true
+      },
+      {
+        "id": 5,
+        "question": "Как стратегия извлечения сущностей влияет на качество графа?",
+        "type": "multi_hop",
+        "answer": "Стратегия извлечения сущностей (Entity Extraction) оказывает существенное влияние на качество графа, поскольку она определяет, как и какие сущности будут включены в граф. Правильная стратегия извлечения сущностей может привести к следующим положительным результатам:\n\n1. **Полнота**: Правильно извлекаемые сущности обеспечивают полноту графа, что означает, что все важные сущности, упомянутые в тексте, будут включены в граф.\n2. **Точность**: Точно извлекаемые сущности гарантируют, что каждая сущность будет правильно идентифицирована и связана с другими сущностями в графике.\n3. **Унификация**: Правильная стратегия извлечения сущностей может помочь унифицировать названия и представления сущностей, что упрощает навигацию и анализ графа.\n\nНеправильная стратегия извлечения сущностей, наоборот, может привести к следующим негативным результатам:\n\n1. **Пустота**: Неправильно или неисправно извлекаемые сущности могут привести к пустоте графа, что означает, что важные сущности будут пропущены.\n2. **Неразбериха**: Неправильная стратегия извлечения сущностей может привести к неразберихе в графе, когда одна и та же сущность будет представлена несколькими разными названиями или формами.\n3. **Неполадки**: Неправильно извлекаемые сущности могут привести к неполадкам в графике, когда связь между сущностями будет неправильной или отсутствующей.\n\nВ целом, стратегия извлечения сущностей имеет решающее значение для качества графа и требует тщательного выбора подходящего метода и алгоритма.",
+        "confidence": 0.4548871894875204,
+        "latency": 7.53,
+        "passed": true
+      },
+      {
+        "id": 6,
+        "question": "Какая цепочка от документа до триплета графа знаний?",
+        "type": "multi_hop",
+        "answer": "Цепочка от документа до триплета графа знаний следующая:\n\n1. Извлечение структурированной информации из документа (ETL-процесс).\n2. Преобразование документа в структурированные данные с помощью Docling.\n3. Выгрузка данных в графовую базу знаний (GraphDB) через pipeline.\n4. Создание/обновление узлов и ребер в GraphDB на основе извлеченных фактов.\n5. Формирование триплета графа знаний, который представляет собой связь между двумя сущностями (узлами) и отношением (ребром).",
+        "confidence": 0.5781834018175904,
+        "latency": 2.78,
+        "passed": true
+      },
+      {
+        "id": 7,
+        "question": "Сравни локальные и LLM-подходы к извлечению сущностей",
+        "type": "multi_hop",
+        "answer": "В документе описаны два подхода к извлечению сущностей:\n\n1. **Локальный подход**: Использует локально запущенные модели, такие как VLM (Visual Language Model) или Llama-2-13B-chat, для извлечения сущностей и фактов.\n2. **LLM-подход**: Использует облачные API, такие как GPT-4, для извлечения сущностей и фактов.\n\nОба подхода имеют свои плюсы и минусы:\n\n**Локальный подход**\n\n* Плюсы:\n + Более быстрый доступ к данным\n + Низкая зависимость от интернета\n + Возможность использования локальных ресурсов (GPU)\n* Минусы:\n + Требует значительных ресурсов для запуска и поддержки модели\n + Необходимо регулярно обновлять модель для обеспечения актуальности\n\n**LLM-подход**\n\n* Плюсы:\n + Более быстрая разработка и внедрение\n + Низкие затраты на инфраструктуру и поддержку\n + Возможность использования облачных ресурсов (GPU)\n* Минусы:\n + Зависимость от интернета и облачных API\n + Сложности с конфиденциальностью и безопасностью данных\n\nВ документе также упоминается, что можно комбинировать оба подхода: использовать локальные модели для извлечения фактов и LLM-API для ответов на вопросы.",
+        "confidence": 0.4815810349121509,
+        "latency": 5.99,
+        "passed": true
+      },
+      {
+        "id": 8,
+        "question": "Перечисли все компоненты архитектуры графа знаний",
+        "type": "global",
+        "answer": "В архитектуре графа знаний, представленной в документе \"Архитектура онтологической графовой базы знаний с временными атрибутами и мультимодальными данными.pdf\", перечислены следующие компоненты:\n\n1. Онтология (предварительно созданная на основе OWL в Protégе)\n2. Граф знаний ( Knowledge Graph )\n3. Временные атрибуты (для представления исторических данных и обновлений со временем)\n4. Интеграция мультимодальных документов (извлечение знаний из PDF, DOCX и других форматов)\n5. Пакетная загрузка локальных документов\n6. Внешние источники знаний (веб-страницы, базы данных)\n7. Диалоговый режим работы (чат-бот с ответами на вопросы на естественном языке)\n8. Аналитический режим работы (прямые запросы к графу и логические выводы)\n9. Многодоменность (поддержка нескольких предметных областей)\n10. Интеграция с LLM (большими языковыми моделями, например OpenAI GPT-4 или HuggingFace)\n11. Динамическое обновление графа (обновление в реальном времени без полной перестройки)\n\nЭти компоненты вместе образуют архитектуру графа знаний, которая должна удовлетворять ряду требований и обеспечивать эффективное хранение и использование знаний.",
+        "confidence": 0.6168306492234621,
+        "latency": 5.64,
+        "passed": true
+      },
+      {
+        "id": 9,
+        "question": "Дай обзор хранения временных данных в графах знаний",
+        "type": "global",
+        "answer": "Вопрос: \"Обзор хранения временных данных в графах знаний\"\n\nОтвет:\n\nХранение временных данных в графах знаний является важнейшим аспектом системы, поскольку позволяет представлять исторические данные и обновления со временем. В статье рассматривается подход битемпоральной модели (bitemporal model), реализованный в Graphiti, который хранит два временных интервала для каждого отношения: Valid Time - когда факт был истинным в реальном мире, а также Transaction Time - когда факт был записан в базу данных.\n\nБитемпоральная модель обеспечивает прозрачность и позволяет сохранять исторические версии данных. Для сложных сценариев может понадобиться хранить несколько графов \"состояние на дату X\", что можно реализовать с помощью подхода отслеживания изменений и хранилища временных рядов.\n\nВ статье также упоминается, что для интеграции с онтологиями OWL Neo4j предлагает плагин Neo4j Neosemantics (n10s) для импорта RDF/OWL. Кроме того, Neo4j активно используется в решениях GraphRAG и легко интегрируется с Python-ориентированными фреймворками.\n\nВ целом, битемпоральная модель является эффективным подходом к хранению временных данных в графах знаний, обеспечивая прозрачность и возможность сохранять исторические версии данных.",
+        "confidence": 0.6927561775675324,
+        "latency": 5.94,
+        "passed": true
+      },
+      {
+        "id": 10,
+        "question": "Резюмируй все методы интеграции мультимодальных данных",
+        "type": "global",
+        "answer": "Методы интеграции мультимодальных данных:\n\n1. Сохранение изображений как узлов в графе и включение их подписей (которые уже извлечены) в текст графа.\n2. Использование доменно-специфических моделей и правил для анализа изображений и диаграмм.\n3. Парсинг таблиц и сохранение их структуры, затем конвертация таблиц в факты с помощью шаблонов.\n4. Использование специализированных подходов, таких как DyG-RAG (Sun et al., 2025), для формирования узлов-\"события\" с временными атрибутами и связывания их с сущностями.\n\nПримечание: эти методы описаны в разделе \"Мультимодальные данные\" документа.",
+        "confidence": 0.570138956082562,
+        "latency": 3.87,
+        "passed": true
+      },
+      {
+        "id": 11,
+        "question": "Когда временные атрибуты были впервые введены в графовых базах данных?",
+        "type": "temporal",
+        "answer": "Временные аспекты знаний - одна из ключевых особенностей системы, и они были впервые введены в графовых базах данных в 2000-х годах. Однако конкретная дата их появления не указана в предоставленном тексте.",
+        "confidence": 0.5778639859755033,
+        "latency": 1.77,
+        "passed": true
+      },
+      {
+        "id": 12,
+        "question": "Какие изменения произошли в подходах GraphRAG со временем?",
+        "type": "temporal",
+        "answer": "Со временем подходы GraphRAG претерпели следующие изменения:\n\n- Вначале (2023) Retrieval-Augmented Generation (RAG) системы просто извлекали документные фрагменты по векторной подобности и пришивали их к LLM-промптам.\n- В 2024 году Graph RAG добавил структурированные знакомые графа с экстракцией сущностей и моделированием отношений, позволяя выполнять многоблочные рассуждения.\n- В конце 2024 года Agentic RAG представила агентных инструментов, которые могли выбирать между стратегиями извлечения и самокорректировкой.",
+        "confidence": 0.5428317247553793,
+        "latency": 3.21,
+        "passed": true
+      },
+      {
+        "id": 13,
+        "question": "Какие улучшения были достигнуты в построении графов знаний?",
+        "type": "temporal",
+        "answer": "В построении графов знаний были достигнуты следующие улучшения:\n\n1. **Поддержка временных атрибутов**: Теперь графики могут хранить временные характеристики фактов, что позволяет представлять исторические данные и обновления со временем.\n2. **Интеграция мультимодальных документов**: Система может извлекать знания из различных типов документов (PDF, DOCX, изображения и т.п.) и интегрировать их в граф.\n3. **Batch-ингест и внешние источники**: Графы могут загружаться пакетно и подключаться к внешним источникам знаний для автоматического пополнения графа.\n4. **Диалоговый и аналитический режимы работы**: База знаний может использоваться как в диалоговом режиме (через чат-бот) так и в аналитическом режиме (прямые запросы к графу).\n5. **Многодоменность**: Фреймворк поддерживает несколько предметных областей, что позволяет загрузить соответствующую онтологию и профильные модели извлечения информации для каждого домена.\n6. **Интеграция с LLM**: Система может совместно работать с большими языковыми моделями (OpenAI GPT-4, модели HuggingFace или локальные LLM) и использовать подходы Retrieval-Augmented Generation на графе.\n\nЭти улучшения позволяют построить более сложные и динамические графики знаний, которые могут обрабатывать разнообразные типы данных и интегрироваться с другими системами.",
+        "confidence": 0.6178821994133366,
+        "latency": 6.67,
+        "passed": true
+      },
+      {
+        "id": 14,
+        "question": "Как фреймворк Docling связан с построением графа?",
+        "type": "relation",
+        "answer": "Фреймворк Docling связан с построением графа через свой модуль Docling-Graph, который может преобразовать полученный DoclingDocument в узлы и ребра графа. Это позволяет экспортировать данные в CSV или Cypher-скрипт для загрузки в графовую БД.",
+        "confidence": 0.6583787519622312,
+        "latency": 1.46,
+        "passed": true
+      },
+      {
+        "id": 15,
+        "question": "Какую роль играет Neo4j в пайплайне графа знаний?",
+        "type": "simple",
+        "answer": "В пайплайне графа знаний Neo4j играет роль графовой базы данных (GraphDB), которая хранит и обрабатывает знания. В частности, она используется для:\n\n* Хранения фактов и отношений в виде графа\n* Выполнения Cypher-запросов для поиска и обработки знаний\n* Обновления знаний при поступлении новых данных\n\nNeo4j является ключевым компонентом пайплайна графа знаний, обеспечивая возможность хранить, обрабатывать и использовать знания в различных режимах: чат-боте, аналитических запросах и прямом взаимодействии с пользователем.",
+        "confidence": 0.6342323914254392,
+        "latency": 3.5,
+        "passed": true
+      },
+      {
+        "id": 16,
+        "question": "What is the Semantic Companion Layer and what problem does it solve?",
+        "type": "simple",
+        "answer": "The Semantic Companion Layer (SCL) is a governed middleware that sits between AI agents and underlying knowledge engines, addressing risks such as inconsistent entity resolution and untraceable reasoning chains. It formalizes the semantic pipeline into a governed architecture with typed interfaces, provenance tracking, and declarative domain configuration.",
+        "confidence": 0.8351233350083891,
+        "latency": 1.17,
+        "passed": false
+      },
+      {
+        "id": 17,
+        "question": "How does MeaningHub integrate SPARQL, Cypher and vector search?",
+        "type": "relation",
+        "answer": "MeaningHub integrates SPARQL, Cypher, and vector search through a facade pattern that unifies heterogeneous knowledge backends behind a single semantic interface. The southbound adapters translate the internal semantic representation into engine-native queries for each specific execution engine:\n\n- SPARQL Adapter: connects to RDF triple stores for ontology-based reasoning and OWL inference.\n- Cypher Adapter: connects to property graph databases for relationship traversal, pattern matching, and graph algorithms.\n- Vector Search Adapter: contributes to the result with vector search.\n\nThis integration allows MeaningHub to use the best engine for the job without forcing clients to learn multiple APIs.",
+        "confidence": 0.7828216887018333,
+        "latency": 2.17,
+        "passed": true
+      },
+      {
+        "id": 18,
+        "question": "How does the northbound-southbound architecture of MeaningHub enable agent interaction with semantic outputs?",
+        "type": "multi_hop",
+        "answer": "The northbound-southbound architecture of MeaningHub enables agent interaction with semantic outputs by exposing a stable contract (northbound interface) that agents and applications consume, while hiding backend complexity. The northbound interface is designed to serve both traditional developers and AI agent runtimes through a dual design:\n\n1. GraphQL API: A typed schema with a primary `resolveIntent` query that accepts natural language or structured intent and returns a `ConstraintSet`. This interface provides IDE autocompletion, schema validation, and Swagger-like documentation for traditional developers.\n2. Dual northbound design: MeaningHub exposes both the GraphQL API and another interface (not specified in the provided context) to serve AI agent runtimes.\n\nThe southbound adapters are the execution engines of MeaningHub, which agents never interact with directly. Instead, they communicate through the northbound contract, allowing for interchangeable backend adapters without changes to the northbound contract. This architecture enables seamless interaction between agents and semantic outputs while maintaining explainability and debuggability.",
+        "confidence": 0.7596768220670984,
+        "latency": 3.28,
+        "passed": true
+      },
+      {
+        "id": 19,
+        "question": "Describe all components and layers of the MeaningHub architecture",
+        "type": "global",
+        "answer": "The MeaningHub architecture consists of three main layers:\n\n1. **Northbound Contract**: This layer is responsible for turning messy intent into governed, portable semantic outputs. It hides backend complexity and keeps the semantic pipeline explainable and debuggable.\n2. **Semantic Companion Layer (SCL)**: This is the core component of MeaningHub, which acts as a northbound contract that provides a stable interface for interacting with the system.\n\nAs for the components, we can identify the following:\n\n1. **ConstraintSet**: A structured output that carries both the semantic result and its provenance.\n2. **Provenance**: The origin or source of the data, which is included in the ConstraintSet to provide transparency and accountability.\n\nIt's worth noting that the architecture also mentions an \"arbitrary predicates\" concept, but it doesn't provide further details on what this means.",
+        "confidence": 0.6356503025909956,
+        "latency": 2.81,
+        "passed": true
+      },
+      {
+        "id": 20,
+        "question": "How has the approach to semantic integration in AI systems evolved from simple RAG to Semantic Companion Layer?",
+        "type": "temporal",
+        "answer": "The approach to semantic integration in AI systems has evolved through several stages. \n\nInitially, early Retrieval-Augmented Generation (RAG) systems from 2023 simply retrieved document chunks via vector similarity and appended them to LLM prompts.\n\nLater, Graph RAG in 2024 added structured knowledge graphs with entity extraction and relationship modeling, enabling multi-hop reasoning.\n\nThen, Agentic RAG in late 2024 introduced tool-using agents that could choose between retrieval strategies and self-correct.\n\nFinally, the Semantic Companion Layer, proposed in early 2026, formalizes the semantic pipeline into a governed architecture with typed interfaces, provenance tracking, and declarative domain configuration.",
+        "confidence": 0.8426840104889566,
+        "latency": 2.3,
+        "passed": true
+      },
+      {
+        "id": 21,
+        "question": "Why was GraphQL chosen as the northbound contract for MeaningHub instead of REST or gRPC?",
+        "type": "simple",
+        "answer": "GraphQL provides a single endpoint with a typed schema that clients can introspect, enabling tooling and autocompletion. Additionally, its flexible response shape makes it well-suited to handle complex nested structures like the `ConstraintSet` returned by the `resolveIntent` query.",
+        "confidence": 0.7649032397002893,
+        "latency": 1.26,
+        "passed": true
+      },
+      {
+        "id": 22,
+        "question": "What is a ConstraintSet in MeaningHub and what provenance information does it include?",
+        "type": "simple",
+        "answer": "A ConstraintSet is the output contract of MeaningHub, ensuring that no semantic result is returned without provenance information. It includes:\n\n* Packs used\n* Rules fired\n* An allowlist to prevent hallucinated predicate access\n\nThis means that a ConstraintSet carries both the semantic result and its origin, providing explainability and governance.",
+        "confidence": 0.8002867979903234,
+        "latency": 1.28,
+        "passed": true
+      },
+      {
+        "id": 23,
+        "question": "How do portable packs enable domain customization without schema changes in MeaningHub?",
+        "type": "relation",
+        "answer": "Portable packs enable domain customization by bundling domain-specific configuration as YAML files. This allows for variability to be pushed to configuration rather than code, enabling different domains (e.g., healthcare and legal) to share the same core MeaningHub codebase but load different packs. The schema remains stable, and all domain-specific behavior is expressed through packs.",
+        "confidence": 0.8051467503634611,
+        "latency": 1.34,
+        "passed": true
+      },
+      {
+        "id": 24,
+        "question": "What is the relationship between Strawberry Python library and documentation integrity in MeaningHub?",
+        "type": "relation",
+        "answer": "The Strawberry Python library plays a crucial role in maintaining documentation integrity in MeaningHub. It ensures that the API documentation always matches the implementation by automatically generating the SDL (Schema Definition Language) file from the Python dataclasses with type annotations.\n\nMeaningHub uses this generated SDL to diff/replace docs and fail CI on divergence, keeping Python as the single source of truth. This means that any changes to the schema are intentional, reviewed, and documented, thanks to the Continuous Integration pipeline that runs `strawberry export-schema` on every commit.",
+        "confidence": 0.8038688419770543,
+        "latency": 1.91,
+        "passed": true
+      },
+      {
+        "id": 25,
+        "question": "How does the semantic core pipeline process a query through all stages from intent to explanation?",
+        "type": "multi_hop",
+        "answer": "The semantic core pipeline processes a query through six stages from intent to explanation:\n\n1. **Intent**: parse the incoming query to extract the user's semantic intent (entity types, relationships, constraints, temporal scope).\n2. **Link**: resolve entity references against the knowledge graph, linking mentions to canonical nodes via fuzzy matching and alias resolution.\n3. **Normalization**: \n4. **Inference**: check constraints, and enrich the query with inferred knowledge.\n5. **Compile**: translate the enriched semantic representation into engine-specific queries (SPARQL, Cypher, vector search) and execute them through the southbound adapters.\n6. **Explain**: assemble the results with full provenance, including which packs were used, which rules fired, confidence scores, and the trace identifier.",
+        "confidence": 0.8131769197375789,
+        "latency": 2.65,
+        "passed": true
+      },
+      {
+        "id": 26,
+        "question": "How does the dual northbound interface design serve both traditional developers and AI agent runtimes?",
+        "type": "multi_hop",
+        "answer": "The dual northbound interface design serves both traditional developers and AI agent runtimes by exposing a GraphQL API for traditional developers, who want IDE autocompletion, schema validation, and Swagger-like documentation, as well as an MCP (Message Contract Protocol) interface for AI agents. Both interfaces share the same pipeline and produce identical ConstraintSets, allowing both types of users to operate on it deterministically.",
+        "confidence": 0.7885315996207385,
+        "latency": 1.47,
+        "passed": true
+      },
+      {
+        "id": 27,
+        "question": "List all seven architectural decisions described in the Semantic Companion Layer design",
+        "type": "global",
+        "answer": "Here are the seven key architectural decisions of the Semantic Companion Layer:\n\n1. **Northbound contract** — use GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy** — implement a facade pattern over SPARQL, Cypher, and vector search.\n3. [Missing information]\n4. [Missing information]\n5. [Missing information]\n6. [Missing information]\n7. [Missing information]\n\nUnfortunately, the provided context lacks information about four of the seven architectural decisions.",
+        "confidence": 0.7231328581034051,
+        "latency": 1.88,
+        "passed": true
+      },
+      {
+        "id": 28,
+        "question": "What are the primary risks of unbounded meaning in agentic AI systems and how does SCL address them?",
+        "type": "global",
+        "answer": "The primary risks of unbounded meaning in agentic AI systems include:\n\n1. Hallucinated relationships: AI agents may invent non-existent connections between entities.\n2. Inconsistent entity resolution: Different agents may interpret the same data differently, leading to inconsistent results.\n3. Untraceable reasoning chains: The logic behind an agent's decisions is opaque and cannot be verified.\n\nThe Semantic Companion Layer (SCL) addresses these risks by introducing a governed middleware called MeaningHub, which sits between AI agents and knowledge engines. SCL turns meaning into a governed artifact with provenance, allowing both developers and agents to operate on it deterministically.",
+        "confidence": 0.7691643107296369,
+        "latency": 2.18,
+        "passed": true
+      },
+      {
+        "id": 29,
+        "question": "What is the Cognitive Contract concept and what three principles does it define?",
+        "type": "simple",
+        "answer": "The Cognitive Contract concept defines three core principles for responsible semantic integration:\n\n1. Stable Contract — every semantic operation must go through a typed, versioned interface that does not change when backends are swapped or upgraded.\n2. Portable semantics, not engine artifacts — return governed semantic outputs (e.g., constraints + provenance), not raw SPARQL/Cypher strings.\n3. Governance by construction — if agents can ask for arbitrary predicates, they will; validity must be structural.\n\nThese principles ensure that meaning in AI systems is reproducible, explainable, and governed.",
+        "confidence": 0.8359015192296644,
+        "latency": 1.97,
+        "passed": true
+      },
+      {
+        "id": 30,
+        "question": "What role do southbound adapters play and which specific engines does MeaningHub use?",
+        "type": "relation",
+        "answer": "Southbound adapters in MeaningHub play a crucial role by translating the internal semantic representation into engine-native queries, allowing agents to interact with various execution engines without directly communicating with them. \n\nMeaningHub uses several specific engines through its southbound adapters:\n\n1. RDF triple stores (e.g., Apache Jena, Blazegraph) via the SPARQL Adapter for ontology-based reasoning and OWL inference.\n2. Property graph databases (e.g., Neo4j) via the Cypher Adapter for relationship traversal, pattern matching, and graph algorithms.\n3. Vector search engines (e.g., Elasticsearch with the Neo4j Vector Index) for similarity search and semantic retrieval.\n\nThese adapters enable MeaningHub to interact with heterogeneous knowledge backends behind a single semantic interface, making it possible to swap one engine for another without modifying the northbound contract.",
+        "confidence": 0.6974244711927238,
+        "latency": 2.83,
+        "passed": true
+      }
+    ],
+    "enhanced": [
+      {
+        "id": 1,
+        "question": "Какие фреймворки для графовых баз знаний упоминаются?",
+        "type": "simple",
+        "answer": "В тексте упоминаются следующие фреймворки для графовых баз знаний:\n\n1. Graphiti\n2. DyGRAG\n3. The World Avatar\n4. GraphRAG (Graph + RAG)\n5. Neo4j-GraphDataScience\n6. Py2Neo",
+        "confidence": 0.676373414136124,
+        "latency": 2.75,
+        "passed": true
+      },
+      {
+        "id": 2,
+        "question": "Что такое онтология в контексте графов знаний?",
+        "type": "simple",
+        "answer": "Онтология - это схема данных, которая определяет классы сущностей, типы связей и их свойства, а также ограничения (например, отношения типа \"Person works_for Company\"). Она предоставляет структуру для организации и представления знаний в графе.",
+        "confidence": 0.7307722085684244,
+        "latency": 2.86,
+        "passed": true
+      },
+      {
+        "id": 3,
+        "question": "Какая связь между OWL-онтологиями и валидацией графа?",
+        "type": "relation",
+        "answer": "Валидация графа обеспечивается путем использования OWL-логики для проверки соответствия фактов схеме данных, заданной онтологией. Если факт не соответствует схеме, он может быть отфильтрован или сигнализироваться как ошибка.",
+        "confidence": 0.6021315269135432,
+        "latency": 2.93,
+        "passed": true
+      },
+      {
+        "id": 4,
+        "question": "Как извлекаются сущности и связи из текста?",
+        "type": "relation",
+        "answer": "Извлечение сущностей и связей из текста происходит в несколько этапов:\n\n1. **Назначение отношений**: на основе синтаксиса или ML-модели определяется, связаны ли две сущности и каким отношением.\n2. **Использование LLM (Large Language Model)**: скормить LLM отрывок текста и попросить сгенерировать все триплеты вида (субъект; отношение; объект) по заданной схеме.\n3. **Назначение временных атрибутов**: если факт имеет время, записывать t_valid_start, t_valid_end на ребре или узле-событии.\n\nВ качестве инструментов используются:\n\n* **spaCy NER (Named Entity Recognition)**: для выделения сущностей\n* **GPT-подмодуль**: взяв текст с помеченными сущностями, вернуть факты\n* **LLM (Large Language Model)**: для генерации триплетов и определения отношений\n\nТакже упоминается использование шаблонов Pydantic для структурирования контента по семантике.",
+        "confidence": 0.6954306385299802,
+        "latency": 6.24,
+        "passed": true
+      },
+      {
+        "id": 5,
+        "question": "Как стратегия извлечения сущностей влияет на качество графа?",
+        "type": "multi_hop",
+        "answer": "Стратегия извлечения сущностей может существенно повлиять на качество графа. Если сущности не будут правильно выявлены и связаны, это приведет к появлению ошибок в графе, что может привести к неверным выводам и интерпретациям.\n\nНапример, если два упоминания одной и той же организации будут отображены как отдельные узлы графа, это может привести к дублированию информации и усложнению понимания графа. Аналогично, если сущности не будут правильно связаны между собой, это может привести к отсутствию важной информации в графе.\n\nЧтобы минимизировать влияние стратегии извлечения сущностей на качество графа, можно использовать следующие подходы:\n\n* Использование внешних идентификаторов для сущностей, чтобы обеспечить уникальность и связь между ними.\n* Использование модулей entity linking (например, сопоставление с Wikidata) для обогащения знаний и улучшения точности извлечения сущностей.\n* Использование гибридных подходов, которые комбинируют локальные модели и LLM для извлечения сущностей.\n\nВ целом, стратегия извлечения сущностей должна быть тщательно спланирована и реализована, чтобы обеспечить точность и качество графа.",
+        "confidence": 0.581190501111748,
+        "latency": 7.11,
+        "passed": true
+      },
+      {
+        "id": 6,
+        "question": "Какая цепочка от документа до триплета графа знаний?",
+        "type": "multi_hop",
+        "answer": "Цепочка от документа до триплета графа знаний следующая:\n\n1. Извлечение структурированной информации из документа с помощью Docling.\n2. Получение размеченного содержимого документа (текст, таблицы, изображения и т.д.).\n3. Преобразование документа в узлы и ребра графа с помощью модуля Docling-Graph.\n4. Создание или обновление триплетов графа знаний на основе полученных узлов и ребер.\n\nВ результате цепочка от документа до триплета графа знаний включает в себя следующие этапы: извлечение информации, преобразование документа в граф, а затем создание или обновление триплетов графа.",
+        "confidence": 0.624216174448544,
+        "latency": 4.88,
+        "passed": true
+      },
+      {
+        "id": 7,
+        "question": "Сравни локальные и LLM-подходы к извлечению сущностей",
+        "type": "multi_hop",
+        "answer": "В разделе \"Извлечение сущностей\" в архитектуре онтологической графовой базы знаний упоминаются два подхода: локальные модели (например, VLM) и LLM-подход. \n\nЛокальные модели (VLM): \n- Преимущества:\n  - Более контролируемый процесс извлечения сущностей.\n  - Возможность использования готовых моделей NER (например, spaCy или HuggingFace Transformers).\n- Недостатки: \n  - Требуют больше ресурсов для обучения и хранения.\n  - Могут не достигать такой же точности, как LLM.\n\nLLM-подход:\n- Преимущества:\n  - Возможность использования мощных моделей LLM (например, GPT-4 или Llama-2-13B) для извлечения сущностей.\n  - Могут достигать высокой точности и скорости.\n- Недостатки: \n  - Требуют подключения к интернету для использования API или хранения больших моделей на локальной машине.\n  - Могут быть менее контролируемыми, чем локальные модели.\n\nВ целом, выбор между этими двумя подходами зависит от конкретных потребностей и ограничений проекта. Если доступно достаточно ресурсов и необходимость в высокой точности извлечения сущностей, то LLM-подход может быть более эффективным. Однако, если требуется более контролируемый процесс или ограничен доступ к интернету, то локальные модели могут быть лучшим выбором.",
+        "confidence": 0.5581661237629125,
+        "latency": 7.64,
+        "passed": true
+      },
+      {
+        "id": 8,
+        "question": "Перечисли все компоненты архитектуры графа знаний",
+        "type": "global",
+        "answer": "В архитектуре графа знаний, представленной в документе \"Архитектура онтологической графовой базы знаний с временными атрибутами и мультимодальными данными.pdf\", перечислены следующие компоненты:\n\n1. Онтологическая основа (OWL)\n2. Временные атрибуты\n3. Интеграция мультимодальных документов\n4. Бatching-ингест и внешние источники знаний\n5. Диалоговый режим работы (чат-бот)\n6. Аналитический режим работы (прямые запросы к графу, логические выводы)\n7. Многодоменность (поддержка нескольких предметных областей)\n8. Интеграция с LLM (большими языковыми моделями)\n9. Динамическое обновление графа в реальном времени.\n\nЭти компоненты вместе образуют архитектуру графа знаний, которая должна удовлетворять ряду требований и обеспечивать эффективное хранение и использование знаний.",
+        "confidence": 0.6737140799206645,
+        "latency": 5.58,
+        "passed": true
+      },
+      {
+        "id": 9,
+        "question": "Дай обзор хранения временных данных в графах знаний",
+        "type": "global",
+        "answer": "Вопрос интересный!\n\nВ представленном тексте описывается подход к хранению временных данных в графах знаний. В частности, авторы рассматривают битомпоральную модель (bitemporal model), реализованную в Graphiti.\n\nБитопоральная модель хранит два временных интервала для каждого отношения (ребра) в графе:\n\n1. **Valid Time** - когда факт был истинным в реальном мире (например, сотрудник работал в компании с 2010 по 2015).\n2. **Transaction Time** - когда факт был добавлен или изменен в базе знаний.\n\nЭтот подход позволяет хранить историю данных и поддерживать прозрачность.\n\nАвторы также упоминают возможность использования временных рядов (time-series database) для связки с графом, но в данном случае они считают битомпоральную модель внутри графа достаточно эффективной.\n\nВ целом, представленный подход позволяет хранить временные данные в графах знаний и поддерживать их историю, что важно для доменов, где эволюция информации важна.",
+        "confidence": 0.6624959348121144,
+        "latency": 5.89,
+        "passed": true
+      },
+      {
+        "id": 10,
+        "question": "Резюмируй все методы интеграции мультимодальных данных",
+        "type": "global",
+        "answer": "В документе описаны следующие методы интеграции мультимодальных данных:\n\n1. **OCR и базовая классификация**: анализ изображений с помощью OCR (оптическое распознавание символов) и простой классификации.\n2. **Подключение модели типа BLIP-2 или CLIP**: семантический сравнение изображений с помощью моделей BLIP-2 или CLIP.\n3. **Stable Diffusion**: генерация изображений по описанию с помощью модели Stable Diffusion.\n\nТакже упоминается возможность использования специализированных моделей для анализа мультимодальных данных, но конкретные методы не указаны.",
+        "confidence": 0.6251186542570557,
+        "latency": 4.98,
+        "passed": true
+      },
+      {
+        "id": 11,
+        "question": "Когда временные атрибуты были впервые введены в графовых базах данных?",
+        "type": "temporal",
+        "answer": "Временные атрибуты были впервые введены в графовых базах данных в начале 2000-х годов. Однако, конкретно в контексте биперсональной модели времени (bitemporal approach), которая используется в Graphiti и упоминается в тексте, она была реализована позже.\n\nВ частности, биперсональная модель времени была представлена в работе \"Bitemporal Data Model\" (2005) авторов J. Gray и A. Reuter. В этой модели время разделено на два аспекта: временной интервал, когда факт был истинным в реальном мире (Valid Time), и временной интервал, когда факт был доступен в базе данных (Transaction Time).\n\nВ Graphiti эта модель времени была реализована как часть графовой базы данных для хранения знаний.",
+        "confidence": 0.5633815830719697,
+        "latency": 5.55,
+        "passed": true
+      },
+      {
+        "id": 12,
+        "question": "Какие изменения произошли в подходах GraphRAG со временем?",
+        "type": "temporal",
+        "answer": "В подходах GraphRAG произошли следующие изменения:\n\n- Вначале GraphRAG использовал векторный поиск по текстовому корпусу, но затем было решено использовать структурированные данные графа.\n- Была добавлена возможность использования временных атрибутов и мультимодальных данных.\n- Улучшена интеграция с LLM (Language Model) для улучшения корректности и рассуждений.\n- В GraphRAG теперь используется Retrieval-Augmented Generation на графе, что позволяет использовать структурированные данные графа для улучшения результатов.\n\nТакже упоминается, что GraphRAG теперь интегрируется с фреймворками вроде Graphiti, что позволяет использовать временные графы и другие функции.",
+        "confidence": 0.629370214008826,
+        "latency": 4.87,
+        "passed": true
+      },
+      {
+        "id": 13,
+        "question": "Какие улучшения были достигнуты в построении графов знаний?",
+        "type": "temporal",
+        "answer": "В построении графов знаний были достигнуты следующие улучшения:\n\n1. **Поддержка временных атрибутов**: Графы знаний теперь могут хранить временные характеристики фактов, что позволяет представлять исторические данные и обновления со временем.\n2. **Интеграция мультимодальных документов**: Система может извлекать знания из различных локальных документов, включая текст, таблицы, диаграммы, формулы, графики и изображения.\n3. **Бatch-ингест и внешние источники**: Графы знаний теперь могут загружаться пакетно и подключаться к внешним источникам знаний для автоматического пополнения графа.\n4. **Диалоговый и аналитический режимы работы**: База знаний может использоваться как в диалоговом режиме через чат-бот, так и в аналитическом режиме с прямыми запросами к графу и логическим выводом.\n5. **Многодоменность**: Фреймворк теперь поддерживает несколько предметных областей (например, финансы, медицина и др.), что позволяет пользователю выбирать домен и загружать соответствующую онтологию и профильные модели извлечения информации.\n6. **Интеграция с LLM**: Система теперь ориентирована на совместную работу с большими языковыми моделями (OpenAI GPT-4, модели HuggingFace или локальные LLM) и использует подходы Retrieval-Augmented Generation на графе.\n7. **Динамическое обновление графа**: Граф теперь может обновляться в реальном времени при поступлении новых данных или знаний, сохраняя исторические версии данных.\n\nЭти улучшения позволяют построить более сложные и динамичные графы знаний, которые могут хранить разнородную информацию и поддерживать различные режимы работы.",
+        "confidence": 0.709731973291333,
+        "latency": 9.6,
+        "passed": true
+      },
+      {
+        "id": 14,
+        "question": "Как фреймворк Docling связан с построением графа?",
+        "type": "relation",
+        "answer": "Фреймворк Docling связан с построением графа через свой модуль Docling-Graph, который может преобразовать полученный DoclingDocument в узлы и ребра графа. Это позволяет экспортировать данные в CSV или Cypher-скрипт для загрузки в графовую БД.",
+        "confidence": 0.7000316503884225,
+        "latency": 2.75,
+        "passed": true
+      },
+      {
+        "id": 15,
+        "question": "Какую роль играет Neo4j в пайплайне графа знаний?",
+        "type": "simple",
+        "answer": "В пайплайне графа знаний Neo4j играет роль хранилища для графовой базы данных, где данные из блока \"Маппинг\" поступают в GraphDB операцией \"пополнение графа\". В ней создаются уникальные индексы для узлов (например, по имени или ID), чтобы MERGE работали быстро и не допускали дубликатов.",
+        "confidence": 0.8157769669845509,
+        "latency": 4.12,
+        "passed": true
+      },
+      {
+        "id": 16,
+        "question": "What is the Semantic Companion Layer and what problem does it solve?",
+        "type": "simple",
+        "answer": "The Semantic Companion Layer is a governed architecture that formalizes the semantic pipeline into a typed interface with contracts and governance. It addresses the problems of inconsistent entity resolution, untraceable reasoning chains, and ad-hoc tool calls without contracts or governance in agentic AI systems. The SCL provides a stable northbound contract for agents to interact with the semantic core while keeping engine internals internal.",
+        "confidence": 0.8271206638639599,
+        "latency": 2.66,
+        "passed": true
+      },
+      {
+        "id": 17,
+        "question": "How does MeaningHub integrate SPARQL, Cypher and vector search?",
+        "type": "relation",
+        "answer": "MeaningHub integrates SPARQL, Cypher, and vector search through a southbound layer consisting of adapters that connect to specific execution engines. Each adapter translates the internal semantic representation into engine-native queries.\n\n- The SPARQL Adapter connects to RDF triple stores for ontology-based reasoning and OWL inference.\n- The Cypher Adapter connects to property graph databases (e.g., Neo4j) for relationship traversal, pattern matching, and graph algorithms.\n- Vector search is used for similarity search and semantic retrieval through a vector index.\n\nThis integration allows MeaningHub to use the best engine for the job, without forcing clients to learn multiple APIs.",
+        "confidence": 0.7960009971886459,
+        "latency": 4.07,
+        "passed": true
+      },
+      {
+        "id": 18,
+        "question": "How does the northbound-southbound architecture of MeaningHub enable agent interaction with semantic outputs?",
+        "type": "multi_hop",
+        "answer": "The northbound-southbound architecture of MeaningHub enables agent interaction with semantic outputs by exposing a stable contract through its northbound interface, which agents and applications consume. This interface is designed to be interchangeable, allowing different execution engines (southbound adapters) to be swapped in without changing the northbound contract.\n\nIn particular:\n\n* The northbound interface provides a GraphQL API with a `resolveIntent` query that accepts natural language or structured intent and returns a `ConstraintSet`.\n* Agents interact with this northbound interface, sending their intent and receiving semantic outputs (ConstraintSets).\n* The southbound adapters are responsible for executing the intent on various knowledge backends (e.g., Neo4j, Amazon Neptune), but agents never talk to these engines directly.\n\nThis architecture enables agent interaction with semantic outputs by providing a stable, portable, and governed interface that abstracts away the complexity of backend execution.",
+        "confidence": 0.7218123937634353,
+        "latency": 4.27,
+        "passed": true
+      },
+      {
+        "id": 19,
+        "question": "Describe all components and layers of the MeaningHub architecture",
+        "type": "global",
+        "answer": "The MeaningHub architecture consists of three main layers:\n\n1. **Northbound Contract**: This layer is responsible for turning messy intent into governed, portable semantic outputs. It hides backend complexity and keeps the semantic pipeline explainable and debuggable.\n2. **Semantic Companion Layer (SCL)**: This is the core component of MeaningHub, which provides a stable contract, portable semantics, governance by design, and fast deployment.\n\nAs for the components, there are several:\n\n1. **ConstraintSet**: A structured output that carries both the semantic result and its provenance.\n2. **Provenance**: The origin or source of the data, which is included in the ConstraintSet to provide transparency and accountability.\n\nNote: There is no explicit mention of other components or layers beyond these three main layers (Northbound Contract, SCL, and the ConstraintSet).",
+        "confidence": 0.6918999979720519,
+        "latency": 20.31,
+        "passed": true
+      },
+      {
+        "id": 20,
+        "question": "How has the approach to semantic integration in AI systems evolved from simple RAG to Semantic Companion Layer?",
+        "type": "temporal",
+        "answer": "The approach to semantic integration in AI systems has undergone significant evolution from early Retrieval-Augmented Generation (RAG) systems to the current Semantic Companion Layer.\n\nInitially, in 2023, RAG systems simply retrieved document chunks via vector similarity and appended them to Large Language Model (LLM) prompts. This was a basic form of semantic integration.\n\nIn 2024, Graph RAG added structured knowledge graphs with entity extraction and relationship modeling, enabling multi-hop reasoning. This marked an improvement over the initial RAG approach by incorporating more complex relationships between entities.\n\nLater in 2024, Agentic RAG introduced tool-using agents that could choose between retrieval strategies and self-correct. This development allowed for more flexibility and adaptability in semantic integration.\n\nHowever, all these approaches treated semantic operations as ad-hoc tool calls without contracts or governance. To address this limitation, the Semantic Companion Layer was proposed in early 2026. It formalizes the semantic pipeline into a governed architecture with typed interfaces, provenance tracking, and declarative domain configuration.\n\nThe key differences between RAG and the Semantic Companion Layer are:\n\n1. **Typed northbound contract**: The Semantic Companion Layer provides a typed interface that agents can call repeatedly, ensuring consistency and predictability.\n2. **Bounded semantics**: It uses allowlists and packs to define bounded semantics, which ensures that semantic operations are well-defined and controlled.\n3. **Governance and explainability**: The layer introduces governance and explainability through provenance tracking and declarative domain configuration.\n\nThese advancements collectively define a governed, portable, and explainable architecture for semantic integration in agentic AI systems.",
+        "confidence": 0.7250272607574013,
+        "latency": 6.75,
+        "passed": true
+      },
+      {
+        "id": 21,
+        "question": "Why was GraphQL chosen as the northbound contract for MeaningHub instead of REST or gRPC?",
+        "type": "simple",
+        "answer": "GraphQL provides a single endpoint with a typed schema that clients can introspect, enabling tooling and autocompletion. Additionally, the `resolveIntent` query naturally maps to a semantic operation that returns a complex nested structure (ConstraintSet with provenance), which GraphQL handles elegantly with its flexible response shape.",
+        "confidence": 0.8193210983953345,
+        "latency": 2.55,
+        "passed": true
+      },
+      {
+        "id": 22,
+        "question": "What is a ConstraintSet in MeaningHub and what provenance information does it include?",
+        "type": "simple",
+        "answer": "A ConstraintSet is the output contract of MeaningHub, which includes both the semantic result and its provenance. The provenance information included in a ConstraintSet are:\n\n1. `packsUsed` - list of domain packs that were active during processing\n2. `rulesFired` - list of inference rules that contributed to the result\n3. `traceId` - unique identifier linking to the full pipeline trace for debugging and audit\n4. `confidence` - aggregated confidence score from the pipeline stages\n5. `engineSources` - which southbound engines (SPARQL, Cypher, vector) contributed to the result",
+        "confidence": 0.830712818931185,
+        "latency": 3.14,
+        "passed": true
+      },
+      {
+        "id": 23,
+        "question": "How do portable packs enable domain customization without schema changes in MeaningHub?",
+        "type": "relation",
+        "answer": "Portable packs enable domain customization without changing the MeaningHub schema or code by bundling domain-specific configuration into YAML files. These pack files contain settings such as allowlists, keywords, rules, and mappings that are specific to a particular domain. By loading different packs, deployments can customize their behavior without modifying the underlying schema or codebase. This approach maintains schema stability while allowing for new domains to be added with minimal effort.",
+        "confidence": 0.6534850650366884,
+        "latency": 2.91,
+        "passed": true
+      },
+      {
+        "id": 24,
+        "question": "What is the relationship between Strawberry Python library and documentation integrity in MeaningHub?",
+        "type": "relation",
+        "answer": "The Strawberry Python library is used to generate the SDL (Schema Definition Language) file automatically from the Python dataclasses with type annotations. This ensures that the API documentation always matches the implementation, preventing hand-written SDL files from drifting from reality.\n\nDocumentation integrity is enforced via CI (Continuous Integration), which compares the generated SDL against the committed SDL file on every commit. If they differ, the build fails, guaranteeing that schema changes are intentional and reviewed.",
+        "confidence": 0.7950431164422274,
+        "latency": 2.9,
+        "passed": true
+      },
+      {
+        "id": 25,
+        "question": "How does the semantic core pipeline process a query through all stages from intent to explanation?",
+        "type": "multi_hop",
+        "answer": "The semantic core pipeline processes a query through six stages from intent to explanation:\n\n1. **Intent**: parse the incoming query to extract the user's semantic intent (entity types, relationships, constraints, temporal scope).\n2. **Link**: resolve entity references against the knowledge graph, linking mentions to canonical nodes via fuzzy matching and alias resolution.\n3. **Normalization**: \n4. **Inference**: check constraints, and enrich the query with inferred knowledge.\n5. **Compile**: translate the enriched semantic representation into engine-specific queries (SPARQL, Cypher, vector search) and execute them through the southbound adapters.\n6. **Explain**: assemble the results with full provenance, including which packs were used, which rules fired, confidence scores, and the trace identifier.",
+        "confidence": 0.8120523795170642,
+        "latency": 7.97,
+        "passed": true
+      },
+      {
+        "id": 26,
+        "question": "How does the dual northbound interface design serve both traditional developers and AI agent runtimes?",
+        "type": "multi_hop",
+        "answer": "The dual northbound interface design serves both traditional developers and AI agent runtimes by exposing two interfaces:\n\n1. GraphQL API: A typed schema with a primary `resolveIntent` query that accepts natural language or structured intent and returns a `ConstraintSet`. This interface is designed for traditional developers who want IDE autocompletion, schema validation, and Swagger-like documentation.\n\n2. MCP (Message Contract Protocol): Exposed specifically for AI agents, which share the same pipeline as the GraphQL API and produce identical ConstraintSets.",
+        "confidence": 0.7718319387498791,
+        "latency": 3.1,
+        "passed": true
+      },
+      {
+        "id": 27,
+        "question": "List all seven architectural decisions described in the Semantic Companion Layer design",
+        "type": "global",
+        "answer": "Here are the 7 key architectural decisions of the Semantic Companion Layer:\n\n1. **Northbound contract** — use GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy** — implement a facade pattern over SPARQL, Cypher, and vector search.\n3. (Not explicitly listed in the provided context) \n4. (Not explicitly listed in the provided context)\n5. (Not explicitly listed in the provided context)\n6. (Not explicitly listed in the provided context)\n7. (Not explicitly listed in the provided context)\n\nHowever, based on the text, it seems that there are only 2 architectural decisions mentioned:\n\n1. **Northbound contract** — use GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy** — implement a facade pattern over SPARQL, Cypher, and vector search.\n\nThe other five decisions are not explicitly listed in the provided context.",
+        "confidence": 0.7086322410408812,
+        "latency": 5.84,
+        "passed": true
+      },
+      {
+        "id": 28,
+        "question": "What are the primary risks of unbounded meaning in agentic AI systems and how does SCL address them?",
+        "type": "global",
+        "answer": "The primary risks of unbounded meaning in agentic AI systems include:\n\n1. Hallucinated relationships: AI agents may create false or misleading connections between entities.\n2. Inconsistent entity resolution: Different agents may interpret the same data differently, leading to inconsistent results.\n3. Untraceable reasoning chains: The reasoning process behind an AI's decision-making is unclear, making it difficult to verify or audit.\n\nThe Semantic Companion Layer (SCL) addresses these risks by introducing a governed middleware called MeaningHub, which sits between AI agents and knowledge engines. SCL ensures that meaning is turned into a governed artifact with provenance, allowing both developers and agents to operate on it deterministically.",
+        "confidence": 0.7221094207970029,
+        "latency": 3.77,
+        "passed": true
+      },
+      {
+        "id": 29,
+        "question": "What is the Cognitive Contract concept and what three principles does it define?",
+        "type": "simple",
+        "answer": "The Cognitive Contract concept defines three core principles for responsible semantic integration:\n\n1. Stable Contract — every semantic operation must go through a typed, versioned interface that does not change when backends are swapped or upgraded.\n2. Portable semantics, not engine artifacts — return governed semantic outputs (e.g., constraints + provenance), not raw SPARQL/Cypher strings.\n3. Governance by construction — if agents can ask for arbitrary predicates, they will; validity must be structural.\n\nThese principles ensure that meaning in AI systems is reproducible, explainable, and governed.",
+        "confidence": 0.8146684621818898,
+        "latency": 3.0,
+        "passed": true
+      },
+      {
+        "id": 30,
+        "question": "What role do southbound adapters play and which specific engines does MeaningHub use?",
+        "type": "relation",
+        "answer": "The southbound adapters in MeaningHub connect the internal semantic representation to specific execution engines, translating the representation into engine-native queries. The adapters are interchangeable, allowing for a multi-backend strategy.\n\nMeaningHub uses the following southbound adapters:\n\n1. SPARQL Adapter: connects to RDF triple stores (e.g., Apache Jena, Blazegraph) for ontology-based reasoning and OWL inference.\n2. Cypher Adapter: connects to property graph databases (e.g., Neo4j) for relationship traversal, pattern matching, and graph algorithms.\n3. Vector Search Adapter: connects to vector search engines (e.g., Elasticsearch with the Elasticsearch Vector Index) for similarity search and semantic retrieval.\n\nThese adapters enable MeaningHub to interact with various knowledge backends while maintaining a single semantic interface.",
+        "confidence": 0.7800660613911816,
+        "latency": 3.99,
+        "passed": true
+      }
+    ],
+    "cognitive": [
+      {
+        "id": 1,
+        "question": "Какие фреймворки для графовых баз знаний упоминаются?",
+        "type": "simple",
+        "answer": "В тексте упоминаются следующие фреймворки для графовых баз знаний:\n\n1. Graphiti от Zep AI\n2. Neo4j GraphDataScience\n3. Py2Neo\n4. TigerGraph (платформа)\n5. GraphRAG (например, реализация Microsoft GraphRAG)",
+        "confidence": 0.6130276438494922,
+        "latency": 2.69,
+        "passed": true
+      },
+      {
+        "id": 2,
+        "question": "Что такое онтология в контексте графов знаний?",
+        "type": "simple",
+        "answer": "В контексте графов знаний, онтология представляет собой схему данных, которая определяет структуру и содержание графа знаний. Она включает в себя классы сущностей (например, Person, Company), типы связей (например, WORKS_FOR), их свойства (например, position, since) и ограничения (например, отношения между Person и Company).\n\nОнтология предоставляет каркас для хранения и извлечения знаний, определяя, что можно хранить и как оно должно быть представлено в графе. Она может содержаться внутри графа или храниться отдельно, но логически является частью слоя хранения знаний.\n\nВ данном контексте онтология создается вручную экспертом (в Protégé) и экспортируется в формате OWL/TTL. Затем она используется для маппинга данных в графе знаний, определяя, как данные должны быть представлены в виде узлов и ребер графа.",
+        "confidence": 0.6334567809129604,
+        "latency": 5.27,
+        "passed": true
+      },
+      {
+        "id": 3,
+        "question": "Какая связь между OWL-онтологиями и валидацией графа?",
+        "type": "relation",
+        "answer": "Согласно тексту, между OWL-онтологиями и валидацией графа существует следующая связь:\n\nОнтология может помочь верифицировать факты: если мы пытаемся создать отношение, не разрешенное схемой (например, между Person и Location тип связи CompanyAcquisition), то это ошибка - такой факт можно отфильтровать или сигнализировать.\n\nТаким образом, OWL-онтология используется для проверки соответствия фактов заданной схеме графа, что обеспечивает валидацию графа.",
+        "confidence": 0.7195394741719185,
+        "latency": 4.15,
+        "passed": false
+      },
+      {
+        "id": 4,
+        "question": "Как извлекаются сущности и связи из текста?",
+        "type": "relation",
+        "answer": "Извлечение сущностей и связей из текста в этом проекте выполняется с помощью Language Models (LLM), в частности, GPT-4. \n\nСущности извлекаются посредством Named Entity Recognition (NER) - модели, которая определяет и классифицирует именованные сущности в тексте (люди, организации, даты, химические соединения и т.д.).\n\nСвязи между сущностями генерируются на основе синтаксиса или ML-моделей. Например, модель может определить, что две сущности связаны отношением \"acquired\" в случае фразы \"Acme Corp приобрела Beta Inc в 2021 году за $5 млн\".\n\nLLM также могут генерировать триплеты вида (субъект; отношение; объект) по заданной схеме, что позволяет извлекать сущности и связи из текста более эффективно.",
+        "confidence": 0.6913396809524741,
+        "latency": 5.51,
+        "passed": true
+      },
+      {
+        "id": 5,
+        "question": "Как стратегия извлечения сущностей влияет на качество графа?",
+        "type": "multi_hop",
+        "answer": "Стратегия извлечения сущностей (Entity Extraction) имеет существенное влияние на качество графа знаний. Правильное и полное извлечение сущностей является фундаментальным этапом формирования графа, поскольку оно обеспечивает основу для построения связей между сущностями.\n\nНеправильная или несовершенная стратегия извлечения сущностей может привести к следующим проблемам:\n\n1. **Недостаточность данных**: Если сущности не извлекаются полностью или неправильно, граф будет содержать пробелы и неточные связи между сущностями.\n2. **Неправильные связи**: Неправильное извлечение сущностей может привести к установлению неправильных связей между сущностями, что может повлиять на точность выводов и рекомендаций.\n3. **Потеря семантического значения**: Если сущности не извлекаются правильно, граф может потерять семантическое значение и перестать отражать реальную картину мира.\n\nЧтобы минимизировать эти риски, важно использовать эффективные стратегии извлечения сущностей, такие как:\n\n1. **Использование глубоких нейронных сетей**: Глубокие нейронные сети могут обеспечить более точное и полное извлечение сущностей.\n2. **Использование специализированных моделей**: Использование специализированных моделей для определенных типов данных или предметных областей может улучшить точность извлечения сущностей.\n3. **Кросс-валидация и оценка**: Регулярная кросс-валидация и оценка стратегии извлечения сущностей могут помочь выявить проблемы и улучшить ее эффективность.\n\nВ целом, правильное и полное извлечение сущностей является ключевым фактором формирования точного и полезного графа знаний.",
+        "confidence": 0.5403865899119928,
+        "latency": 9.23,
+        "passed": true
+      },
+      {
+        "id": 6,
+        "question": "Какая цепочка от документа до триплета графа знаний?",
+        "type": "multi_hop",
+        "answer": "Цепочка от документа до триплета графа знаний следующая:\n\n1. Из документа получаем факты (сущности и отношения между ними).\n2. Эти факты затем используются для создания/обновления узлов и ребер в базе знаний.\n3. Результатом работы этого этапа является наполненный граф знаний, который представляет собой структурированные и связные знания из документов.\n\nВ результате получается триплет графа знаний: сущность-отношение-сущность.",
+        "confidence": 0.624804139244244,
+        "latency": 3.64,
+        "passed": true
+      },
+      {
+        "id": 7,
+        "question": "Сравни локальные и LLM-подходы к извлечению сущностей",
+        "type": "multi_hop",
+        "answer": "В разделе \"Реляционное извлечение\" в документе \"Архитектура онтологической графовой базы знаний с временными атрибутами и мультимодальными данными.pdf\" сравнение локальных и LLM-подходов к извлечению сущностей не проводится напрямую. Однако, можно сделать вывод на основе приведенных примеров.\n\nЛокальные подходы к извлечению сущностей предполагают использование традиционных методов НЕР (Неравенство отношений) и синтаксического анализа для определения сущностей в тексте. Например, в разделе \"Темпоральное извлечение\" упоминается парсинг на уровне предложения или клауза для определения даты и привязки ее к факту.\n\nLLM-подходы к извлечению сущностей, напротив, предполагают использование генеративных моделей языковых моделей (например, GPT-4) для извлечения сущностей. В разделе \"Реляционное извлечение\" упоминается пример использования LLM для определения отношений между сущностями на основе предоставленного текста.\n\nСравнение этих подходов можно сделать следующим:\n\n* Локальные подходы к извлечению сущностей более традиционны и основаны на использовании классических методов НЕР и синтаксического анализа.\n* LLM-подходы к извлечению сущностей более современны и основаны на использовании генеративных моделей языковых моделей, которые могут извлекать сущности на основе предоставленного текста.\n* Локальные подходы могут быть более точными в определении конкретных типов сущностей (например, дат), но могут не справиться с сложными текстами или отношениями между сущностями.\n* LLM-подходы могут быть более гибкими и способны извлекать различные типы сущностей на основе предоставленного текста, но могут иметь проблемы с точностью и стабильностью.\n\nВ целом, выбор подхода к извлечению сущностей зависит от конкретных потребностей и задач проекта.",
+        "confidence": 0.5467923117456968,
+        "latency": 9.71,
+        "passed": true
+      },
+      {
+        "id": 8,
+        "question": "Перечисли все компоненты архитектуры графа знаний",
+        "type": "global",
+        "answer": "В архитектуре графа знаний перечислены следующие компоненты:\n\n1. Онтологическая основа (предварительно созданная онтология в формате OWL)\n2. Граф знаний с временными атрибутами\n3. Пайплайн мультимодального анализа документов\n4. База данных для хранения графа знаний\n5. Интерфейс для диалогового режима (чат-бот)\n6. Интерфейс для аналитического режима (прямые запросы к графу, логические выводы)\n7. Механизм интеграции с большими языковыми моделями (LLM)\n8. Фреймворк для динамического обновления графа знаний в реальном времени.\n\nТакже упоминается возможность подключения внешних источников знаний и поддержка многодоменности.",
+        "confidence": 0.6038976746442837,
+        "latency": 5.02,
+        "passed": true
+      },
+      {
+        "id": 9,
+        "question": "Дай обзор хранения временных данных в графах знаний",
+        "type": "global",
+        "answer": "Вопрос о хранении временных данных в графах знаний является важнейшим аспектом архитектуры онтологической графовой базы знаний с временными атрибутами и мультимодальными данными.\n\nВременные данные представляют собой информацию, связанную с временем, которая может включать в себя даты, интервалы, периоды или другие временные характеристики. В контексте графов знаний хранение временных данных имеет важное значение для поддержки исторических данных и обновлений со временем.\n\nВ статье \"Архитектура онтологической графовой базы знаний с временными атрибутами и мультимодальными данными\" рассматривается подход битомпора (bitemporal), реализованный в Graphiti. Этот подход предполагает хранение двух временных интервалов для каждого отношения (ребра) в графе:\n\n1.  **Valid Time** - время, когда факт был истинным в реальном мире.\n2.  **Transaction Time** - время, когда факт был добавлен или обновлён в базе данных.\n\nЭтот подход позволяет поддерживать исторические данные и обновления со временем, что является важнейшим аспектом хранения временных данных в графах знаний.\n\nКроме того, статья упоминает другие подходы к хранению временных данных в графах знаний, такие как Graphiti, DyGRAG и The World Avatar. Эти подходы также позволяют поддерживать исторические данные и обновления со временем, но могут иметь различия в реализации и функциональности.\n\nВ заключении, хранение временных данных в графах знаний является важнейшим аспектом архитектуры онтологической графовой базы знаний с временными атрибутами и мультимодальными данными. Битомпорный подход, реализованный в Graphiti, является одним из возможных решений для поддержки исторических данных и обновлений со временем.",
+        "confidence": 0.5595211103339595,
+        "latency": 9.62,
+        "passed": true
+      },
+      {
+        "id": 10,
+        "question": "Резюмируй все методы интеграции мультимодальных данных",
+        "type": "global",
+        "answer": "В документе описаны следующие методы интеграции мультимодальных данных:\n\n1. **Анализ изображений**: упоминается возможность использования Visual Language Models (GraniteDocling) для получения описания изображения.\n2. **Подключение модели BLIP-2 или CLIP** для семантического сравнения изображений.\n3. **Использование Stable Diffusion** для генерации изображений по описанию.\n\nТакже упоминается возможность использования OCR и базовой классификации для анализа изображений на начальном этапе.",
+        "confidence": 0.6945638592920245,
+        "latency": 4.29,
+        "passed": true
+      },
+      {
+        "id": 11,
+        "question": "Когда временные атрибуты были впервые введены в графовых базах данных?",
+        "type": "temporal",
+        "answer": "Временные аспекты знаний - одна из ключевых особенностей системы. Есть два связанных аспекта: temporal data model (как хранятся временные метки и интервалы в графе) и dynamic updates (как новые данные интегрируются без потери истории).\n\nМодель времени в графе: Мы выбираем бitemporal подход, реализованный в Graphiti . Это значит, для каждого отношения (ребра) храним два временных интервала: Valid Time - когда факт был истинным в реальном мире (например, сотрудник работал в компании с 2010 по 2015).",
+        "confidence": 0.7974815933153757,
+        "latency": 4.74,
+        "passed": false
+      },
+      {
+        "id": 12,
+        "question": "Какие изменения произошли в подходах GraphRAG со временем?",
+        "type": "temporal",
+        "answer": "Из предоставленного текста можно сделать вывод, что подходы GraphRAG развивались и совершенствовались со временем.\n\nВ частности, упоминается, что Microsoft сообщала о том, что GraphRAG на 50% сокращает затраты и на ~70-80% улучшает полноту ответов vs обычный RAG. Это может подразумевать, что GraphRAG стал более эффективным и точным со временем.\n\nКроме того, упоминается о появлении новых подходов, таких как Graphiti, который осуществляет гибридный поиск: по вопросу находит связанные узлы/факты (через комбинированный поиск по семантическим embedding и по ключевым словам) и предоставляет их LLM для ответа. Это может подразумевать, что GraphRAG стал более гибким и адаптивным со временем.\n\nНаконец, упоминается о том, что GraphRAG теперь поддерживает временные атрибуты и мультимодальные данные, что является значительным улучшением по сравнению с первоначальным подходом.",
+        "confidence": 0.575794386188921,
+        "latency": 6.0,
+        "passed": false
+      },
+      {
+        "id": 13,
+        "question": "Какие улучшения были достигнуты в построении графов знаний?",
+        "type": "temporal",
+        "answer": "В построении графов знаний достигнуты следующие улучшения:\n\n1. **Поддержка временных атрибутов**: Теперь графики знаний могут хранить и обрабатывать временные характеристики фактов, что позволяет представлять исторические данные и обновления со временем.\n2. **Интеграция мультимодальных документов**: Системы теперь способны извлекать знания из различных локальных документов, включая текст, таблицы, диаграммы, формулы, графики и изображения.\n3. **Бatch-ингест и внешние источники**: Графы знаний могут загружаться пакетно и подключаться к внешним источникам знаний для автоматического пополнения графа.\n4. **Диалоговый и аналитический режимы работы**: База знаний может использоваться как в диалоговом режиме через чат-бот, так и в аналитическом режиме с прямыми запросами к графу и логическим выводом.\n5. **Многодоменность**: Фреймворк теперь поддерживает несколько предметных областей, позволяя пользователю выбирать домен и загружать соответствующую онтологию и профильные модели извлечения информации для этого домена.\n6. **Интеграция с LLM**: Система ориентирована на совместную работу с большими языковыми моделями, используя подходы Retrieval-Augmented Generation на графе и интегрируясь с фреймворками вроде Graphiti.\n7. **Динамическое обновление графа**: Граф теперь может обновляться в реальном времени при поступлении новых данных или знаний, сохраняя исторические версии данных.\n\nЭти улучшения позволяют построить более сложные и динамичные графы знаний, которые могут хранить и обрабатывать разнообразную информацию.",
+        "confidence": 0.6272569843111631,
+        "latency": 9.2,
+        "passed": true
+      },
+      {
+        "id": 14,
+        "question": "Как фреймворк Docling связан с построением графа?",
+        "type": "relation",
+        "answer": "Фреймворк Docling связан с построением графа через свой модуль Docling-Graph. Он может преобразовать полученный DoclingDocument в узлы и ребра графа, обеспечивая локальную обработку без необходимости внешних API. Кроме того, он поддерживает smart merge для объединения результатов по многим страницам документа перед созданием графа, чтобы не было дубликатов.",
+        "confidence": 0.7440577895137119,
+        "latency": 2.94,
+        "passed": true
+      },
+      {
+        "id": 15,
+        "question": "Какую роль играет Neo4j в пайплайне графа знаний?",
+        "type": "simple",
+        "answer": "В пайплайне графа знаний Neo4j играет роль хранилища для формирования знакомого контекста, который улучшает поиск. В нем хранятся сущности, извлеченные из документов и их отношения, формируя знание-граф, который дополняет поиск структурным контекстом.",
+        "confidence": 0.5729822697365099,
+        "latency": 3.48,
+        "passed": true
+      },
+      {
+        "id": 16,
+        "question": "What is the Semantic Companion Layer and what problem does it solve?",
+        "type": "simple",
+        "answer": "The Semantic Companion Layer (SCL) is a proposed architecture that formalizes the semantic pipeline into a governed architecture with typed interfaces, provenance tracking, and declarative domain configuration. It addresses several problems in current AI systems:\n\n1. **Lack of governance**: Current approaches treat semantic operations as ad-hoc tool calls without contracts or governance.\n2. **Inconsistent entity resolution**: Different systems may have different ways of resolving entities, leading to inconsistencies.\n3. **Untraceable reasoning chains**: The reasoning process behind AI decisions is often unclear and untraceable.\n\nThe SCL aims to solve these problems by introducing a governed middleware called MeaningHub, which sits between AI agents and the underlying knowledge engines, ensuring consistency, transparency, and explainability in semantic operations.",
+        "confidence": 0.7198524334294483,
+        "latency": 3.91,
+        "passed": true
+      },
+      {
+        "id": 17,
+        "question": "How does MeaningHub integrate SPARQL, Cypher and vector search?",
+        "type": "relation",
+        "answer": "MeaningHub integrates SPARQL, Cypher, and vector search through a facade pattern that unifies heterogeneous knowledge backends behind a single semantic interface. This is achieved by using adapters for each backend (SPARQL, Cypher, and vector search), which are interchangeable, allowing the system to switch between different backends without changing the northbound contract.",
+        "confidence": 0.7414597095406313,
+        "latency": 3.04,
+        "passed": true
+      },
+      {
+        "id": 18,
+        "question": "How does the northbound-southbound architecture of MeaningHub enable agent interaction with semantic outputs?",
+        "type": "multi_hop",
+        "answer": "The northbound-southbound pattern in MeaningHub's architecture, inspired by SDN (Software-Defined Networking) controller design, enables agent interaction with semantic outputs as follows:\n\n* The **northbound** interface represents the interface between the agents and the Semantic Companion Layer. It is where the agents send their intent or queries to MeaningHub.\n* The **southbound** interface represents the interface between the Semantic Companion Layer and the underlying data storage or processing systems. It is where MeaningHub sends the processed semantic outputs.\n\nThis separation of concerns allows for a clear distinction between the agent's intent and the underlying system's complexity, making it easier to manage and debug the semantic pipeline. The northbound-southbound architecture enables MeaningHub to act as an intermediary, transforming messy intent into governed, portable semantic outputs that can be easily consumed by agents.",
+        "confidence": 0.6489369008654218,
+        "latency": 4.07,
+        "passed": true
+      },
+      {
+        "id": 19,
+        "question": "Describe all components and layers of the MeaningHub architecture",
+        "type": "global",
+        "answer": "The MeaningHub architecture consists of three main layers:\n\n1. **Northbound Contract**: This layer represents the interface between the user's intent and the MeaningHub system. It takes in messy, unstructured input (e.g., natural language) and converts it into a governed, portable semantic output.\n2. **Semantic Pipeline**: This layer is responsible for processing the input data and generating the semantic output. It consists of various components that perform tasks such as entity recognition, relationship extraction, and concept mapping.\n\nIn terms of specific components, the MeaningHub architecture includes:\n\n* **Packs**: These are modular, versioned, shareable, and auditable units of code that contain domain-specific behavior. Packs can be loaded into the system to enable different use cases or domains (e.g., healthcare vs. legal).\n* **Schema Stability Principle**: This principle ensures that the core schema is fixed and stable, while all domain-specific behavior is expressed through packs.\n* **Core Schema**: This is the fixed, underlying structure of the MeaningHub system that defines the relationships between entities and concepts.\n\nThe architecture also follows a northbound-southbound pattern inspired by SDN (Software-Defined Networking) controller design.",
+        "confidence": 0.6528054390094313,
+        "latency": 21.71,
+        "passed": true
+      },
+      {
+        "id": 20,
+        "question": "How has the approach to semantic integration in AI systems evolved from simple RAG to Semantic Companion Layer?",
+        "type": "temporal",
+        "answer": "The approach to semantic integration in AI systems has evolved through several stages. Early Retrieval-Augmented Generation (RAG) systems simply retrieved document chunks via vector similarity and appended them to LLM prompts. Later, Graph RAG added structured knowledge graphs with entity extraction and relationship modeling, enabling multi-hop reasoning. Agentic RAG introduced tool-using agents that could choose between retrieval strategies and self-correct.\n\nThe Semantic Companion Layer is the next stage in this evolution, formalizing the semantic pipeline into a governed architecture with typed interfaces, provenance tracking, and declarative domain configuration. This layer addresses risks such as inconsistent entity resolution and untraceable reasoning chains by introducing a governed middleware called MeaningHub that sits between AI agents and knowledge engines.",
+        "confidence": 0.8115703191539358,
+        "latency": 4.26,
+        "passed": true
+      },
+      {
+        "id": 21,
+        "question": "Why was GraphQL chosen as the northbound contract for MeaningHub instead of REST or gRPC?",
+        "type": "simple",
+        "answer": "GraphQL provides a single endpoint with a typed schema that clients can introspect, enabling tooling and autocompletion. Additionally, the `resolveIntent` query naturally maps to a semantic operation that returns a complex nested structure (ConstraintSet with provenance), which GraphQL handles elegantly with its flexible response shape.",
+        "confidence": 0.7692276818307164,
+        "latency": 2.61,
+        "passed": true
+      },
+      {
+        "id": 22,
+        "question": "What is a ConstraintSet in MeaningHub and what provenance information does it include?",
+        "type": "simple",
+        "answer": "A ConstraintSet is the structured output of every MeaningHub operation, carrying both the semantic result and its provenance. It includes information about:\n\n1. Bound engines that contributed to the result (e.g., SPARQL, Cypher, vector)\n2. Provenance details such as:\n\t* Pack used\n\t* Rules fired\n\t* An allowlist to prevent hallucinated predicate access\n\nThis ensures that no semantic result is returned without provenance information, fulfilling the Governance by Default principle of the Cognitive Contract.",
+        "confidence": 0.7742904478139685,
+        "latency": 2.84,
+        "passed": true
+      },
+      {
+        "id": 23,
+        "question": "How do portable packs enable domain customization without schema changes in MeaningHub?",
+        "type": "relation",
+        "answer": "Portable packs enable domain customization without changing the MeaningHub schema or code by bundling domain-specific configuration into YAML files. These pack files contain settings such as allowlists, keywords, rules, and mappings that are specific to a particular domain. By loading different packs, deployments can customize their behavior without modifying the underlying schema or codebase. This approach maintains schema stability while allowing for new domains to be added with minimal effort.",
+        "confidence": 0.6532127246785953,
+        "latency": 3.03,
+        "passed": true
+      },
+      {
+        "id": 24,
+        "question": "What is the relationship between Strawberry Python library and documentation integrity in MeaningHub?",
+        "type": "relation",
+        "answer": "MeaningHub uses the Strawberry Python library to auto-generate SDL (Schema Definition Language) from its GraphQL schema, which is defined as Python dataclasses with type annotations. This ensures that the API documentation always matches the implementation, preventing eventual divergence between the two. The generated SDL is then diffed against the existing documentation in CI (Continuous Integration), and any divergence will cause the build to fail, maintaining documentation integrity.",
+        "confidence": 0.7011682125856149,
+        "latency": 2.86,
+        "passed": true
+      },
+      {
+        "id": 25,
+        "question": "How does the semantic core pipeline process a query through all stages from intent to explanation?",
+        "type": "multi_hop",
+        "answer": "The semantic core pipeline processes a query through six stages from intent to explanation:\n\n1. **Intent** — parse the incoming query to extract the user's semantic intent (entity types, relationships, constraints, temporal scope).\n2. **Link** — resolve entity references against the knowledge graph, linking mentions to canonical nodes via fuzzy matching and alias resolution.\n \nAdditionally, in another source, it is mentioned that after Linking stage, the pipeline continues with:\n3. Normalization\n4. Inference\n5. Compilation\n6. Explainability.\n\nThese stages are not explicitly listed together in one place, but they can be inferred from the provided sources.",
+        "confidence": 0.736784733296937,
+        "latency": 7.8,
+        "passed": true
+      },
+      {
+        "id": 26,
+        "question": "How does the dual northbound interface design serve both traditional developers and AI agent runtimes?",
+        "type": "multi_hop",
+        "answer": "The dual northbound interface design serves both traditional developers and AI agent runtimes by exposing two interfaces:\n\n1. **GraphQL API**: A typed schema with a primary `resolveIntent` query that accepts natural language or structured intent and returns a `ConstraintSet`. This interface is designed for traditional developers, providing features like IDE autocompletion, schema validation, and Swagger-like documentation.\n\n2. **MCP (Model Context Protocol)**: An agent-native interface that exposes the same semantic pipeline as MCP tools (`resolve_intent`, `search_graph`, `explain_trace`). AI agents can call these tools directly without constructing GraphQL queries.\n\nBoth interfaces share the same underlying pipeline, ensuring consistent behavior regardless of which northbound interface a client uses.",
+        "confidence": 0.7985401653122681,
+        "latency": 3.77,
+        "passed": true
+      },
+      {
+        "id": 27,
+        "question": "List all seven architectural decisions described in the Semantic Companion Layer design",
+        "type": "global",
+        "answer": "Here are the seven key architectural decisions of the Semantic Companion Layer:\n\n1. **Northbound contract** — use GraphQL as the stable typed interface between agents and the semantic core.\n2. **Multi-backend strategy** — implement a facade pattern over SPARQL, Cypher, and vector search.\n3. [Missing information]\n4. [Missing information]\n5. [Missing information]\n6. [Missing information]\n7. [Missing information]\n\nUnfortunately, the provided context lacks information about four of the seven architectural decisions.",
+        "confidence": 0.6963935199488817,
+        "latency": 4.76,
+        "passed": true
+      },
+      {
+        "id": 28,
+        "question": "What are the primary risks of unbounded meaning in agentic AI systems and how does SCL address them?",
+        "type": "global",
+        "answer": "The primary risks of unbounded meaning in agentic AI systems include:\n\n1. Hallucinated relationships: AI agents may create false or misleading connections between entities.\n2. Inconsistent entity resolution: Different agents may interpret the same data differently, leading to inconsistent results.\n3. Untraceable reasoning chains: The reasoning behind an AI's decision-making process is unclear and unverifiable.\n\nThe Semantic Companion Layer (SCL) addresses these risks by introducing a governed middleware called MeaningHub that sits between AI agents and knowledge engines. This layer ensures that meaning is governed, verifiable, and deterministic, allowing developers and agents to operate on it consistently.",
+        "confidence": 0.7150438280002169,
+        "latency": 3.66,
+        "passed": true
+      },
+      {
+        "id": 29,
+        "question": "What is the Cognitive Contract concept and what three principles does it define?",
+        "type": "simple",
+        "answer": "The Cognitive Contract concept defines three core principles for responsible semantic integration:\n\n1. Stable Contract\n2. Governance by Default (ensured through the ConstraintSet)\n3. Reproducible, Explainable, Governed Meaning (achieved through audit trails)\n\nThese principles ensure that meaning in AI systems is reproducible, explainable, and governed.",
+        "confidence": 0.7607020321658282,
+        "latency": 2.38,
+        "passed": true
+      },
+      {
+        "id": 30,
+        "question": "What role do southbound adapters play and which specific engines does MeaningHub use?",
+        "type": "relation",
+        "answer": "Unfortunately, the provided context lacks information about the specific role of southbound adapters in MeaningHub's architecture or the specific engines it uses. The text only mentions that MeaningHub is a governed middleware that sits between AI agents and the underlying knowledge engines, but it doesn't provide further details on this topic.",
+        "confidence": 0.6068991102401773,
+        "latency": 2.51,
+        "passed": true
+      }
+    ]
+  }
+}

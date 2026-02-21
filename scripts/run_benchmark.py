@@ -15,6 +15,11 @@ import sys
 import time
 from datetime import datetime
 
+from dotenv import load_dotenv
+
+# Load .env BEFORE importing config (nested Settings defaults read env at import time)
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
