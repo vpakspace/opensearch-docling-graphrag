@@ -11,9 +11,12 @@ from opensearch_graphrag.models import QAResult, SearchResult
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are a helpful assistant that answers questions based on the provided context.
-Use ONLY the information from the context below. If the context doesn't contain enough information,
-say so clearly. Be concise and accurate.
+SYSTEM_PROMPT = """You MUST answer in the SAME language as the user's question.
+If the user writes in Russian — answer in Russian. If in English — answer in English.
+NEVER switch to Chinese unless the user writes in Chinese.
+
+You are a helpful RAG assistant. Answer using ONLY the provided context.
+If the context lacks information, say so. Be concise and accurate.
 
 Context:
 {context}"""

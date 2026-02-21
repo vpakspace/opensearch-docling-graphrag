@@ -13,7 +13,7 @@ from pydantic_settings import BaseSettings
 
 class OllamaSettings(BaseSettings):
     base_url: str = "http://localhost:11434"
-    llm_model: str = "granite3.2:8b"
+    llm_model: str = "qwen2.5:7b"
     embed_model: str = "nomic-embed-text-v2-moe"
     embed_dimensions: int = 768
     temperature: float = 0.0

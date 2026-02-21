@@ -35,7 +35,7 @@ Document ──► Docling ──► Chunker ──► Embedder (Ollama) ──�
 |-----------|-----------|------|
 | Vector + BM25 Search | OpenSearch 2.15 | 9200 |
 | Knowledge Graph | Neo4j 5 | 7474 / 7687 |
-| LLM + Embeddings | Ollama (granite3.2:8b + nomic-embed-text-v2-moe) | 11434 |
+| LLM + Embeddings | Ollama (qwen2.5:7b + nomic-embed-text-v2-moe) | 11434 |
 | Document Parsing | Docling (PDF, DOCX, PPTX, HTML, TXT, MD) | — |
 | REST API | FastAPI | 8508 |
 | UI | Streamlit (6 tabs) + PyVis | 8506 |
@@ -78,7 +78,7 @@ docker compose ps
 bash scripts/pull_models.sh
 ```
 
-Downloads `granite3.2:8b` (LLM) and `nomic-embed-text-v2-moe` (embeddings, 768d, ~100 languages).
+Downloads `qwen2.5:7b` (LLM) and `nomic-embed-text-v2-moe` (embeddings, 768d, ~100 languages).
 
 ### 4. Ingest a document
 
@@ -194,7 +194,7 @@ All settings are controlled via environment variables (`.env` file) or Pydantic 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
-| `OLLAMA_LLM_MODEL` | `granite3.2:8b` | LLM for generation and NER |
+| `OLLAMA_LLM_MODEL` | `qwen2.5:7b` | LLM for generation and NER |
 | `OLLAMA_EMBED_MODEL` | `nomic-embed-text-v2-moe` | Embedding model (768d) |
 | `OPENSEARCH_HOST` | `localhost` | OpenSearch host |
 | `OPENSEARCH_PORT` | `9200` | OpenSearch port |

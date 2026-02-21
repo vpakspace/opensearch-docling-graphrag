@@ -107,14 +107,14 @@ class Retriever:
         top_k = self._cfg.retrieval.top_k_graph
         cypher = """
         MATCH (e:Entity)
-        WHERE toLower(e.name) CONTAINS toLower($query)
+        WHERE toLower(e.name) CONTAINS toLower($search_term)
         MATCH (e)-[:MENTIONED_IN]->(c:Chunk)
         RETURN c.id AS chunk_id, c.text AS text, e.name AS entity_name
         LIMIT $limit
         """
         try:
             with self._driver.session() as session:
-                result = session.run(cypher, query=query, limit=top_k)
+                result = session.run(cypher, search_term=query, limit=top_k)
                 results: list[SearchResult] = []
                 for record in result:
                     results.append(SearchResult(
