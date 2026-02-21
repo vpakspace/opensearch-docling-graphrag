@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **88% benchmark accuracy** (106/120), 169 tests, 11 commits, 6,666 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **88% benchmark accuracy** (106/120), 198 tests, 13 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval.
 
 ## Architecture
 
@@ -16,9 +16,12 @@ Document ──► Docling ──► Chunker ──► Embedder (Ollama) ──�
          ┌──────────────────────────────┘
          ▼
     Retriever (6 modes: bm25 / vector / graph / hybrid / enhanced / cognitive)
+         │                                          │
+         ▼                                          ▼
+    Semantic Cache (LRU + cosine)           Dynamic RRF Weights
          │
          ▼
-    Generator (Ollama LLM) ──► Answer + Sources + Confidence
+    Generator (Ollama LLM) ──► Answer + Sources + Confidence + Hallucination Check
 ```
 
 **Graph schema:**
@@ -37,7 +40,7 @@ Document ──► Docling ──► Chunker ──► Embedder (Ollama) ──�
 | Knowledge Graph | Neo4j 5 | 7474 / 7687 |
 | LLM + Embeddings | Ollama (llama3.1:8b + nomic-embed-text-v2-moe) | 11434 |
 | Document Parsing | Docling (PDF, DOCX, PPTX, HTML, TXT, MD) | — |
-| REST API | FastAPI | 8508 |
+| REST API | FastAPI + slowapi rate limiting | 8508 |
 | UI | Streamlit (6 tabs) + PyVis | 8506 |
 | Dashboards | OpenSearch Dashboards (optional) | 5601 |
 
@@ -114,9 +117,15 @@ python run_api.py
 # Health check
 curl http://localhost:8508/api/v1/health
 
-# Ask a question
+# Ask a question (no auth)
 curl -X POST http://localhost:8508/api/v1/query \
   -H "Content-Type: application/json" \
+  -d '{"text": "What is OpenSearch?", "mode": "hybrid"}'
+
+# With API key auth (if API_KEY env is set)
+curl -X POST http://localhost:8508/api/v1/query \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your-secret-key" \
   -d '{"text": "What is OpenSearch?", "mode": "hybrid"}'
 ```
 
@@ -127,9 +136,18 @@ curl -X POST http://localhost:8508/api/v1/query \
 | `bm25` | Full-text search via OpenSearch BM25 |
 | `vector` | Semantic search via OpenSearch k-NN (cosine, HNSW) |
 | `graph` | Entity match in Neo4j → traverse to chunks |
-| `hybrid` | RRF fusion of bm25 + vector + graph results |
-| `enhanced` | Query expansion + 3x candidates + RRF + cosine reranking |
+| `hybrid` | Dynamic RRF fusion of bm25 + vector + graph (adaptive weights) |
+| `enhanced` | Query expansion + 3x candidates + dynamic RRF + cosine reranking |
 | `cognitive` | Cog-RAG inspired 2-stage retrieval (theme + entity) + reranking + hallucination detection |
+
+### Dynamic RRF Weights
+
+Hybrid and enhanced modes automatically classify queries and adjust fusion weights:
+
+| Query Type | BM25 Weight | Vector Weight | Graph Weight |
+|-----------|-------------|---------------|-------------|
+| **Keyword** (≤3 words, no `?`) | 1.5 | 0.8 | 0.7 |
+| **Semantic** (longer/questions) | 0.8 | 1.5 | 0.7 |
 
 ## Benchmark
 
@@ -161,14 +179,47 @@ Inspired by [Cog-RAG (AAAI 2026)](https://arxiv.org/abs/2505.02601):
 - **Hallucination Detection** — lightweight token overlap check between answer and context
 - **Multi-Signal Confidence** — score consistency + token overlap + source diversity
 
-## API Endpoints
+## Security & API
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/api/v1/health` | Service health (OpenSearch, Neo4j, Ollama) |
-| `POST` | `/api/v1/query` | RAG query → answer + sources + confidence |
-| `POST` | `/api/v1/search` | Search only (no generation) |
-| `GET` | `/api/v1/graph/stats` | Knowledge graph statistics |
+### API Endpoints
+
+| Method | Path | Auth | Rate Limit | Description |
+|--------|------|------|-----------|-------------|
+| `GET` | `/api/v1/health` | No | — | Service health (OpenSearch, Neo4j, Ollama) |
+| `POST` | `/api/v1/query` | Yes | 60/min | RAG query → answer + sources + confidence |
+| `POST` | `/api/v1/search` | Yes | 60/min | Search only (no generation) |
+| `GET` | `/api/v1/graph/stats` | Yes | — | Knowledge graph statistics |
+
+### API Key Authentication
+
+Optional — disabled when `API_KEY` environment variable is not set.
+
+```bash
+# Enable API key auth
+export API_KEY="your-secret-key"
+python run_api.py
+```
+
+When enabled, all endpoints except `/api/v1/health` require `X-API-Key` header.
+
+### Security Features
+
+- **API key auth** — `X-API-Key` middleware (env `API_KEY`, disabled when empty)
+- **Rate limiting** — 60 requests/minute on `/query` and `/search` via [slowapi](https://github.com/laurentS/slowapi)
+- **No stacktrace leaks** — global exception handlers return JSON errors, no internal details
+- **Config validation** — Pydantic Field constraints on all numeric settings (chunk_size >0, temperature 0.0–2.0, etc.)
+- **Embedding dimension check** — EmbeddingError if Ollama returns unexpected vector dimensions
+- **XSS prevention** — Streamlit uses `st.text()` for LLM-generated answers (no raw HTML rendering)
+
+## Semantic Cache
+
+Built-in query cache that avoids redundant LLM calls for repeated or similar queries:
+
+- **Exact hash lookup** — instant match for identical queries (no embedding needed)
+- **Cosine similarity** — matches semantically similar queries (threshold: 0.95)
+- **LRU eviction** — max 256 entries, oldest evicted first
+- **TTL** — entries expire after 300 seconds
+- **Zero config** — enabled by default, no external dependencies
 
 ## Streamlit UI (6 Tabs)
 
@@ -187,30 +238,32 @@ The UI supports **English and Russian** (sidebar language selector).
 
 ```
 opensearch-docling-graphrag/
-├── opensearch_graphrag/           # Core pipeline
-│   ├── config.py                  # Pydantic Settings
+├── opensearch_graphrag/           # Core pipeline (18 modules)
+│   ├── config.py                  # Pydantic Settings + Field validation
 │   ├── models.py                  # Chunk, Entity, SearchResult, QAResult
 │   ├── loader.py                  # Docling document parser
 │   ├── chunker.py                 # Markdown-aware splitting
-│   ├── embedder.py                # Ollama embeddings (POST /api/embed)
+│   ├── embedder.py                # Ollama embeddings + dimension check
 │   ├── opensearch_store.py        # k-NN index + BM25 + hybrid search
 │   ├── entity_extractor.py        # NER via Ollama LLM
 │   ├── graph_builder.py           # Neo4j graph construction
-│   ├── retriever.py               # 6-mode retriever + RRF fusion
+│   ├── retriever.py               # 6-mode retriever + dynamic RRF fusion
 │   ├── cognitive_retriever.py     # Cog-RAG 2-stage retriever
 │   ├── query_expander.py          # LLM-based query expansion
 │   ├── reranker.py                # Cosine similarity reranker
 │   ├── hallucination_detector.py  # Token overlap grounding check
+│   ├── cache.py                   # Semantic cache (LRU + cosine similarity)
 │   ├── retry.py                   # Retry decorator for Ollama calls
 │   ├── exceptions.py              # Custom exception hierarchy
 │   ├── generator.py               # Ollama chat generation + confidence calibration
-│   └── service.py                 # PipelineService orchestrator
+│   └── service.py                 # PipelineService orchestrator + cache
 ├── api/
-│   ├── app.py                     # FastAPI factory + lifespan
-│   ├── routes.py                  # REST endpoints
+│   ├── app.py                     # FastAPI factory + auth + rate limiting + exception handlers
+│   ├── routes.py                  # REST endpoints with rate limits
+│   ├── limiter.py                 # slowapi Limiter instance
 │   └── deps.py                    # Dependency injection
 ├── ui/
-│   ├── streamlit_app.py           # 6-tab UI
+│   ├── streamlit_app.py           # 6-tab UI (XSS-safe)
 │   ├── i18n.py                    # EN/RU translations
 │   └── components/graph_viz.py    # PyVis rendering
 ├── scripts/
@@ -220,7 +273,7 @@ opensearch-docling-graphrag/
 ├── benchmark/                     # Benchmark data
 │   ├── questions.json             # 30 questions (RU + EN)
 │   └── results.json               # Latest benchmark results
-├── tests/                         # 169 tests
+├── tests/                         # 198 tests (all mocked)
 ├── data/                          # Sample documents (Doc1 RU + Doc2 EN)
 ├── docker-compose.yml             # OpenSearch + Neo4j + Ollama
 ├── requirements.txt
@@ -231,25 +284,28 @@ opensearch-docling-graphrag/
 
 ## Configuration
 
-All settings are controlled via environment variables (`.env` file) or Pydantic Settings defaults:
+All settings are controlled via environment variables (`.env` file) or Pydantic Settings defaults. All numeric fields have validation constraints (e.g., `gt=0`, `ge=0`, `le=2.0`).
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
-| `OLLAMA_LLM_MODEL` | `llama3.1:8b` | LLM for generation and NER |
-| `OLLAMA_EMBED_MODEL` | `nomic-embed-text-v2-moe` | Embedding model (768d) |
-| `OPENSEARCH_HOST` | `localhost` | OpenSearch host |
-| `OPENSEARCH_PORT` | `9200` | OpenSearch port |
-| `OPENSEARCH_INDEX` | `rag_chunks` | Index name |
-| `NEO4J_URI` | `bolt://localhost:7687` | Neo4j connection URI |
-| `NEO4J_USER` | `neo4j` | Neo4j username |
-| `NEO4J_PASSWORD` | `neo4j` | Neo4j password |
-| `CHUNK_SIZE` | `512` | Chunk size in characters |
-| `CHUNK_OVERLAP` | `64` | Overlap between chunks |
-| `TOP_K_VECTOR` | `10` | Vector search results |
-| `TOP_K_BM25` | `10` | BM25 search results |
-| `TOP_K_GRAPH` | `10` | Graph search results |
-| `TOP_K_FINAL` | `5` | Final results after fusion |
+| Variable | Default | Constraint | Description |
+|----------|---------|-----------|-------------|
+| `OLLAMA_BASE_URL` | `http://localhost:11434` | — | Ollama server URL |
+| `OLLAMA_LLM_MODEL` | `llama3.1:8b` | — | LLM for generation and NER |
+| `OLLAMA_EMBED_MODEL` | `nomic-embed-text-v2-moe` | — | Embedding model (768d) |
+| `OLLAMA_EMBED_DIMENSIONS` | `768` | >0 | Expected embedding vector dimension |
+| `OLLAMA_TEMPERATURE` | `0.0` | 0.0–2.0 | LLM temperature |
+| `OPENSEARCH_HOST` | `localhost` | — | OpenSearch host |
+| `OPENSEARCH_PORT` | `9200` | — | OpenSearch port |
+| `OPENSEARCH_INDEX` | `rag_chunks` | — | Index name |
+| `NEO4J_URI` | `bolt://localhost:7687` | — | Neo4j connection URI |
+| `NEO4J_USER` | `neo4j` | — | Neo4j username |
+| `NEO4J_PASSWORD` | `neo4j` | — | Neo4j password |
+| `CHUNK_CHUNK_SIZE` | `512` | >0 | Chunk size in characters |
+| `CHUNK_CHUNK_OVERLAP` | `64` | ≥0 | Overlap between chunks |
+| `TOP_K_TOP_K_VECTOR` | `10` | >0 | Vector search results |
+| `TOP_K_TOP_K_BM25` | `10` | >0 | BM25 search results |
+| `TOP_K_TOP_K_GRAPH` | `10` | >0 | Graph search results |
+| `TOP_K_TOP_K_FINAL` | `5` | >0 | Final results after fusion |
+| `API_KEY` | *(empty)* | — | API key for auth (disabled when empty) |
 
 ## Testing
 
@@ -261,7 +317,7 @@ pytest tests/ -v
 ruff check .
 ```
 
-169 tests, all mocked (no external services required). CI runs `pytest-cov` with 75% minimum coverage.
+198 tests, all mocked (no external services required). CI runs `pytest-cov` with 75% minimum coverage.
 
 ## Docker Services
 
