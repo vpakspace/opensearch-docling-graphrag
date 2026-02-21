@@ -133,3 +133,48 @@ def test_graphrag_error_returns_json_500(client_and_svc):
     data = resp.json()
     assert "error" in data
     assert "Traceback" not in data["error"]
+
+
+def test_generic_exception_returns_json_500():
+    """Unhandled Exception returns generic JSON 500 without leaking details."""
+    from api.app import create_app
+
+    svc = _make_svc()
+    svc.query.side_effect = RuntimeError("unexpected internal error")
+    app = create_app(service=svc)
+    with TestClient(app, raise_server_exceptions=False) as client:
+        resp = client.post("/api/v1/query", json={"text": "test", "mode": "hybrid"})
+        assert resp.status_code == 500
+        data = resp.json()
+        assert data["error"] == "Internal server error"
+        assert "unexpected" not in data["error"]
+
+
+# ── Security headers tests ──────────────────────────────────
+
+
+def test_security_headers_present(client_and_svc):
+    """Responses include X-Content-Type-Options, X-Frame-Options, X-XSS-Protection."""
+    client, _ = client_and_svc
+    resp = client.get("/api/v1/health")
+    assert resp.headers["X-Content-Type-Options"] == "nosniff"
+    assert resp.headers["X-Frame-Options"] == "DENY"
+    assert resp.headers["X-XSS-Protection"] == "1; mode=block"
+
+
+# ── Search via different modes ───────────────────────────────
+
+
+def test_search_vector_mode(client_and_svc):
+    """Vector mode search returns results."""
+    client, _ = client_and_svc
+    resp = client.post("/api/v1/search", json={"text": "test", "mode": "vector"})
+    assert resp.status_code == 200
+
+
+def test_query_bm25_mode(client_and_svc):
+    """BM25 mode query returns results."""
+    client, _ = client_and_svc
+    resp = client.post("/api/v1/query", json={"text": "test", "mode": "bm25"})
+    assert resp.status_code == 200
+    assert resp.json()["mode"] == "hybrid"  # mock always returns hybrid

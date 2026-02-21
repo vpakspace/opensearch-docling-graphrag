@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **92% benchmark accuracy** (167/180), 198 tests, 18 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **92% benchmark accuracy** (167/180), 229 tests, 18 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval.
 
 ## Architecture
 
@@ -284,7 +284,7 @@ opensearch-docling-graphrag/
 ├── benchmark/                     # Benchmark data
 │   ├── questions.json             # 30 questions (RU + EN)
 │   └── results.json               # Latest benchmark results
-├── tests/                         # 198 tests (all mocked)
+├── tests/                         # 229 tests (all mocked)
 ├── data/                          # Sample documents (Doc1 RU + Doc2 EN)
 ├── docker-compose.yml             # OpenSearch + Neo4j + Ollama
 ├── requirements.txt
@@ -328,7 +328,7 @@ pytest tests/ -v
 ruff check .
 ```
 
-198 tests, all mocked (no external services required). CI runs `pytest-cov` with 75% minimum coverage.
+229 tests, all mocked (no external services required). CI runs `pytest-cov` with 75% minimum coverage.
 
 ## Docker Services
 

@@ -1,6 +1,6 @@
 """Tests for SemanticCache."""
 
-import time
+from unittest.mock import patch
 
 from opensearch_graphrag.cache import SemanticCache
 from opensearch_graphrag.utils import cosine_similarity
@@ -28,11 +28,17 @@ def test_exact_miss():
 
 
 def test_ttl_expiry():
-    """Expired entries are not returned."""
-    cache = SemanticCache(ttl_seconds=0.1)
-    cache.put("query", "result")
-    time.sleep(0.15)
-    assert cache.get("query") is None
+    """Expired entries are not returned (deterministic with mocked time)."""
+    cache = SemanticCache(ttl_seconds=60)
+    with patch("opensearch_graphrag.cache.time") as mock_time:
+        mock_time.time.return_value = 1000.0
+        cache.put("query", "result")
+        # Still valid at 1059s
+        mock_time.time.return_value = 1059.0
+        assert cache.get("query") == "result"
+        # Expired at 1061s
+        mock_time.time.return_value = 1061.0
+        assert cache.get("query") is None
 
 
 # ── LRU eviction ──────────────────────────────────────────────
