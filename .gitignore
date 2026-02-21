@@ -19,5 +19,11 @@ data/*.docx
 *.html
 !ui/components/*.py
 
+# Playwright MCP cache
+.playwright-mcp/
+
+# Temp/lib
+lib/
+
 # Windows artifacts
 *:Zone.Identifier

@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — 586 tests, 5 commits, 4,665 LOC.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **88% benchmark accuracy** (106/120), 120 tests, ~5,000 LOC.
 
 ## Architecture
 
@@ -129,6 +129,24 @@ curl -X POST http://localhost:8508/api/v1/query \
 | `graph` | Entity match in Neo4j → traverse to chunks |
 | `hybrid` | RRF fusion of bm25 + vector + graph results |
 
+## Benchmark
+
+30 questions (Russian + English) x 4 modes = 120 evaluations. Keyword overlap judge (no external API).
+
+| Mode | Score | Doc1 (RU) | Doc2 (EN) | Avg Latency |
+|------|-------|-----------|-----------|-------------|
+| `hybrid` | **28/30 (93%)** | 13/15 | 15/15 | 3.1s |
+| `bm25` | 28/30 (93%) | 14/15 | 14/15 | 4.1s |
+| `vector` | 27/30 (90%) | 12/15 | 15/15 | 4.1s |
+| `graph` | 23/30 (76%) | 12/15 | 11/15 | 3.4s |
+| **Overall** | **106/120 (88%)** | **51/60** | **55/60** | |
+
+LLM: `llama3.1:8b` | Embeddings: `nomic-embed-text-v2-moe` | GPU: RTX 4080
+
+```bash
+python scripts/run_benchmark.py
+```
+
 ## API Endpoints
 
 | Method | Path | Description |
@@ -177,9 +195,13 @@ opensearch-docling-graphrag/
 │   └── components/graph_viz.py    # PyVis rendering
 ├── scripts/
 │   ├── ingest.py                  # CLI ingestion
+│   ├── run_benchmark.py           # 30-question benchmark runner
 │   └── pull_models.sh             # Download Ollama models
-├── tests/                         # 586 tests
-├── data/                          # Sample documents (Doc1 + Doc2)
+├── benchmark/                     # Benchmark data
+│   ├── questions.json             # 30 questions (RU + EN)
+│   └── results.json               # Latest benchmark results
+├── tests/                         # 120 tests
+├── data/                          # Sample documents (Doc1 RU + Doc2 EN)
 ├── docker-compose.yml             # OpenSearch + Neo4j + Ollama
 ├── requirements.txt
 ├── pyproject.toml
@@ -219,7 +241,7 @@ pytest tests/ -v
 ruff check .
 ```
 
-586 tests, all mocked (no external services required).
+120 tests, all mocked (no external services required).
 
 ## Docker Services
 

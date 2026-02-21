@@ -90,15 +90,38 @@ def test_retriever_graph_mode_with_driver():
     driver.session.return_value.__enter__ = MagicMock(return_value=mock_session)
     driver.session.return_value.__exit__ = MagicMock(return_value=False)
     mock_session.run.return_value = [
-        {"chunk_id": "c5", "text": "graph result", "entity_name": "OpenSearch"},
+        {"chunk_id": "c5", "text": "graph result", "entities": ["OpenSearch"]},
     ]
 
     retriever = Retriever(store=store, neo4j_driver=driver)
-    results = retriever.search("OpenSearch", mode="graph")
+    results = retriever.search("OpenSearch query", mode="graph")
 
     assert len(results) == 1
     assert results[0].chunk_id == "c5"
     assert results[0].source == "graph"
+
+
+def test_extract_keywords_russian():
+    kw = Retriever._extract_keywords("Какие фреймворки для графовых баз знаний?")
+    assert "фреймворки" in kw
+    assert "графовых" in kw
+    assert "знаний" in kw
+    assert "какие" not in kw
+    assert "для" not in kw
+
+
+def test_extract_keywords_english():
+    kw = Retriever._extract_keywords("What is the Semantic Companion Layer?")
+    assert "semantic" in kw
+    assert "companion" in kw
+    assert "layer" in kw
+    assert "what" not in kw
+    assert "the" not in kw
+
+
+def test_extract_keywords_empty():
+    assert Retriever._extract_keywords("") == []
+    assert Retriever._extract_keywords("a b") == []
 
 
 def test_retriever_hybrid_mode():

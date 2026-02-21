@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from typing import TYPE_CHECKING, Literal
 
 from opensearch_graphrag.config import get_settings
@@ -99,30 +100,70 @@ class Retriever:
             top_k=self._cfg.retrieval.top_k_final,
         )
 
+    @staticmethod
+    def _extract_keywords(query: str, min_len: int = 3) -> list[str]:
+        """Extract significant keywords from query for entity matching."""
+        stop_words = {
+            # Russian
+            "что", "как", "какие", "какой", "какая", "какое", "где", "кто",
+            "когда", "почему", "зачем", "для", "чего", "это", "его", "она",
+            "они", "все", "при", "или", "так", "уже", "еще", "без",
+            "между", "через", "после", "перед", "также", "которые", "который",
+            "которая", "которое", "можно", "нужно", "есть", "был", "были",
+            "быть", "будет", "если", "того", "этого", "этой", "этих",
+            "более", "менее", "чем", "каких", "каким", "какими",
+            "статье", "тексте", "документе", "опиши", "объясни",
+            "перечисли", "резюмируй", "расскажи", "назови",
+            # English
+            "what", "how", "which", "where", "who", "when", "why",
+            "the", "and", "for", "are", "was", "were", "been", "being",
+            "have", "has", "had", "does", "did", "will", "would", "could",
+            "should", "may", "might", "can", "this", "that", "these", "those",
+            "with", "from", "into", "about", "between", "through", "after",
+            "before", "also", "each", "other", "some", "such", "than",
+            "its", "them", "then", "there", "their", "they", "not", "but",
+            "describe", "explain", "list", "summarize", "article", "text",
+        }
+        words = re.findall(r"\b\w+\b", query.lower())
+        return [w for w in words if len(w) >= min_len and w not in stop_words]
+
     def _graph_search(self, query: str) -> list[SearchResult]:
-        """Search Neo4j: find entities matching query, then traverse to chunks."""
+        """Search Neo4j: find entities matching query keywords, then traverse to chunks."""
         if not self._driver:
             return []
 
+        keywords = self._extract_keywords(query)
+        if not keywords:
+            return []
+
         top_k = self._cfg.retrieval.top_k_graph
+
+        # Build regex pattern: match any keyword in entity name
+        pattern = "|".join(re.escape(kw) for kw in keywords)
         cypher = """
         MATCH (e:Entity)
-        WHERE toLower(e.name) CONTAINS toLower($search_term)
+        WHERE toLower(e.name) =~ $pattern
         MATCH (e)-[:MENTIONED_IN]->(c:Chunk)
-        RETURN c.id AS chunk_id, c.text AS text, e.name AS entity_name
+        RETURN DISTINCT c.id AS chunk_id, c.text AS text,
+               collect(DISTINCT e.name) AS entities
         LIMIT $limit
         """
         try:
             with self._driver.session() as session:
-                result = session.run(cypher, search_term=query, limit=top_k)
+                result = session.run(
+                    cypher,
+                    pattern=f".*({pattern}).*",
+                    limit=top_k,
+                )
                 results: list[SearchResult] = []
                 for record in result:
+                    entities = record["entities"] or []
                     results.append(SearchResult(
                         chunk_id=record["chunk_id"] or "",
                         text=record["text"] or "",
-                        score=0.8,  # fixed score for graph results
+                        score=min(0.5 + 0.1 * len(entities), 1.0),
                         source="graph",
-                        metadata={"entity": record["entity_name"] or ""},
+                        metadata={"entities": ", ".join(entities)},
                     ))
                 return results
         except Exception as e:
