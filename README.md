@@ -1,6 +1,6 @@
 # OpenSearch Docling GraphRAG
 
-Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **92% benchmark accuracy** (167/180), 241 tests, 19 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval with iterative probing.
+Fully local RAG pipeline combining **OpenSearch** (hybrid BM25 + k-NN vector search), **Neo4j** (knowledge graph), **Ollama** (LLM + embeddings), and **Docling** (document parsing). No cloud API keys required — **93% benchmark accuracy** (168/180), 241 tests, 20 commits, ~7,000 LOC, 6 search modes including Cog-RAG inspired cognitive retrieval with iterative probing.
 
 ## Architecture
 
@@ -155,17 +155,17 @@ Hybrid and enhanced modes automatically classify queries and adjust fusion weigh
 
 | Mode | Score | Doc1 (RU) | Doc2 (EN) | Avg Latency |
 |------|-------|-----------|-----------|-------------|
-| `bm25` | **29/30 (96%)** | 15/15 | 14/15 | 4.0s |
-| `hybrid` | **29/30 (96%)** | 14/15 | 15/15 | 3.0s |
-| `enhanced` | **29/30 (96%)** | 14/15 | 15/15 | 5.6s |
-| `vector` | 27/30 (90%) | 12/15 | 15/15 | 4.2s |
-| `cognitive` | 27/30 (90%) | 12/15 | 15/15 | 5.3s |
-| `graph` | 26/30 (86%) | 12/15 | 14/15 | 2.6s |
-| **Overall** | **167/180 (92%)** | **79/90** | **88/90** | **p50=3.4s** |
+| `bm25` | **29/30 (96%)** | 15/15 | 14/15 | 3.9s |
+| `enhanced` | **29/30 (96%)** | 14/15 | 15/15 | 5.2s |
+| `graph` | 28/30 (93%) | 13/15 | 15/15 | 2.8s |
+| `hybrid` | 28/30 (93%) | 13/15 | 15/15 | 2.8s |
+| `vector` | 27/30 (90%) | 12/15 | 15/15 | 4.3s |
+| `cognitive` | 27/30 (90%) | 12/15 | 15/15 | 5.2s |
+| **Overall** | **168/180 (93%)** | **79/90** | **89/90** | **p50=3.5s** |
 
-By question type: `global` 100% | `simple` 95% | `multi_hop` 94% | `relation` 92% | `temporal` 75%
+By question type: `global` 100% | `simple` 97% | `relation` 92% | `multi_hop` 91% | `temporal` 79%
 
-Zero persistent failures — every question passes in at least one mode. Latency: p50=3.4s, p95=9.5s, p99=21.5s.
+Zero persistent failures — every question passes in at least one mode. Latency: p50=3.5s, p95=8.7s, p99=16.5s.
 
 LLM: `llama3.1:8b` | Embeddings: `nomic-embed-text-v2-moe` | GPU: RTX 4080
 
